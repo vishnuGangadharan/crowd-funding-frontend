@@ -2,16 +2,35 @@ import React, { useState } from 'react';
 import { CgProfile } from "react-icons/cg";
 import { FiMenu, FiX } from "react-icons/fi";
 import FundraiserBtn from './FundraiserBtn';
+import { useDispatch,useSelector } from 'react-redux';
+import { RootState } from "../../redux/store";
+import { userLogout } from '../../redux/slice/authSlice';
+import { Link } from 'react-router-dom';
+import cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { userInfo } = useSelector((state: RootState) => state.auth); 
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    dispatch(userLogout());
+    cookies.remove('jwt');
+    
+  };
+
+  const handleProfile = () => {
+    navigate('/profile');
+  }
 
   return (
-    <nav className="bg-fuchsia-900 shadow-lg py-4 z-50 relative">
+    <nav className="bg-fuchsia-900 shadow-lg  z-50 relative">
       <div className="container mx-auto px-6 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center">
-          <img src="/path-to-your-logo.png" alt="Logo" className="h-12 mr-6" />
+          <img src="logo.png" alt="Logo" className="w-36 h-auto mr-6" />
         </div>
 
         {/* Hamburger Menu Icon */}
@@ -31,9 +50,17 @@ function NavBar() {
 
         {/* Buttons for Desktop */}
         <div className="hidden md:flex items-center space-x-8">
-          <FundraiserBtn />
-          <CgProfile size={28} className="text-white cursor-pointer hover:text-blue-300" />
-        </div>
+          <FundraiserBtn className=''/>
+          {userInfo ? (
+            <div className="flex items-center space-x-4">
+
+              <CgProfile onClick={handleProfile} size={28} className="text-white cursor-pointer hover:text-blue-300" />
+              <button onClick={handleLogout}  className="text-white hover:text-blue-300">Logout</button>
+            </div>
+          ) : (
+            <Link to="/login" className="text-white hover:text-blue-300">Login</Link>   
+          )} 
+         </div>
       </div>
 
       {/* Mobile Menu */}
@@ -47,7 +74,14 @@ function NavBar() {
             Start a Fundraiser
           </button>
           <div className="flex justify-center">
-            <CgProfile size={28} className="cursor-pointer hover:text-blue-300" />
+            {userInfo ? (
+              <>
+                <CgProfile size={28} className="cursor-pointer hover:text-blue-300" />
+                <p className='ml-4'>Logout</p>
+              </>
+            ) : (
+              "Login"
+            )}
           </div>
         </div>
       )}

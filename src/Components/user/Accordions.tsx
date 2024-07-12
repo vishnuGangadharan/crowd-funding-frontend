@@ -20,7 +20,7 @@ function Accordions() {
     <AccordionItem key="3" aria-label="Accordion 3" title="Is there any charges in this platform">
       {defaultContent}
     </AccordionItem>
-  </Accordion>
+    </Accordion>
   )
 }
 

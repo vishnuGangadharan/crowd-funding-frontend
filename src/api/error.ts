@@ -32,17 +32,20 @@ const errorHandler = (error: Error | AxiosError) => {
               
             }else{
                 console.log("Error response has no messages");
-                toast.error("An error occurred. Please try again!")
+                toast.error("An error occurred. Please try again!3")
             }
         }else{
-            toast.error("An error occurred. Please try again!");
+            toast.error("An error occurred. Please try again!2");
             console.log("axiosError", axiosError.message);
         }
         
     }else{
-        toast.error("An error occurred. Please try again!");
+        //  toast.error("An error occurred. Please try again!1");
         console.log("Error", error.message);
     }
 }
 
 export default errorHandler;
+
+
+

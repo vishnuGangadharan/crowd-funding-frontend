@@ -61,11 +61,10 @@ const navigate = useNavigate()
   });
 
   const onSubmit: SubmitHandler<FormValues> = async(data) => {
-    console.log("dddd",data);
      // Handle form submission logic here (e.g., send data to backend)
      try {
-      const response = await signup(data);
-      if(response.status === 200){
+      const response = await signup(data);      
+      if(response.status === true){
         navigate('/otp',{
           state:{
             email:data.email,

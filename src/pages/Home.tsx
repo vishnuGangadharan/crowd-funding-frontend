@@ -2,6 +2,7 @@ import NavBar from '../Components/user/NavBar';
 import HeroSection from '../Components/user/HeroSection';
 import Category from '../Components/user/Cards';
 import Accordion from '../Components/user/Accordions';
+import Footer from '../Components/user/Footer';
 
 const Home = () => {
   return (
@@ -36,14 +37,15 @@ const Home = () => {
         <Category />
         <Category />
       </div>
-      <div className="flex flex-col items-center h-screen ">
+      <div className="flex flex-col items-center mb-52">
         <h1 className="text-3xl font-bold mb-8">Questions We Get</h1>
         <div className="w-2/4 sm:w-3/4 ">
           <Accordion />
         </div>
       </div>
-
-
+    <div className='mt-4'>
+    <Footer />
+    </div>
     </div>
 
   );
