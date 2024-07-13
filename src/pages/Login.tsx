@@ -3,9 +3,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { login } from "../api/user";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { setUserData } from "../redux/slice/authSlice";
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 
 
 
@@ -32,12 +34,11 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
-  const { userInfo} = useSelector((state: RootState) => state.auth)
-  
-  
+
+
   interface FormValues {
-    email: string;
-    password: string;
+    email?: string;
+    password?: string;
   }
 
   const {
@@ -55,24 +56,51 @@ const Login: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      const response = await login(data) 
-      if(response){
+      const response = await login(data)
+      if (response) {
 
-        if(response.data.isAdmin){
+        if (response.data.isAdmin) {
           console.log("Login successful:", response.data);
           navigate("/admin/dashboard")
-        }else{
+        } else {
           dispatch(setUserData(response.data.message))
-         navigate("/home")
+          navigate("/home")
 
         }
-      }     
+      }
     } catch (error) {
       console.log("error", error);
     }
   };
 
- 
+
+  const onGoogleLogin = async (credentialResponse: CredentialResponse)=>{
+    if(credentialResponse.credential){
+      try{
+        const decode = jwtDecode<FormValues>(credentialResponse.credential)
+        console.log(decode);
+        let data={
+          email: decode.email,
+          password:"12345aA@",
+        }
+        const response = await login(data)
+        if(response){
+          if(response.data.isAdmin){
+            console.log("Login successful admin:", response.data);
+            navigate("/admin/dashboard")
+          }
+          else{
+            dispatch(setUserData(response.data.message))
+            navigate("/home")
+          }
+        }
+      }catch(error){
+        console.log("error", error);
+      }
+    }
+  }
+
+
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -119,13 +147,16 @@ const Login: React.FC = () => {
                 Login
               </button>
             </div>
-            <div className="text-center mt-4">
-              <button
-                type="button"
-                className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition duration-200"
-              >
-                Login with Google
-              </button>
+            <div className="flex flex-col justify-center items-center text-center mt-4">
+
+              {/* google auth */}
+              <GoogleLogin  onSuccess={onGoogleLogin}
+                onError={() => {
+                  console.log('Login Failed');
+                }}
+              />
+
+
               <p className="mt-4">
                 Don't have an account?
                 <Link to="/signup"> Sign Up</Link>

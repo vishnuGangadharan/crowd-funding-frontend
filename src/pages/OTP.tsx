@@ -2,8 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { verifyOtp } from '../api/user';
 import { useLocation ,useNavigate } from 'react-router-dom';
 import {toast}  from 'react-toastify'
+import { useDispatch } from 'react-redux';
+import { setUserData } from '../redux/slice/authSlice';
+
+
 const OTP = () => {
 
+
+  const dispatch = useDispatch()
   const [otp, setOtp] = useState('');
   const [isOtpVisible, setIsOtpVisible] = useState(false);
   const [timer, setTimer] = useState<number>(() => {
@@ -57,11 +63,12 @@ const OTP = () => {
     }
     try {
       const response = await verifyOtp(parseInt(otp), email);
+      console.log("responseclintotp",response);
+      
       if(response){
         toast.success(response.data.message);
-        localStorage.setItem("token", response?.data.token);
-        //store here
-        navigate('/home');
+        dispatch(setUserData(response.data.data))
+       navigate('/home');
       }
       // Add logic to handle successful OTP verification
     } catch (error) {

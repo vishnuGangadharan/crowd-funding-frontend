@@ -1,6 +1,19 @@
 import React from 'react'
 
+
+
+
 const Dashboard = () => {
+
+
+  // const fetchUsers = async()=>{
+  //   try{
+  //     const response = await getUsers()
+  //   }
+  // }
+
+
+
   return (
     <div className='bg-slate-700 h-[80%] mt-10 ml-6 mr-10 w-full rounded-lg p-4'>
             <div className="w-full bg-slate-900 rounded-lg">

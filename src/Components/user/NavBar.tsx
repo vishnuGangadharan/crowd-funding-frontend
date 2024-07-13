@@ -8,8 +8,9 @@ import { userLogout } from '../../redux/slice/authSlice';
 import { Link } from 'react-router-dom';
 import cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import { googleLogout } from '@react-oauth/google';
 
-function NavBar() {
+const NavBar : React.FC = () => {  
   const [menuOpen, setMenuOpen] = useState(false);
   const { userInfo } = useSelector((state: RootState) => state.auth); 
   const dispatch = useDispatch();
@@ -18,7 +19,8 @@ function NavBar() {
   const handleLogout = () => {
     dispatch(userLogout());
     cookies.remove('jwt');
-    
+    googleLogout();
+
   };
 
   const handleProfile = () => {

@@ -1,7 +1,7 @@
 import axios from "axios";
 import errorHandler from "../api/error";
 
-const BASE_URL = "http://localhost:3000/api";
+const BASE_URL = "http://localhost:3008/api";
 
 const Api = axios.create({
     baseURL: BASE_URL,

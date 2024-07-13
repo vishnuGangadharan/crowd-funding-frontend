@@ -5,7 +5,8 @@ import * as z from 'zod';
 import { Link } from 'react-router-dom';
 import { signup } from '../api/user';
 import { useNavigate } from 'react-router-dom';
-
+import { GoogleLogin ,CredentialResponse} from '@react-oauth/google';
+import { jwtDecode , JwtPayload} from "jwt-decode";
 
 
 const formSchema = z.object({
@@ -48,6 +49,13 @@ const navigate = useNavigate()
     confirmPassword: string;
   }
 
+  interface GoogleJwtPayload extends JwtPayload {
+    name?: string;
+    email?: string;
+    picture?: string;
+    phone?: string;
+  }
+
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -81,6 +89,40 @@ const navigate = useNavigate()
       console.error("Signup failed:", error);
     }
     
+  };
+
+
+  const googleSignup = async (credentialResponse: CredentialResponse) => {
+    if (credentialResponse.credential) {
+      try {
+        const decode = jwtDecode<GoogleJwtPayload>(credentialResponse.credential);        
+        const data = {
+          name: decode.name,
+          email: decode.email,
+          phone:'0000000000',
+          password: '12345aA@',
+          confirmPassword: '12345aA@',
+          isGoogle:true
+        };
+        console.log("datafront", data);
+        
+
+        const response = await signup(data);
+        if(response.status === true){
+          navigate('/otp', {
+            state: {
+              email: data.email,
+              name: data.name,
+              phone: data.phone
+            }
+          });
+        } else {
+          console.log("Signup failed:", response);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
 
@@ -156,13 +198,16 @@ const navigate = useNavigate()
                 Sign Up
               </button>
             </div>
-            <div className="text-center mt-4">
-              <button
-                type="button"
-                className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition duration-200"
-              >
-                Sign Up with Google
-              </button>
+            <div className="text-center flex flex-col justify-center items-center ">
+              
+
+             {/* google auth */}
+             <GoogleLogin onSuccess={googleSignup}
+                onError={() => {
+                  console.log('Login Failed');
+                }}
+              />
+
               <p className='mt-5'>Already have an account? 
                 <Link to="/login"> Login</Link>
               </p>
@@ -175,3 +220,12 @@ const navigate = useNavigate()
 };
 
 export default SignUp;
+
+
+
+// (credentialResponse) => {
+//   if (credentialResponse.credential) {
+//     const decoded = jwtDecode(credentialResponse.credential);
+//     console.log(decoded);
+//   }
+// }

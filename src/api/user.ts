@@ -14,9 +14,11 @@ interface userFormData {
 
 export const signup  = async (userData: userFormData) => {
     try {
+        console.log("2ndsingup");
         
         const response = await Api.post(userRoutes.signup, userData);
         return response.data;
+        
     } catch (error) {
         const err:Error = error as Error;
         errorHandler(err);
