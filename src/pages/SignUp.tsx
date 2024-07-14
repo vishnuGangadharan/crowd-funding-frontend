@@ -7,7 +7,8 @@ import { signup } from '../api/user';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin ,CredentialResponse} from '@react-oauth/google';
 import { jwtDecode , JwtPayload} from "jwt-decode";
-
+import { useDispatch } from'react-redux';
+import { setUserData } from '../redux/slice/authSlice';
 
 const formSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters long")
@@ -40,6 +41,7 @@ const formSchema = z.object({
 const SignUp: React.FC = () => {
 
 const navigate = useNavigate()
+const dispatch = useDispatch()
 
   interface FormValues {
     name: string;
@@ -71,8 +73,10 @@ const navigate = useNavigate()
   const onSubmit: SubmitHandler<FormValues> = async(data) => {
      // Handle form submission logic here (e.g., send data to backend)
      try {
-      const response = await signup(data);      
-      if(response.status === true){
+      const response = await signup(data); 
+      console.log(response);
+        if(response){   
+      if(response.status === 200){
         navigate('/otp',{
           state:{
             email:data.email,
@@ -84,6 +88,7 @@ const navigate = useNavigate()
       else{
         console.log("Signup failed:", response);
       }
+    }
       console.log("Signup successful:", response);
     } catch (error) {
       console.error("Signup failed:", error);
@@ -103,22 +108,24 @@ const navigate = useNavigate()
           password: '12345aA@',
           confirmPassword: '12345aA@',
           isGoogle:true
-        };
-        console.log("datafront", data);
-        
+        };        
 
         const response = await signup(data);
-        if(response.status === true){
-          navigate('/otp', {
-            state: {
-              email: data.email,
-              name: data.name,
-              phone: data.phone
-            }
-          });
+        console.log("responsekkk", response);
+        if(response){
+        if(response.status === 200){
+          let data = {
+            name: response.data.name,
+            email: response.data.email,
+            phone: response.data.phone,
+            _id: response.data._id,
+          }
+          dispatch(setUserData(data))
+          navigate('/home');
         } else {
           console.log("Signup failed:", response);
         }
+      }
       } catch (error) {
         console.log(error);
       }

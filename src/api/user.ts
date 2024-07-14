@@ -17,7 +17,7 @@ export const signup  = async (userData: userFormData) => {
         console.log("2ndsingup");
         
         const response = await Api.post(userRoutes.signup, userData);
-        return response.data;
+        return response;
         
     } catch (error) {
         const err:Error = error as Error;
