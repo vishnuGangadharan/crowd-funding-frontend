@@ -14,9 +14,9 @@ export const fetchUsers = async ()=>{
     }
 }
 
-export const blockUser= async (id:string)=>{
+export const handleBlockStatus= async (id:string,status:boolean)=>{
     try{
-        const response = await Api.post(`${adminRoutes.blockUser}/${id}`)
+        const response = await Api.post(`${adminRoutes.handleBlockStatus}/${id}`,{status})
         return response
 
     }catch(error){
@@ -24,3 +24,12 @@ export const blockUser= async (id:string)=>{
         errorHandler(err);
     }
 }
+
+// export const unblockUser= async (id:string)=>{
+//     try{
+//         const response = await Api(`${adminRoutes.unblockUser}/${id}`)
+//     }catch(error){
+//         const err:Error = error as Error;
+//         errorHandler(err)
+//     }
+// }
