@@ -1,5 +1,5 @@
 import { Input } from "@material-tailwind/react";
-
+import {Button} from "@nextui-org/react";
 function Form2() {
 
 
@@ -17,12 +17,30 @@ function Form2() {
             {/* <div className="bg-blue-200 p-4 rounded">Box 4</div> */}
           </div>
         </div>
-        <div>
-          <form action="">
-            
-            <Input variant="standard" label="Name" placeholder="Enter Amount" />
-            <Input variant="standard" label="Name" placeholder="Enter your name" />
-            </form>
+        <div> 
+          <form>
+          <div className="mt-4">
+            <div className="mb-6">
+              <Input
+                className="mb-3"
+                variant="standard"
+                label="Amount"
+                placeholder="Enter Amount"
+              />
+            </div>
+            <div className="mb-4">
+              <Input
+                className=""
+                variant="standard"
+                label="Name"
+                placeholder="Enter your name"
+              />
+            </div>
+          </div>
+          <Button color="secondary">
+              Secondary
+             </Button>  
+        </form>
         </div>
       </div>
     </div>

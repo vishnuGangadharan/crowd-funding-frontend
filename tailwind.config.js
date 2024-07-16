@@ -7,7 +7,7 @@ export default  withMT({
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@material-tailwind/react/**/*.{js,ts,jsx,tsx}", 
+    "./node_modules/@material-tailwind/react/theme/components/**/*.{js,ts,jsx,tsx}", 
   ],
   theme: {
     extend: {},

@@ -28,21 +28,19 @@ const NavBar : React.FC = () => {
   }
 
   return (
-    <nav className="bg-fuchsia-900 shadow-lg  z-50 relative">
+    <nav className="bg-blue-400 shadow-lg  z-50 relative">
       <div className="container mx-auto px-6 flex justify-between items-center">
-        {/* Logo */}
+
         <div className="flex items-center">
           <img src="logo.png" alt="Logo" className="w-36 h-auto mr-6" />
         </div>
 
-        {/* Hamburger Menu Icon */}
         <div className="md:hidden flex items-center">
           <button onClick={() => setMenuOpen(!menuOpen)} className="text-white">
             {menuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
           </button>
         </div>
 
-        {/* Navigation Links for Desktop */}
         <div className="hidden md:flex items-center space-x-8">
           <a href="#home" className="text-white hover:text-blue-300">Home</a>
           <a href="#donate" className="text-white hover:text-blue-300">Donate</a>
@@ -50,9 +48,10 @@ const NavBar : React.FC = () => {
           <a href="#contact" className="text-white hover:text-blue-300">Contact Us</a>
         </div>
 
-        {/* Buttons for Desktop */}
         <div className="hidden md:flex items-center space-x-8">
-          <FundraiserBtn className=''/>
+          <FundraiserBtn 
+          onclick={() => navigate('/form1')}
+          className=''/>
           {userInfo ? (
             <div className="flex items-center space-x-4">
 

@@ -8,7 +8,7 @@ import { RootState } from "../redux/store";
 import { setUserData } from "../redux/slice/authSlice";
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
-
+ import { setAdminData } from "../redux/slice/adminSlice";
 
 
 
@@ -87,7 +87,8 @@ const Login: React.FC = () => {
         if(response){
           if(response.data.isAdmin){
             console.log("Login successful admin:", response.data);
-            navigate("/admin/dashboard")
+            dispatch(setAdminData(response.data.message))
+            navigate("/admin/users")
           }
           else{
             dispatch(setUserData(response.data.message))
