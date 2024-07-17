@@ -1,79 +1,62 @@
-
-
-import React, { useState } from 'react';
-import {Input} from "@nextui-org/react";
+import React from 'react';
+import { Input } from "@nextui-org/react";
 import { useSelector } from 'react-redux';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { SubmitHandler, useForm } from "react-hook-form";
+import { form1Types } from '../../../services/interface';
+import { useNavigate } from 'react-router-dom';
 
-
-const formSchema = {
-  
-}
+// Define the form schema using zod
+const formSchema = z.object({
+  name: z.string().min(4, "Too short")
+    .refine(s => /^[a-zA-Z0-9_-]+$/.test(s), {
+      message: "Only letters, numbers, and underscores allowed",
+    }),
+  email: z.string().email("Invalid email"),
+  phone: z.string().min(10, "Too short"),
+  option: z.string().refine(val => val !== "default", "Select an option"),
+});
 
 const Form1: React.FC = () => {
-  // const [profilePic, setProfilePic] = useState<File | null>(null);
- 
-  // const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files[0]) {
-  //     setProfilePic(e.target.files[0]);
-  //   }
-  // };
-const {userInfo} = useSelector((state: any) => state.auth);
-console.log("user", userInfo.email);
 
+  const navigate = useNavigate();
+  const { userInfo } = useSelector((state: any) => state.auth);
+  console.log("user", userInfo.email);
 
-  const [form,setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    option: "",
+  const { register, handleSubmit,setError, formState: { errors } } = useForm<form1Types>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      option: "default",
+    },
+    mode: 'onTouched',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("test");
-    console.log('Form data:', form);
-    
-  };
-  
+  const onSubmit: SubmitHandler<form1Types> = async (data) => {
+    if (data.email !== userInfo.email) {
+      setError('email',{type: "manual", message: "your not verified user"});
+      return;
+    }
+    try {
+      console.log("Form data:", data);
+      // const response = await fundraiserSignup(data)
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
-    <div className="flex justify-center items-center h-screen bg-red-100">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-70 ">
-        <div className="flex justify-center mb-2">
-{/*             
-          <label htmlFor="profilePic">
-            <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center cursor-pointer overflow-hidden mb-4">
-              {profilePic ? (
-                <img
-                  src={URL.createObjectURL(profilePic)}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                < div>
-                  <span className="text-gray-500 text-center flex justify-center">Click to upload</span>
-                </div>
-              )}
-            </div>
-            
-            <input
-              type="file"
-              id="profilePic"
-              className="hidden"
-              onChange={handleProfilePicChange}
-            />
-          </label> */}
-        </div>
+    <div className="flex justify-center items-center h-screen bg-white">
+      <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-6 rounded shadow-md w-70 ">
+      
         <div className='mb-4'>
-
-        <label htmlFor="dropdown" className="block text-gray-700 mb-2">Select an option:</label>
+          <label htmlFor="dropdown" className="block text-gray-700 mb-2">Select an option:</label>
           <select
             id="dropdown"
-            value={form.option}
-            onChange={(e) => setForm({...form, option: e.target.value})}
+            {...register("option")}
             className="w-full px-3 py-2 border rounded"
           >
             <option value="default" disabled>Select an option</option>
@@ -81,38 +64,38 @@ console.log("user", userInfo.email);
             <option value="option2">Option 2</option>
             <option value="option3">Option 3</option>
           </select>
-            </div>
-
+          {errors.option && <p className="text-red-500">{errors.option.message}</p>}
+        </div> 
         <div className="mb-4">
           <Input
             type="text"
             placeholder="Name"
-            value={form.name}
-            onChange={(e) => setForm({...form, name: e.target.value})}
-            className="w-full px-3 "
+            {...register("name")}
+            className="w-full px-3"
           />
+          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
         </div>
         <div className="mb-4">
           <Input
             type="email"
             placeholder="Email"
-            value={form.email}
-            onChange={(e) => setForm({...form, email: e.target.value})}
-            className="w-full px-3 "
+            {...register('email')}
+            className="w-full px-3"
           />
+          {errors.email && <p className="text-red-500">{errors.email.message}</p>}
         </div>
         <div className="mb-4">
           <Input
             type="tel"
             placeholder="Phone"
-            value={form.phone}
-            onChange={(e) => setForm({...form, phone: e.target.value})}
-            className="w-full px-3 "
+            {...register('phone')}
+            className="w-full px-3"
           />
+          {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
         </div>
         <div className="mb-4">
           <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">
-           Submit
+            Submit
           </button>
         </div>
       </form>

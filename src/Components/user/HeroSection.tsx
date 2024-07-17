@@ -2,11 +2,24 @@ import React from 'react'
 import FundraiserBtn from './FundraiserBtn'
 import ResponsiveImage from './ImageResponsive'
 import { useNavigate } from 'react-router-dom'
-
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/store'
 
 const HeroSection = () => {
 
   const navigate = useNavigate()
+
+  const { userInfo } = useSelector((state: RootState) => state.auth); 
+
+  const handleClick = () => {
+    if(userInfo){
+      
+      navigate('/form2')
+    }else{
+      navigate('/login')
+    }
+    
+  }
 
   return (
     <div className="flex flex-col lg:flex-row items-center lg:items-center lg:justify-between p-4 mt-8">
@@ -15,7 +28,7 @@ const HeroSection = () => {
             <h2 className="text-3xl font-bold mb-4">HopeSpring</h2>
             <p className="text-lg mb-4">Raise funds online for medical emergencies and social causes</p>
             <FundraiserBtn 
-            onclick={() => navigate('/form1')}
+            onclick={handleClick}
             className=''/>
           </div>
         </div>
