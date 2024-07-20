@@ -7,8 +7,10 @@ const Home = lazy(()=> import ("../pages/Home"))
 const Signup = lazy(()=> import ("../pages/SignUp"))
 const OTP = lazy(()=> import ("../pages/OTP"))
 const Profile = lazy(()=> import ("../pages/Profile"))
-const Email = lazy(()=> import ("../Components/user/mutipleForm/Email"))
-const  Form2 = lazy(()=> import ("../Components/user/mutipleForm/Form2"))
+const FundraisingRegister = lazy(()=> import ("../Components/user/mutipleForm/FundraiserRegister"))
+const MediaUploader = lazy(()=> import ("../pages/MediaUploader"))
+
+
 
 
 const UserRoutes: React.FC = () => {
@@ -20,8 +22,8 @@ const UserRoutes: React.FC = () => {
             <Route path="/signup" element={<Signup />} />
             <Route path="/otp" element={<OTP />} />
             <Route path='/profile' element={<Profile/>}/>
-            <Route path='/form2' element={<Form2/>}/>
-            <Route path='/email' element={<Email/>}/>
+            <Route path='/registration' element={<FundraisingRegister/>}/>
+            <Route path='/meadia-uploader' element={<MediaUploader/>}/>
         </Routes>
     </Suspense>
   )

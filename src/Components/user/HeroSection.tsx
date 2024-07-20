@@ -14,7 +14,7 @@ const HeroSection = () => {
   const handleClick = () => {
     if(userInfo){
       
-      navigate('/form2')
+      navigate('/registration')
     }else{
       navigate('/login')
     }

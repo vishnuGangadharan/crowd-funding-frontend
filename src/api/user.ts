@@ -1,7 +1,7 @@
 import Api from "../services/axios";
 import userRoutes from "../services/endpoints/userEndPoints";
 import errorHandler from "./error";
-
+import { beneficiary } from "../services/interface";
 
 interface userFormData {
     name?: string;
@@ -53,6 +53,31 @@ export const editUserProfile = async(userData: userFormData) => {
     try {
         const response = await Api.post(userRoutes.editUserProfile, userData);
         return response;
+    } catch (error) {
+        const err:Error = error as Error;
+        errorHandler(err);
+    }
+}
+
+export const fundraisingRegister = async(registerData:beneficiary )=>{
+    try{
+        const response = await Api.post(userRoutes.fundraisingRegister,registerData)
+        return response
+        
+    }catch(error){
+        const err:Error = error as Error;
+        errorHandler(err);
+    }
+
+}
+
+
+export const fileUploader = async(file:File)=> {
+    try {
+        const response = await Api.post(userRoutes.fileUpload,file);
+         return response;
+
+        
     } catch (error) {
         const err:Error = error as Error;
         errorHandler(err);
