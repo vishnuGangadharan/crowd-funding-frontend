@@ -36,6 +36,7 @@ export interface beneficiary{
 
     name?:string;
     age?:number;
+    isApproved:string;
     fundraisingFor?: string;
     relationWithBeneficiary?:string
     category?:string

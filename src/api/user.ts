@@ -1,16 +1,17 @@
 import Api from "../services/axios";
 import userRoutes from "../services/endpoints/userEndPoints";
 import errorHandler from "./error";
-import { beneficiary } from "../services/interface";
-
-interface userFormData {
-    name?: string;
-    email?: string;
-    mobile?: string;
-    password?: string;
-    confirmPassword?: string;
-    profilePicture?: File | string;
-  }
+import { beneficiary } from "../services/interface/interface";
+import { userFormData } from "../services/interface/user";
+// interface userFormData {
+//     name?: string;
+//     email?: string;
+//     mobile?: string;
+//     password?: string;
+//     confirmPassword?: string;
+//     profilePicture?: File | string;
+//     newPassword?: string | undefined;
+//   }
 
 export const signup  = async (userData: userFormData) => {
     try {
@@ -84,3 +85,25 @@ export const fileUploader = async(file:File)=> {
     }
 }
 
+
+export const fundraising = async(userId:string)=>{
+    try{
+
+        const response = await Api.get(userRoutes.fundraising,{params:{userId}})
+        return response.data
+    }catch(error){
+        const err:Error = error as Error;
+        errorHandler(err);
+    }
+}
+
+
+export const getUser = async(userId:string) =>{
+    try{
+         const response = await Api.get(userRoutes.getUser, {params: {userId}})
+         return response.data
+    }catch(error){
+        const err:Error = error as Error
+        errorHandler(err)
+    }
+}

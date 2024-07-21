@@ -115,7 +115,7 @@ const MultiStepForm: React.FC = () => {
       const response = await fundraisingRegister(allData);
       console.log("response", response);
       if(response?.status === 200){
-        navigate('/meadia-uploader')
+        navigate('/profile')
       }
     } catch (error) {
       console.error("Error submitting form data", error);

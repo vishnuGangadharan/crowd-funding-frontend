@@ -12,14 +12,10 @@ const HeroSection = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth); 
 
   const handleClick = () => {
-    if(userInfo){
-      
       navigate('/registration')
-    }else{
-      navigate('/login')
     }
     
-  }
+  
 
   return (
     <div className="flex flex-col lg:flex-row items-center lg:items-center lg:justify-between p-4 mt-8">

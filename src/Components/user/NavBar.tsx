@@ -50,7 +50,7 @@ const NavBar : React.FC = () => {
 
         <div className="hidden md:flex items-center space-x-8">
           <FundraiserBtn 
-          onclick={() => navigate('/form1')}
+          onclick={() => navigate('/registration')}
           className=''/>
           {userInfo ? (
             <div className="flex items-center space-x-4">
