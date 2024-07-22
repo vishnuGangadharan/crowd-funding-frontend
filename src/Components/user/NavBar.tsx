@@ -20,7 +20,6 @@ const NavBar : React.FC = () => {
     dispatch(userLogout());
     cookies.remove('jwt');
     googleLogout();
-
   };
 
   const handleProfile = () => {

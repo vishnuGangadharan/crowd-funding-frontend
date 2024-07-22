@@ -314,7 +314,7 @@ import { useNavigate } from 'react-router-dom';
 
 const profileSchema = z.object({
   name: z.string().nonempty('Name is required'),
-  email: z.string().email('Invalid email').nonempty('Email is required'),
+   email: z.string().email('Invalid email').nonempty('Email is required'),
   phone: z.string().nonempty('Phone number is required').regex(/^\d+$/, 'Phone number must be digits only'),
   profilePicture: z.instanceof(File).optional(),
 });
@@ -347,7 +347,7 @@ const Profile: React.FC = () => {
       console.log("inner");
       
       const response = await getUser(userId);
-      console.log("response", response.data);
+      // console.log("response", response.data);
       setUserDetails(response.data);
     } catch (error) {
       console.error("Error fetching fundraisings:", error);
@@ -370,6 +370,7 @@ const Profile: React.FC = () => {
 
     try {
       const response = await editUserProfile(formData);
+
       console.log('Profile updated successfully:', response);
       if (data.profilePicture && data.profilePicture instanceof File) {
         const previewUrl = URL.createObjectURL(data.profilePicture);

@@ -25,11 +25,12 @@ export const handleBlockStatus= async (id:string,status:boolean)=>{
     }
 }
 
-// export const unblockUser= async (id:string)=>{
-//     try{
-//         const response = await Api(`${adminRoutes.unblockUser}/${id}`)
-//     }catch(error){
-//         const err:Error = error as Error;
-//         errorHandler(err)
-//     }
-// }
+export const getRequest = async()=> {
+    try{
+        const response = await Api.get(adminRoutes.campaignRequest)
+        return response.data
+    }catch(error){
+        const err:Error = error as Error;
+        errorHandler(err);
+    }
+}

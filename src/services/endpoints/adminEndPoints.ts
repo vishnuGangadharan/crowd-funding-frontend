@@ -5,6 +5,7 @@ const adminRoutes = {
     // blockUser: '/admin/block-user',
     // unblockUser: '/admin/unblock-user'
     handleBlockStatus: '/admin/block-status',
+    campaignRequest : "/admin/campaign-request",
 }
 
 export default adminRoutes;
