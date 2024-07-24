@@ -9,9 +9,9 @@ const Signup = lazy(()=> import ("../pages/SignUp"))
 const OTP = lazy(()=> import ("../pages/OTP"))
 const Profile = lazy(()=> import ("../pages/Profile"))
 const FundraisingRegister = lazy(()=> import ("../Components/user/mutipleForm/FundraiserRegister"))
-// const MediaUploader = lazy(()=> import ("../pages/MediaUploader"))
+const MediaUploader = lazy(()=> import ("../pages/user/MediaUploader"))
 const Fundraising  = lazy(()=> import ("../pages/user/Fundraisings"))
-
+const OTPforFunddRegister = lazy(()=> import ('../pages/user/OTPforFundRegister'))
 
 
 const UserRoutes: React.FC = () => {
@@ -29,8 +29,10 @@ const UserRoutes: React.FC = () => {
           <Route element={<UserProtected />}>
             <Route path='/profile' element={<Profile/>}/>
             <Route path='/registration' element={<FundraisingRegister/>}/>
-            {/* <Route path='/meadia-uploader' element={<MediaUploader/>}/> */}
-            <Route path='/fundraisings' element={<Fundraising/>}/>
+            <Route path='/media-uploader' element={<MediaUploader/>}/>
+            <Route path='/fundraising' element={<Fundraising/>}/>
+            <Route path='/beneficiary-otp' element={<OTPforFunddRegister/>}/>
+
           </Route>
         </Routes>
     </Suspense>

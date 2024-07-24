@@ -56,16 +56,32 @@ import React from 'react'
 
 import { Sidebar } from "flowbite-react";
 import { HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards } from "react-icons/hi";
-
+import { Link, useNavigate } from 'react-router-dom';
+import { googleLogout } from '@react-oauth/google';
+import { useDispatch,useSelector } from 'react-redux';
+import { adminLogout } from '../../redux/slice/adminSlice';
+import cookies from 'js-cookie';
 
 const SidePanel = () => {
+
+    const dispatch = useDispatch()
+const navigate = useNavigate()
+const handleLogout = ()=>{
+    dispatch(adminLogout());
+    cookies.remove('jwt');
+    googleLogout();
+    navigate('/login')
+}
   return (
+    <div>
+        
     <div className="h-screen w-64 bg-gray-800 text-white">
+        
     <Sidebar aria-label="Sidebar with logo branding example">
-      <div className="flex items-center justify-center py-6">
+      <div  className="flex items-center justify-center py-6">
         <img src="/favicon.svg" alt="Flowbite logo" className="h-12 w-12" />
         <span className="ml-3 text-xl font-semibold">Flowbite</span>
-      </div>
+      </div >
       <Sidebar.Items>
         <Sidebar.ItemGroup>
           <Sidebar.Item href="#" icon={HiChartPie} className="hover:bg-gray-700">
@@ -74,25 +90,31 @@ const SidePanel = () => {
           <Sidebar.Item href="#" icon={HiViewBoards} className="hover:bg-gray-700">
             Kanban
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={HiInbox} className="hover:bg-gray-700">
-            Inbox
+          <Link to='/admin/request'>
+          <Sidebar.Item  icon={HiInbox} className="hover:bg-gray-700">
+          campaign request
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={HiUser} className="hover:bg-gray-700">
+          </Link>
+          <Link to='/admin/users'>
+          <Sidebar.Item  icon={HiUser} className="hover:bg-gray-700">
             Users
           </Sidebar.Item>
+          </Link>
           <Sidebar.Item href="#" icon={HiShoppingBag} className="hover:bg-gray-700">
             Products
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={HiArrowSmRight} className="hover:bg-gray-700">
+          <Sidebar.Item  href="#" icon={HiArrowSmRight} className="hover:bg-gray-700">
             Sign In
           </Sidebar.Item>
-          <Sidebar.Item href="#" icon={HiTable} className="hover:bg-gray-700">
-            Sign Up
+          <Sidebar.Item onClick={handleLogout} icon={HiTable} className="hover:bg-gray-700" >
+           Logout
           </Sidebar.Item>
         </Sidebar.ItemGroup>
       </Sidebar.Items>
     </Sidebar>
-  </div>  )
+  </div > 
+  </div>
+   )
 }
 
 export default SidePanel

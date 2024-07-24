@@ -36,7 +36,7 @@ export interface beneficiary{
 
     name?:string;
     age?:number;
-    isApproved:'approved' | 'pending' | 'rejected';
+    isApproved:'approved' | 'pending' | 'rejected' | string;
     fundraisingFor?: string;
     relationWithBeneficiary?:string
     category?:string
@@ -52,6 +52,7 @@ export interface beneficiary{
     createdAt?:Date;
     startDate?:Date;
     targetDate?: any;
+    supportingDocs:File;
     address?:string;
     medicalDetails?: MedicalDetails;
     educationDetails?: EducationDetails;

@@ -60,6 +60,30 @@ export const editUserProfile = async(userData: userFormData) => {
     }
 }
 
+
+export const beneficiaryVerification = async(data: beneficiary) => {
+    try{
+        const response = await Api.post(userRoutes.beneficiaryVerification,data)
+        return response
+    }catch(error){
+        let err:Error = error as Error;
+        errorHandler(err)
+    }
+}
+///beneficiary-otpverify
+
+
+export const beneficiaryOtpVerify = async(otp:number ,email:string)=>{
+    try{
+        const response = await Api.post(userRoutes.beneficiaryOtpVerification ,{otp,email})
+        return response
+    }catch(error){
+        const err:Error = error as Error;
+        errorHandler(err);
+    }   
+}
+
+
 export const fundraisingRegister = async(registerData:beneficiary )=>{
     try{
         const response = await Api.post(userRoutes.fundraisingRegister,registerData)
@@ -73,9 +97,9 @@ export const fundraisingRegister = async(registerData:beneficiary )=>{
 }
 
 
-export const fileUploader = async(file:File)=> {
+export const fileUploader = async(data:beneficiary)=> {
     try {
-        const response = await Api.post(userRoutes.fileUpload,file);
+        const response = await Api.post(userRoutes.fileUpload,data);
          return response;
 
         

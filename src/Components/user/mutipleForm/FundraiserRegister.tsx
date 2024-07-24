@@ -9,12 +9,12 @@ import { RootState } from "../../../redux/store";
 import JoditEditor from 'jodit-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { fundraisingRegister } from '../../../api/user';
+import { beneficiaryVerification, fundraisingRegister } from '../../../api/user';
 import { step1Schema } from '../../../services/validations/zodValidations';
 import { step2Schema , finalStepSchema, step4Schema } from '../../../services/validations/zodValidations';
 import { useNavigate } from 'react-router-dom';
-import ProfileAndDocsUploader from '../../../pages/MediaUploader';
-
+import { useDispatch } from 'react-redux';
+import { setBeneficiaryData } from '@/redux/slice/beneficiarySlice';
 
 type Step1Data = z.infer<typeof step1Schema>;
 type Step2Data = z.infer<typeof step2Schema>;
@@ -23,9 +23,7 @@ type Step4Data = z.infer<typeof step4Schema>;
 
 const MultiStepForm: React.FC = () => {
   const { userInfo } = useSelector((state: RootState) => state.auth);
-  console.log("userInfo",userInfo);
   const currentUserEmail = userInfo?.email
-  console.log("currentUserEmail",currentUserEmail);
   const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -37,8 +35,10 @@ const MultiStepForm: React.FC = () => {
   const [heading, setHeading] = useState<string | null>("");
   const [phone, setPhone] = useState<string | null>("");
   const [email, setEmail] = useState<string | null>("");
-
   const [bio, setBio] = useState('');
+
+
+  const dispatch = useDispatch();
 
   const editor = useRef(null);
 
@@ -112,10 +112,17 @@ const MultiStepForm: React.FC = () => {
        
     
     try {
-      const response = await fundraisingRegister(allData);
+      // const response = await fundraisingRegister(allData as any);
+      const response = await beneficiaryVerification(allData as any);
+
       console.log("response", response);
       if(response?.status === 200){
-        navigate('/profile')
+        dispatch(setBeneficiaryData(allData))
+        navigate('/beneficiary-otp',{
+          state:{
+            email : allData.email
+          }
+        })
       }
     } catch (error) {
       console.error("Error submitting form data", error);
@@ -166,15 +173,15 @@ const MultiStepForm: React.FC = () => {
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-2 gap-4  mb-4">
               <div
-                className={`cursor-pointer p-4 rounded-md shadow-md text-center ${category === 'education' ? 'bg-blue-200 border-2 border-blue-400' : 'bg-blue-100'}`}
+                className={`mt-4 cursor-pointer p-4 rounded-md shadow-md text-center ${category === 'education' ? 'bg-blue-200 border-2 border-blue-400' : 'bg-blue-100'}`}
                 onClick={() => handleCategoryClick('education')}
               >
                 Education
               </div>
               <div
-                className={`cursor-pointer p-4 rounded-md shadow-md text-center ${category === 'medical' ? 'bg-blue-200 border-2 border-blue-400' : 'bg-blue-100'}`}
+                className={`mt-4 cursor-pointer p-4 rounded-md shadow-md text-center ${category === 'medical' ? 'bg-blue-200 border-2 border-blue-400' : 'bg-blue-100'}`}
                 onClick={() => handleCategoryClick('medical')}
               >
                 Medical
@@ -261,7 +268,7 @@ const MultiStepForm: React.FC = () => {
             </div>
 
             {category === 'education' && (
-              <>
+              <div className='bg-blue-100 rounded-md'>
                 <div className="mb-4">
                   <Input
                     variant="standard"
@@ -307,11 +314,11 @@ const MultiStepForm: React.FC = () => {
                   />
                   {errorsStep2.institutePin && <p className="text-red-600">{errorsStep2.institutePin.message}</p>}
                 </div>
-              </>
+              </div>
             )}
 
             {category === 'medical' && (
-              <>
+              <div className='bg-green-100 rounded-md'>
                 <div className="mb-4">
                   <Input
                     variant="standard"
@@ -357,7 +364,7 @@ const MultiStepForm: React.FC = () => {
                   />
                   {errorsStep2.hospitalPin && <p className="text-red-600">{errorsStep2.hospitalPin.message}</p>}
                 </div>
-              </>
+              </div>
             )}
 
             <div className="flex justify-between">
