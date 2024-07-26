@@ -9,7 +9,8 @@ const userRoutes={
     fundraising:'/user/getBenificiers',
     getUser:"/user/user-details",
     beneficiaryVerification: "/user/beneficiary-verification",
-    beneficiaryOtpVerification :"/user/beneficiary-otpverify"
+    beneficiaryOtpVerification :"/user/beneficiary-otpverify",
+    getPostDetails : "/user/post-details"
 }
 
 export default userRoutes;

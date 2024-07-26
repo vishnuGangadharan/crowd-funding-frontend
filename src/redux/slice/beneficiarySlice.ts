@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { stat } from "fs";
 
 
 
@@ -31,7 +30,7 @@ const getStoredBeneficiaryInfo = () => {
             localStorage.setItem("beneficiaries",JSON.stringify(action.payload));
         },
 
-        delteBenificiaryData : (state) => {
+        deleteBeneficiaryData : (state) => {
             state.beneficiaries = null
             localStorage.removeItem("beneficiaries");
         }
@@ -43,6 +42,6 @@ const getStoredBeneficiaryInfo = () => {
 
 
 
- export const {setBeneficiaryData,delteBenificiaryData} = beneficiarySlice.actions;
+ export const {setBeneficiaryData,deleteBeneficiaryData} = beneficiarySlice.actions;
 
  export default beneficiarySlice.reducer;

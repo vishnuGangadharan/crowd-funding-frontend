@@ -87,7 +87,7 @@ const Profile: React.FC = () => {
   };
 
   const handleFundraisngNavigate=()=>{
-    navigate('/fundraisings')
+    navigate('/fundraising')
   }
 
   return (

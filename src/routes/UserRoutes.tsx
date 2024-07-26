@@ -12,7 +12,7 @@ const FundraisingRegister = lazy(()=> import ("../Components/user/mutipleForm/Fu
 const MediaUploader = lazy(()=> import ("../pages/user/MediaUploader"))
 const Fundraising  = lazy(()=> import ("../pages/user/Fundraisings"))
 const OTPforFunddRegister = lazy(()=> import ('../pages/user/OTPforFundRegister'))
-
+const PostDetails = lazy(()=> import('../pages/user/PostDetails'))
 
 const UserRoutes: React.FC = () => {
   return (
@@ -32,7 +32,7 @@ const UserRoutes: React.FC = () => {
             <Route path='/media-uploader' element={<MediaUploader/>}/>
             <Route path='/fundraising' element={<Fundraising/>}/>
             <Route path='/beneficiary-otp' element={<OTPforFunddRegister/>}/>
-
+            <Route path="/postdetails/:id" element={<PostDetails />} />
           </Route>
         </Routes>
     </Suspense>

@@ -33,7 +33,7 @@ interface beneficiary{
     panNumber?:string;
     userAadharNumber?: string;
     description?: string;
-    profilePic?: string;
+    profilePic?: string[];
     documents?:string;
     amount?:number;
     contributedAmount?:string;
@@ -48,6 +48,7 @@ interface beneficiary{
     relationWithBeneficiary?:string;
     fundraisingFor?:string;
     category?:string;
-    bio?:string;
+    bio?:string | undefined;
+    supportingDocs:string[];
 }
 export default beneficiary

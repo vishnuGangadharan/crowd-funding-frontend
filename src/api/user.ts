@@ -131,3 +131,16 @@ export const getUser = async(userId:string) =>{
         errorHandler(err)
     }
 }
+
+
+export const getPostDetails = async(postId:string) => {
+    try {
+
+        const response = await Api.get(userRoutes.getPostDetails, {params: {postId}})
+        return response.data
+
+    }catch(error){
+        const err:Error = error as Error
+        errorHandler(err)
+    }
+}
