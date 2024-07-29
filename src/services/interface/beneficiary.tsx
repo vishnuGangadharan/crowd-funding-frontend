@@ -22,7 +22,7 @@ interface EducationDetails {
 
 
 interface beneficiary{
-
+    _id?: string;
     fundraiser?:string;
     name?:string;
     age?:number;
