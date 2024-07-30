@@ -154,3 +154,14 @@ export const postComment = async(comment:string , postId:string,userId:string) =
         errorHandler(err)
     }
 }
+
+
+export const geComments = async(id: string)=> {
+    try{
+        const response = await Api.get(userRoutes.getComment,{params: {id}})
+        return response.data
+    }catch(error){
+        let err : Error = error as Error
+        errorHandler(err)
+    }
+}

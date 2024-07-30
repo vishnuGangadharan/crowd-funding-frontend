@@ -12,6 +12,7 @@ const userRoutes={
     beneficiaryOtpVerification :"/user/beneficiary-otpverify",
     getPostDetails : "/user/post-details",
     postComment : '/user/add-comment',
+    getComment : '/user/get-comments',
 }
 
 export default userRoutes;
