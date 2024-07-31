@@ -13,6 +13,7 @@ const userRoutes={
     getPostDetails : "/user/post-details",
     postComment : '/user/add-comment',
     getComment : '/user/get-comments',
+    allPost : '/user/all-posts'
 }
 
 export default userRoutes;

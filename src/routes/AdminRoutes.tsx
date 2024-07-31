@@ -4,7 +4,7 @@ import { lazy, Suspense } from 'react';
 
 const Users = lazy(() => import('../pages/admin/Dashboard'));
 const AdminProtected = lazy(() => import('../protectedRoutes/Admin'));
-const CampaignRequest= lazy(()=> import ('../pages/admin/CampaignRequest'))
+// const CampaignRequest= lazy(()=> import ('../pages/admin/CampaignRequest'))
 const Requiest = lazy(()=> import ("../pages/admin/Requiest"))
 
 const AdminRoutes = () => {

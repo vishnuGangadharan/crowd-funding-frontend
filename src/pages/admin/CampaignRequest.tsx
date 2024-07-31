@@ -1,26 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
-import { getRequest } from "../../api/admin";
+import { getRequest, postApproval } from "../../api/admin";
 import { beneficiary } from "../../services/interface/interface";
+import { toast } from 'react-toastify';
 
 const CampaignRequest: React.FC = () => {
-  const [request, setRequest] = useState<beneficiary[]>([]); // Initial state as an empty array
-  const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(new Set(["pending"]));
+  const [request, setRequest] = useState<beneficiary[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<Record<string, string>>({});
 
-  const selectedValue = React.useMemo(
-    () => Array.from(selectedKeys).join(", ").replace(/_/g, " "),
-    [selectedKeys]
-  );
+  const handleApprove = async (postId: string, status: string) => {
+    try {
+      const response = await postApproval(postId, status);
+      if (response && response.status === 200) {
+        toast.success(response.data.message);
+        setRequest(prevRequests =>
+          prevRequests.map(req =>
+            req._id === postId ? { ...req, isApproved: status } : req
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error approving request:", error);
+    }
+  };
 
   const fetchRequest = async () => {
     try {
       const response = await getRequest();
-      // Ensure response.data is an array
-      // if (Array.isArray(response.data)) {
-        setRequest(response.data.data);
-      // } else {
-        console.log("Expected :", response.data.data);
-      // }
+      setRequest(response.data.data);
     } catch (error) {
       console.error("Error fetching request:", error);
     }
@@ -36,49 +43,66 @@ const CampaignRequest: React.FC = () => {
         <table className="min-w-full bg-white shadow-md rounded my-6">
           <thead>
             <tr className="bg-gray-800 text-white">
-              <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm">No</th>
-              <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm">Name</th>
-              <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm">Category</th>
-              <th className="w-3/12 py-3 px-4 uppercase font-semibold text-sm">Email</th>
-              <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm">Amount</th>
-              <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm">Last Date</th>
-              <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm">Documents</th>
-              <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm">Status</th>
+              <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm text-left">No</th>
+              <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm text-left">Name</th>
+              <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm text-left">Category</th>
+              <th className="w-3/12 py-3 px-4 uppercase font-semibold text-sm text-left">Email</th>
+              <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm text-left">Amount</th>
+              <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm text-left">Last Date</th>
+              <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm text-left">Documents</th>
+              <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm text-left">Status</th>
             </tr>
           </thead>
           <tbody className="text-gray-700">
-             {request?.map((req, index) => (
-              <tr key={index} className="bg-gray-100 border-b border-gray-200 hover:bg-gray-200">
-                <td className="py-3 px-4">{index + 1}</td> 
-                <td className="py-3 px-4">{req?.name}</td>
-                <td className="py-3 px-4">{req?.category}</td>
-                <td className="py-3 px-4">{req?.email}</td>
-                <td className="py-3 px-4">{req?.amount}</td>
-                <td className="py-3 px-4">{req.targetDate}</td>
-                <td className="py-3 px-4">view</td>
-                <td className="py-3 px-4">
-                  <Dropdown>
-                    <DropdownTrigger>
-                      <Button variant="bordered" className="capitalize">
-                        {selectedValue}
-                      </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu
-                      aria-label="Single selection example"
-                      variant="flat"
-                      disallowEmptySelection
-                      selectionMode="single"
-                      selectedKeys={selectedKeys}
-                      onSelectionChange={(keys) => setSelectedKeys(keys as Set<string>)}
-                    >
-                      <DropdownItem key="pending">pending</DropdownItem>
-                      <DropdownItem key="approved">approved</DropdownItem>
-                      <DropdownItem key="rejected">rejected</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </td>
-              </tr>
-            ))} 
+            {request?.map((req, index) => {
+              const formattedDate = new Date(req.targetDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              });
+
+              return (
+                <tr key={index} className="bg-gray-100 border-b border-gray-200 hover:bg-gray-200">
+                  <td className="py-3 px-4 text-left">{index + 1}</td>
+                  <td className="py-3 px-4 text-left">{req?.name}</td>
+                  <td className="py-3 px-4 text-left">{req?.category}</td>
+                  <td className="py-3 px-4 text-left">{req?.email}</td>
+                  <td className="py-3 px-4 text-left">{req?.amount}</td>
+                  <td className="py-3 px-4 text-left">{formattedDate}</td>
+                  <td className="py-3 px-4 text-left">view</td>
+                  <td className="py-3 px-4 text-left">
+                    {req.isApproved === 'pending' ? (
+                      <Dropdown>
+                        <DropdownTrigger>
+                          <Button variant="bordered" className="capitalize">
+                            {req.isApproved}
+                          </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu
+                          aria-label="Single selection example"
+                          variant="flat"
+                          disallowEmptySelection
+                          selectionMode="single"
+                          onSelectionChange={(keys) => {
+                            const newStatus = Array.from(keys).join(", ");
+                            handleApprove(req._id!, newStatus);
+                          }}
+                        >
+                          <DropdownItem key="pending">pending</DropdownItem>
+                          <DropdownItem key="approved">approved</DropdownItem>
+                          <DropdownItem key="rejected">rejected</DropdownItem>
+                        </DropdownMenu>
+                      </Dropdown>
+                    ) : (
+                      <span  style={{
+                        color: req.isApproved === "approved" ? "green" : req.isApproved === "rejected" ? "red" : "black",
+                      }}
+                      >{req.isApproved}</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -33,11 +33,12 @@ interface EducationDetails {
 
 
 export interface beneficiary{
-    _id?:string;
+    _id?:string ;
     name?:string;
     age?:number;
     isApproved:'approved' | 'pending' | 'rejected' | string;
     fundraisingFor?: string;
+    fundraiser : string;
     relationWithBeneficiary?:string
     category?:string
     email?:string;
@@ -61,7 +62,7 @@ export interface beneficiary{
     instituteDistrict?:string;
     institutePostalAddress?:string;
     institutePin?:string;
-    profilePic?: File[] | null;
+    profilePic?: File[] | null | string;
     bio?: string;
     userAadharNumber?:string;
     panNumber?:string

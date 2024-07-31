@@ -34,8 +34,7 @@ const Home = () => {
       <div className='flex gap-5 justify-center m-20'>
 
         <Category />
-        <Category />
-        <Category />
+        
       </div>
       <div className="flex flex-col items-center mb-52">
         <h1 className="text-3xl font-bold mb-8">Questions We Get</h1>

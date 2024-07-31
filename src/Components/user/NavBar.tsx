@@ -65,7 +65,7 @@ const NavBar : React.FC = () => {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-fuchsia-800 text-white py-4 px-6 space-y-4 absolute w-full top-full left-0">
+        <div className="md:hidden bg-blue-400 text-white py-4 px-6 space-y-4 absolute w-full top-full left-0">
           <a href="#home" className="block text-lg hover:text-blue-300">Home</a>
           <a href="#donate" className="block text-lg hover:text-blue-300">Donate</a>
           <a href="#about" className="block text-lg hover:text-blue-300">About Us</a>

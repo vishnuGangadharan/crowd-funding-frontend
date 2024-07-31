@@ -4,7 +4,7 @@ import CampaignRequest from './CampaignRequest'
 
 const Requiest = () => {
   return (
-    <div className='bg-purple-400 h-screen flex'>
+    <div className='bg-purple-400 h-full flex'>
       <SidePanel/>
       <CampaignRequest/>
     </div>

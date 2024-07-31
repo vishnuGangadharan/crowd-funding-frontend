@@ -165,3 +165,14 @@ export const geComments = async(id: string)=> {
         errorHandler(err)
     }
 }
+
+export const allPosts = async ()=> {
+    try{
+        const response = await Api.get(userRoutes.allPost)
+        
+        return response.data
+    }catch(error){
+        let err : Error = error as Error
+        errorHandler(err)
+    }
+}

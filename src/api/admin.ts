@@ -34,3 +34,14 @@ export const getRequest = async()=> {
         errorHandler(err);
     }
 }
+
+export const postApproval = async(postId : string , status : string)=>{
+    try{
+
+        const response = await Api.post(adminRoutes.adminPostApproval,{postId,status})
+        return response
+    }catch(error){
+        const err : Error = error as Error
+        errorHandler(err)
+    }
+}
