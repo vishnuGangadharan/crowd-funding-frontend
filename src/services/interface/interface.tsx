@@ -1,4 +1,4 @@
-
+import { userFormData } from "./user";
 
 export interface form1Types{
     email: string,
@@ -34,11 +34,11 @@ interface EducationDetails {
 
 export interface beneficiary{
     _id?:string ;
-    name?:string;
+    name?:string |null;
     age?:number;
     isApproved:'approved' | 'pending' | 'rejected' | string;
     fundraisingFor?: string;
-    fundraiser : string;
+    fundraiser : form1Types;
     relationWithBeneficiary?:string
     category?:string
     email?:string;

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { beneficiary } from '@/services/interface/interface';
 import { allPosts } from '@/api/user';
 import { CircularProgress } from "@nextui-org/react";
+import { capitalizeFirstLetter, truncateText } from '@/services/functions/Functions';
 
-
-const Category = () => {
+const Card = () => {
     const [postDetails, setPostDetails] = useState<beneficiary[]>([]);
 
     useEffect(() => {
@@ -13,19 +13,19 @@ const Category = () => {
                 const response = await allPosts();
                 setPostDetails(response.data);
                 console.log(response.data);
-                
+
             } catch (error) {
                 console.log("Error fetching fundraising details:", error);
             }
         };
         fetchPostDetails();
     }, []);
-    
+
 
     return (
         <div className="flex flex-wrap justify-start">
             {postDetails && postDetails.map((post, indx) => (
-              
+
                 <div key={indx} className="relative flex flex-col mb-32 mt-6 text-gray-700 bg-white shadow-md rounded-xl w-80 mx-4">
                     <div className="relative h-56 -mt-6 overflow-hidden text-white shadow-lg rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
                         <img
@@ -47,20 +47,24 @@ const Category = () => {
                                 showValueLabel={true}
                             />
                             <div className='ml-2'>
-
-                            <p>Raised : {post.contributedAmount}</p>
-                            <p>Targer :{post.amount}</p>
+                                <p className="text-green-600 font-bold">
+                                    Raised :
+                                    <br /> {post.contributedAmount}
+                                </p>
+                                <p className="text-red-600 font-bold">
+                                    Need : 
+                                    <br />{post.amount}
+                                </p>
                             </div>
-                            <div className="w-px h-16 bg-gray-300 mx-4"></div> 
-                            <div className='flex flex-col'>
-                                <span>Fundraiser</span>
-                                <span>{post?.fundraiser?.name}</span>
+
+                            <div className="w-px h-24 bg-gray-300 mx-4"></div>
+                            <div className='flex flex-col justify-center items-center'>
+                                <span style={{ fontFamily: 'Arial, sans-serif', fontSize: '16px', color: 'black', }} className='font-bold'>Fundraiser</span>
+                                <span className=''>{capitalizeFirstLetter(post.fundraiser.name)}</span>
                             </div>
                         </div>
                         <p className="font-sans text-base font-light leading-relaxed">
-                            The place is close to Barceloneta Beach and bus stop just 2 min by walk
-                            and near to "Naviglio" where you can enjoy the main night life in
-                            Barcelona.
+                            {truncateText(post && post?.heading ? post.heading : "", 8)}
                         </p>
                     </div>
                     <div className="p-6 pt-0">
@@ -77,4 +81,4 @@ const Category = () => {
     );
 };
 
-export default Category;
+export default Card;

@@ -22,7 +22,7 @@ const Footer = () => {
 
   return (
     <div className="w-full h-auto">
-      <div className=" bg-blue-800 p-4 w-full  flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+      <div className="  p-4 w-full  flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0" style={{background:'#55AD9B'}}>
         <div className="flex flex-col md:flex-row md:space-x-10 ml-11 md:ml-[10%] space-y-4 md:space-y-0">
           <ul className="space-y-2">
             <li className="font-bold text-white">HopeSpring</li>

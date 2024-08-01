@@ -9,6 +9,8 @@ import { userFormData } from '../services/interface/user';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { useNavigate } from 'react-router-dom';
+import UpdatePassword from '../Components/user/UpdatePassword';
+
 
 const profileSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters long")
@@ -47,11 +49,8 @@ const Profile: React.FC = () => {
  const userId = userInfo?._id
 
   const fetchUser = async () => {
-    try {
-      console.log("inner");
-      
+    try {      
       const response = await getUser(userId);
-      // console.log("response", response.data);
       setUserDetails(response.data);
     } catch (error) {
       console.error("Error fetching fundraisings:", error);
@@ -171,7 +170,7 @@ const Profile: React.FC = () => {
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4">
-        <button type="button" className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-indigo-600 transition">Change Password</button>
+        <UpdatePassword/>
         <button type="button" className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-purple-600 transition">Wallet</button>
         <button type="button" className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-pink-600 transition">Chat</button>
         <button type="button" className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-yellow-600 transition"
@@ -183,3 +182,4 @@ const Profile: React.FC = () => {
 };
 
 export default Profile;
+

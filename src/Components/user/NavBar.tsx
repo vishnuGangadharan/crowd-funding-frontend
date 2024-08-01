@@ -27,7 +27,7 @@ const NavBar : React.FC = () => {
   }
 
   return (
-    <nav className="bg-blue-400 shadow-lg  z-50 relative">
+    <nav className=" shadow-lg  z-50 relative" style={{background:'#55AD9B'}}>
       <div className="container mx-auto px-6 flex justify-between items-center">
 
         <div className="flex items-center">
@@ -65,7 +65,7 @@ const NavBar : React.FC = () => {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-blue-400 text-white py-4 px-6 space-y-4 absolute w-full top-full left-0">
+        <div className="md:hidden text-white py-4 px-6 space-y-4 absolute w-full top-full left-0" style={{background:'#55AD9B'}}>
           <a href="#home" className="block text-lg hover:text-blue-300">Home</a>
           <a href="#donate" className="block text-lg hover:text-blue-300">Donate</a>
           <a href="#about" className="block text-lg hover:text-blue-300">About Us</a>
