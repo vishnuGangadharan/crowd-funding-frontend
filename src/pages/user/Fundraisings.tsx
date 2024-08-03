@@ -5,15 +5,11 @@ import { RootState } from '../../redux/store';
 import { beneficiary } from '../../services/interface/interface';
 import { useNavigate } from 'react-router-dom';
 
-
-
 const Fundraising: React.FC = () => {
+  const { userInfo } = useSelector((state: RootState) => state.auth);
+  const userID = userInfo?._id;
 
-    const { userInfo } = useSelector((state: RootState) => state.auth);
-    const userID= userInfo?._id;
-
-    const navigate = useNavigate()
-   
+  const navigate = useNavigate();
   const [fundraisings, setFundraisings] = useState<beneficiary[]>([]);
 
   const fetchMyFundraisings = async () => {
@@ -28,38 +24,45 @@ const Fundraising: React.FC = () => {
 
   useEffect(() => {
     fetchMyFundraisings();
-  }, []); 
+  }, []);
 
   return (
-    <div className="p-4 mt-6 ml-10 bg-gray-100 shadow-md rounded-md w-[80%] ">
-  {fundraisings.length > 0 ? (
-    fundraisings.map((fundraising, index) => (
-      <div key={index} className="flex items-center justify-between mb-4 p-4 bg-white rounded-md shadow-sm cursor-pointer drop-shadow-lg">
-        <div className="flex items-center">
-          <img
-            src={fundraising.profilePic?.[0]?.toString() || ''}
-            alt={`${fundraising.name}'s profile`}
-            className="w-16 h-16 object-cover rounded-full border-2 border-gray-200 mr-4"
-          />
-          <div>
-            <p className="font-bold text-lg">{fundraising.name}</p>
-            <p className="text-sm text-gray-600">{fundraising.email}</p>
-            <p className="text-sm text-gray-600">{fundraising.phone}</p>
-          </div>
-        </div>
-        <button className='px-4 py-2 bg-red-500 text-white rounded-md shadow-sm' onClick={() => navigate(`/postdetails/${fundraising._id}`) }>view</button>
-        <button
-          className="px-4 py-2 bg-red-500 text-white rounded-md shadow-sm"
-        >
-          {fundraising.isApproved}
-        </button>
+    <div className='flex flex-col items-center justify-center min-h-screen bg-gray-50 py-6'>
+      <div className="w-full max-w-4xl p-4 mt-6 bg-white shadow-lg rounded-md">
+        {fundraisings.length > 0 ? (
+          fundraisings.map((fundraising, index) => (
+            <div 
+              key={index} 
+              className="flex flex-col md:flex-row items-center justify-between mb-4 p-4 bg-white rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+              onClick={() => navigate(`/postdetails/${fundraising._id}`)}
+            >
+              <div className="flex items-center mb-4 md:mb-0">
+                <img
+                  src={fundraising.profilePic?.[0]?.toString() || ''}
+                  alt={`${fundraising.name}'s profile`}
+                  className="w-16 h-16 object-cover rounded-full border-2 border-gray-200 mr-4"
+                />
+                <div>
+                  <p className="font-bold text-lg text-gray-800">{fundraising.name}</p>
+                  <p className="text-sm text-gray-600">{fundraising.email}</p>
+                  <p className="text-sm text-gray-600">{fundraising.phone}</p>
+                </div>
+              </div>
+              <div className="flex space-x-2">
+                
+                <button
+                  className={`px-4 py-2 rounded-md shadow-sm ${fundraising.isApproved === 'approved' ? 'bg-green-500' : fundraising.isApproved === 'pending' ? 'bg-yellow-500' : 'bg-red-500'} text-white`}
+                >
+                  {fundraising.isApproved}
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-center text-gray-600">No fundraisings available.</p>
+        )}
       </div>
-    ))
-  ) : (
-    <p>No fundraisings available.</p>
-  )}
-</div>
-
+    </div>
   );
 };
 

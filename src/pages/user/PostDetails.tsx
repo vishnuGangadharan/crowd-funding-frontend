@@ -9,8 +9,12 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
-import { FaShareSquare } from "react-icons/fa";
 import PostComments from './PostComments';
+import { formatDate } from '@/services/functions/Functions';
+import { FaCircleChevronLeft } from "react-icons/fa6";
+import { FaChevronCircleRight } from "react-icons/fa";
+
+
 import {
     FacebookShareButton,
     FacebookIcon,
@@ -19,6 +23,7 @@ import {
     WhatsappShareButton,
     WhatsappIcon
 } from "react-share";
+import ReportModal from '@/Components/user/ReportModal';
 
 const PostDetails: React.FC = () => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -55,8 +60,11 @@ const PostDetails: React.FC = () => {
 
     const postId = postDetails?._id;
     const userId = userInfo?._id;
-
+    const amount = Number(postDetails?.amount) || 0;
+    const contributedAmount = Number(postDetails?.contributedAmount) || 0;
+    const balance = amount - contributedAmount;
     return (
+
         <HelmetProvider>
             <div className="container mx-auto p-4 bg-gradient-to-r from-blue-300 via-green-200 to-teal-100">
                 {postDetails && (
@@ -72,19 +80,51 @@ const PostDetails: React.FC = () => {
                     {/* Left Column */}
                     <div className="md:w-2/3 p-4 bg-white shadow-lg rounded-lg">
                         <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
-                            <Carousel slideInterval={2000} className="rounded-lg">
+                            <Carousel leftControl={<FaCircleChevronLeft size={40}/>} rightControl={<FaChevronCircleRight size={40}/>} slideInterval={2000} className="rounded-lg">
                                 {postDetails?.profilePic?.map((img, indx) => (
                                     <img src={img} key={indx} alt={`Slide ${indx + 1}`} />
                                 ))}
                             </Carousel>
                         </div>
                         <h1 className="text-3xl font-bold mb-4 mt-12 text-center">{postDetails?.heading}</h1>
+                        <div className='flex flex-col space-y-2 p-4 '>
+                            <span className='text-lg font-semibold text-gray-800'>Name : {postDetails?.name}</span>
+                            <span className='text-md text-gray-600'>Age : {postDetails?.age} years old</span>
+                            <span className='text-sm text-gray-500'> Target Date :{formatDate(postDetails?.targetDate)}</span>
+                        </div>
+                        <div>
+                          {
+                            postDetails?.category && postDetails.category === "education" ? (
+                                <div className="flex flex-col space-y-2 p-4">
+                                    <span className='text-lg font-semibold text-gray-800'>Institute Details</span>
+                                    <span className='text-md text-gray-600'> School Name : {postDetails?.educationDetails?.instituteName}</span>
+                                    <span className='text-md text-gray-600'> School Address : {postDetails?.educationDetails?.instituteDistrict}</span>
+                                    <span className='text-md text-gray-600'> Class : {postDetails?.educationDetails?.institutePostalAddress}</span>
+                                    <span className='text-md text-gray-600'>  state: {postDetails?.educationDetails?.instituteState}</span>
+                                </div>
+                            ):(
+                                <div className="flex flex-col space-y-2 p-4">
+                                    <span className='text-lg font-semibold text-gray-800'>Hospital Details</span>
+                                    <span className='text-md text-gray-600'> Hospital name : {postDetails?.medicalDetails?.hospitalName}</span>
+                                    <span className='text-md text-gray-600'> District : {postDetails?.medicalDetails?.hospitalDistrict}</span>
+                                    <span className='text-md text-gray-600'> Address : {postDetails?.medicalDetails?.hospitalPostalAddress}</span>
+                                    <span className='text-md text-gray-600'> State : {postDetails?.medicalDetails?.hospitalState}</span>
+                                </div>
+                            )
+                          }  
+                        </div>
+
                         <div className="text-gray-700 mb-4">
                             {postDetails?.bio && parse(postDetails.bio)}
                         </div>
+                        <div className="flex gap-4">
                         <button className="bg-blue-500 text-white py-2 px-4 rounded-md">
                             Read More
                         </button>
+                        <div>
+                        <ReportModal/>
+                        </div>
+                        </div>
                         <div>
                             <FacebookShareButton url={fullUrl} title={title}>
                                 <FacebookIcon size={32} round />
@@ -104,11 +144,11 @@ const PostDetails: React.FC = () => {
                     <div className="md:w-1/3 p-4 bg-white shadow-lg rounded-lg md:ml-4 mt-4 md:mt-0">
                         <Card className="w-full shadow-lg rounded-lg">
                             <h3>Contribution Status</h3>
-                            <p>Target Amount :</p>
-                            <p>Current Contributed Amount :</p>
-                            <p>Balance :</p>
+                            <p>Target Amount :{postDetails?.amount}</p>
+                            <p>Current Contributed amount : {postDetails?.contributedAmount}</p>
+                            <p>Balance :{balance}</p>
                             <Progress
-                                progress={45}
+                                progress={Number(((Number(postDetails?.contributedAmount) / Number(postDetails?.amount)) * 100).toFixed(2))}
                                 progressLabelPosition="inside"
                                 textLabel="contribution status"
                                 textLabelPosition="outside"
@@ -117,7 +157,7 @@ const PostDetails: React.FC = () => {
                                 labelText
                             />
                         </Card>
-                        <h2 className="text-2xl font-bold mb-4">Support Our Cause</h2>
+                        <h2 className="text-2xl font-bold mb-4 mt-14">Contribute for me</h2>
                         <div className="mb-4">
                             <label className="block text-gray-700 font-bold mb-2">Donation Amount</label>
                             <input
@@ -183,6 +223,7 @@ const PostDetails: React.FC = () => {
                                 </ul>
                             </div>
                         </Card>
+                        
                     </div>
                 </div>
 

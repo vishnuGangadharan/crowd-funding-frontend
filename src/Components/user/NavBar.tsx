@@ -5,9 +5,8 @@ import FundraiserBtn from './FundraiserBtn';
 import { useDispatch,useSelector } from 'react-redux';
 import { RootState } from "../../redux/store";
 import { userLogout } from '../../redux/slice/authSlice';
-import { Link } from 'react-router-dom';
 import cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { googleLogout } from '@react-oauth/google';
 
 const NavBar : React.FC = () => {  
@@ -26,6 +25,7 @@ const NavBar : React.FC = () => {
     navigate('/profile');
   }
 
+
   return (
     <nav className=" shadow-lg  z-50 relative" style={{background:'#55AD9B'}}>
       <div className="container mx-auto px-6 flex justify-between items-center">
@@ -40,11 +40,11 @@ const NavBar : React.FC = () => {
           </button>
         </div>
 
-        <div className="hidden md:flex items-center space-x-8">
-          <a href="#home" className="text-white hover:text-blue-300">Home</a>
-          <a href="#donate" className="text-white hover:text-blue-300">Donate</a>
-          <a href="#about" className="text-white hover:text-blue-300">About Us</a>
-          <a href="#contact" className="text-white hover:text-blue-300">Contact Us</a>
+        <div className="hidden md:flex items-center space-x-20">
+        <Link to="/home" className="text-white hover:text-black text-xl">Home</Link>
+        <Link to="/all-posts" className="text-white hover:text-black text-xl">Donate</Link>
+        <a href="#about" className="text-white hover:text-black text-xl">About Us</a>
+          <a href="#contact" className="text-white hover:text-black text-xl">Contact Us</a>
         </div>
 
         <div className="hidden md:flex items-center space-x-8">

@@ -12,3 +12,15 @@ export function truncateText(text: string, wordLimit:number) {
     }
     return words.slice(0, wordLimit).join(' ') + '...';
 }
+
+export function formatDate(data: Date | undefined):string {
+if (!data) {
+    return '';
+}
+const formattedDate = new Date(data).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+return  formattedDate;
+}

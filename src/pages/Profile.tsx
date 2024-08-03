@@ -1,157 +1,155 @@
 
 
 import React, { useEffect, useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { editUserProfile, getUser } from '../api/user';
-import { userFormData } from '../services/interface/user';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { useNavigate } from 'react-router-dom';
 import UpdatePassword from '../Components/user/UpdatePassword';
-
-
-const profileSchema = z.object({
-  name: z.string().min(3, "Name must be at least 3 characters long")
-  .refine(s => /^[a-zA-Z0-9_-]+$/.test(s), {
-    message: "Only letters,No characters allowed",
-  }),
-  email: z.string().email('Invalid email'),
-  phone: z.string()
-  .refine(value => /^\d{10}$/.test(value), {
-    message: "Phone number must be exactly 10 digits long",
-  }),
-   profilePicture: z.instanceof(File).optional(),
-});
-
-type ProfileFormInputs = z.infer<typeof profileSchema>;
+import { userFormData } from '@/services/interface/user';
+import { editUserProfile, getUser } from '@/api/user';
 
 const Profile: React.FC = () => {
+  const navigate = useNavigate();
 
-
-  const navigate = useNavigate()
-
-  const [userDetails,setUserDetails] = useState< userFormData | null>({})
   const [isEditing, setIsEditing] = useState(false);
   const [profilePicPreview, setProfilePicPreview] = useState<string | null>(null);
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<ProfileFormInputs>({
-    resolver: zodResolver(profileSchema),
-    defaultValues:{
-      name:userDetails?.name,
-      email:userDetails?.email,
-      phone:userDetails?.phone,
-      profilePicture:userDetails?.profilePicture
-    }
-  });
+  const [email, setEmail] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [name, setName] = useState<string>('');
+  const [image, setImage] = useState<File | null>(null);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [userDetails, setUserDetails] = useState<userFormData | null>(null);
 
- const { userInfo } = useSelector((state: RootState)=> state.auth) 
- const userId = userInfo?._id
+  const { userInfo } = useSelector((state: RootState) => state.auth);
+  const userId = userInfo?._id;
 
   const fetchUser = async () => {
-    try {      
+    try {
       const response = await getUser(userId);
       setUserDetails(response.data);
+      setEmail(response.data.email);
+      setPhone(response.data.phone);
+      setName(response.data.name);
+      setProfilePicPreview(response.data.profilePicture);
     } catch (error) {
-      console.error("Error fetching fundraisings:", error);
+      console.error('Error fetching user details:', error);
     }
   };
 
   useEffect(() => {
     fetchUser();
-  }, []); 
+  }, [userId]);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const onSubmit: SubmitHandler<ProfileFormInputs> = async (data) => {
+    const validationErrors: { [key: string]: string } = {};
+    if (!phone) validationErrors.phone = 'Phone is required';
+    if (phone.length !== 10) validationErrors.phone = 'Phone must be 10 digits';
+    if (!name) validationErrors.name = 'Name is required';
+    if (!/^[a-zA-Z\s]+$/.test(name)) validationErrors.name = 'Name must contain only letters';
+    if (!image && !userDetails?.profilePicture) validationErrors.image = 'Image is required';
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('email', data.email);
-    formData.append('phone', data.phone);
-    if (data.profilePicture && data.profilePicture instanceof File) {
-      formData.append('profilePicture', data.profilePicture);
+    formData.append('email', email);
+    formData.append('phone', phone);
+    formData.append('name', name);
+    if (image) {
+      formData.append('profilePicture', image);
     }
 
     try {
       const response = await editUserProfile(formData as any);
-
-      console.log('Profile updated successfully:', response);
-      if (data.profilePicture && data.profilePicture instanceof File) {
-        const previewUrl = URL.createObjectURL(data.profilePicture);
-        setProfilePicPreview(previewUrl);
+      if (response) {
+        console.log('Profile updated successfully', response);
+        // Optionally update the local state with the new data
+        setUserDetails({
+          ...userDetails,
+          email,
+          phone,
+          name,
+          profilePicture: profilePicPreview || ''
+        });
+        setIsEditing(false);
+      } else {
+        console.error('Failed to update profile');
       }
-      setIsEditing(false);
     } catch (error) {
       console.error('Error updating profile:', error);
     }
   };
 
-  const handleFundraisngNavigate=()=>{
-    navigate('/fundraising')
-  }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setProfilePicPreview(previewUrl);
+      setImage(file);
+    }
+  };
+
+  const handleFundraisingNavigate = () => {
+    navigate('/fundraising');
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="mx-auto p-6 mt-24 w-[60%] bg-gray-50 rounded-lg shadow-lg space-y-6">
+    <form onSubmit={handleSubmit} className="mx-auto p-6 mt-24 w-[60%] bg-gray-50 rounded-lg shadow-lg space-y-6 mb-36">
       <div className="flex flex-col items-center mb-6">
         <input
           type="file"
-          {...register('profilePicture')}
           id="profilePicture"
           className="hidden"
-          defaultValue={userDetails?.profilePicture}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              setValue('profilePicture', file);
-              const previewUrl = URL.createObjectURL(file);
-              setProfilePicPreview(previewUrl);
-            }
-          }}
+          onChange={handleFileChange}
         />
         <label htmlFor="profilePicture" className="cursor-pointer">
           <div className="w-40 h-40 rounded-full bg-gray-500 flex items-center justify-center overflow-hidden hover:bg-gray-300 transition">
             {profilePicPreview ? (
-              <img src={profilePicPreview} alt="Profile" className="object-cover w-full h-full" />
+              <img src={profilePicPreview} alt="Profile" className="object-cover w-full h-full transition-transform duration-300 ease-in-out transform hover:scale-105" />
             ) : (
-              <img src={userDetails?.profilePicture} alt="Default Profile" className="object-cover w-full h-full" />
+              <span className="text-white">Upload Image</span>
             )}
           </div>
         </label>
       </div>
-      <div className='w-[50%] ml-20'>
+      <div className='w-[50%] ml-40 ' >
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Name</label>
           <input
             type="text"
-            defaultValue={userDetails?.name}
-            {...register('name')}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             readOnly={!isEditing}
-            className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm ${errors.name ? 'border-red-500' : ''} ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
           />
-          {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
+          {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
         </div>
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Email</label>
           <input
-            defaultValue={userDetails?.email}
+            value={email}
             type="text"
-            {...register('email')}
             readOnly
-            className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm ${errors.email ? 'border-red-500' : ''} bg-gray-100`}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100"
           />
-          {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
+          {errors.email && <span className="text-red-500 text-sm">{errors.email}</span>}
         </div>
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Phone</label>
           <input
-          defaultValue={userDetails?.phone}
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             type="number"
-            {...register('phone')}
             readOnly={!isEditing}
-            className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm ${errors.phone ? 'border-red-500' : ''} ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
+            className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
           />
-          {errors.phone && <span className="text-red-500 text-sm">{errors.phone.message}</span>}
+          {errors.phone && <span className="text-red-500 text-sm">{errors.phone}</span>}
         </div>
       </div>
       <div className="flex justify-center space-x-4">
@@ -170,16 +168,19 @@ const Profile: React.FC = () => {
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4">
-        <UpdatePassword/>
+        <UpdatePassword />
         <button type="button" className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-purple-600 transition">Wallet</button>
         <button type="button" className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-pink-600 transition">Chat</button>
-        <button type="button" className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-yellow-600 transition"
-        onClick={handleFundraisngNavigate}
-        >My Fundraising</button>
+        <button
+          type="button"
+          className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-yellow-600 transition"
+          onClick={handleFundraisingNavigate}
+        >
+          My Fundraising
+        </button>
       </div>
     </form>
   );
 };
 
 export default Profile;
-

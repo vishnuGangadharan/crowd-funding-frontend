@@ -1,6 +1,6 @@
 import NavBar from '../Components/user/NavBar';
 import HeroSection from '../Components/user/HeroSection';
-import Category from '../Components/user/Cards';
+import Card from '../Components/user/Cards';
 import Accordion from '../Components/user/Accordions';
 import Footer from '../Components/user/Footer';
 
@@ -33,7 +33,7 @@ const Home = () => {
       {/* Card */}
       <div className='flex gap-5 justify-center m-20'>
 
-        <Category />
+      <Card limit={3} />
         
       </div>
       <div className="flex flex-col items-center mb-52">

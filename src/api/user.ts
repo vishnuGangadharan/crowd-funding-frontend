@@ -3,15 +3,7 @@ import userRoutes from "../services/endpoints/userEndPoints";
 import errorHandler from "./error";
 import { beneficiary } from "../services/interface/interface";
 import { userFormData } from "../services/interface/user";
-// interface userFormData {
-//     name?: string;
-//     email?: string;
-//     mobile?: string;
-//     password?: string;
-//     confirmPassword?: string;
-//     profilePicture?: File | string;
-//     newPassword?: string | undefined;
-//   }
+import { PasswordData } from "../services/interface/user";
 
 export const signup  = async (userData: userFormData) => {
     try {
@@ -175,4 +167,17 @@ export const allPosts = async ()=> {
         let err : Error = error as Error
         errorHandler(err)
     }
+}
+
+
+export const updatePassword  = async(passwordData : PasswordData, userId: string) => {
+    try{
+        const response = await Api.post(`${userRoutes.updatePassword}/${userId}`,passwordData)
+        return response
+
+    }catch(error){
+        let err : Error = error as Error
+        errorHandler(err)
+    }
+
 }

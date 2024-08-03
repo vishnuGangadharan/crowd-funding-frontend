@@ -9,12 +9,13 @@ import { RootState } from "../../../redux/store";
 import JoditEditor from 'jodit-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { beneficiaryVerification, fundraisingRegister } from '../../../api/user';
+import { beneficiaryVerification } from '../../../api/user';
 import { step1Schema } from '../../../services/validations/zodValidations';
 import { step2Schema , finalStepSchema, step4Schema } from '../../../services/validations/zodValidations';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setBeneficiaryData } from '@/redux/slice/beneficiarySlice';
+import CancelModal from '../CancelModal';
 
 type Step1Data = z.infer<typeof step1Schema>;
 type Step2Data = z.infer<typeof step2Schema>;
@@ -190,6 +191,7 @@ const MultiStepForm: React.FC = () => {
             {errorsStep1.category && <p className="text-red-600">{errorsStep1.category.message}</p>}
 
             <div className="flex justify-between">
+            <CancelModal/>
               <Button color="primary" type="submit">Next</Button>
             </div>
           </form>

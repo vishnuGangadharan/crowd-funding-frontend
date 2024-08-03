@@ -3,10 +3,14 @@ import { beneficiary } from '@/services/interface/interface';
 import { allPosts } from '@/api/user';
 import { CircularProgress } from "@nextui-org/react";
 import { capitalizeFirstLetter, truncateText } from '@/services/functions/Functions';
+import { useNavigate } from 'react-router-dom';
+interface CardProps {
+    limit?: number; 
+}
 
-const Card = () => {
+const Card :React.FC<CardProps> = ({limit}) => {
     const [postDetails, setPostDetails] = useState<beneficiary[]>([]);
-
+    const navigate = useNavigate()
     useEffect(() => {
         const fetchPostDetails = async () => {
             try {
@@ -21,12 +25,14 @@ const Card = () => {
         fetchPostDetails();
     }, []);
 
+    const displayedPosts = limit ? postDetails.slice(0, limit) : postDetails;
+
 
     return (
-        <div className="flex flex-wrap justify-start">
-            {postDetails && postDetails.map((post, indx) => (
+        <div className="flex flex-wrap justify-start grid-cols-1 gap-6 p-4 md:grid-cols-2 lg:grid-cols-3">
+            {displayedPosts && displayedPosts.map((post, indx) => (
 
-                <div key={indx} className="relative flex flex-col mb-32 mt-6 text-gray-700 bg-white shadow-md rounded-xl w-80 mx-4">
+                <div key={indx} className="relative flex flex-col mb-32 mt-6 text-gray-700 bg-white md:w shadow-md rounded-xl w-80 mx-4">
                     <div className="relative h-56 -mt-6 overflow-hidden text-white shadow-lg rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
                         <img
                             src={post.profilePic && post.profilePic[0] ? (typeof post.profilePic[0] === 'string' ? post.profilePic[0] : URL.createObjectURL(post.profilePic[0])) : "https://i.sstatic.net/l60Hf.png"}
@@ -71,6 +77,7 @@ const Card = () => {
                         <button
                             className="font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md hover:shadow-lg focus:opacity-85 active:opacity-85"
                             type="button"
+                            onClick={() => navigate(`/postdetails/${post._id}`)}
                         >
                             Read More
                         </button>
