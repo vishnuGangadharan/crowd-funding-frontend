@@ -22,10 +22,6 @@ const UserRoutes: React.FC = () => {
     <Suspense fallback={<div>Loading...</div>}>
         <Routes>
             
-          {/* <Route element={<UserLogout />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-          </Route> */}
             <Route path="/otp" element={<OTP />} />
             <Route path="/home" element={<Home />} />
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Carousel } from "flowbite-react";
 import { Card, Progress, TextInput } from "flowbite-react";
 import { useParams } from 'react-router-dom';
-import { getPostDetails } from '../../api/user';
+import { getPostDetails, getSessionId } from '../../api/user';
 import beneficiary from '@/services/interface/beneficiary';
 import parse from 'html-react-parser';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
@@ -13,6 +13,7 @@ import PostComments from './PostComments';
 import { formatDate } from '@/services/functions/Functions';
 import { FaCircleChevronLeft } from "react-icons/fa6";
 import { FaChevronCircleRight } from "react-icons/fa";
+import { loadStripe } from '@stripe/stripe-js';
 
 
 import {
@@ -63,6 +64,33 @@ const PostDetails: React.FC = () => {
     const amount = Number(postDetails?.amount) || 0;
     const contributedAmount = Number(postDetails?.contributedAmount) || 0;
     const balance = amount - contributedAmount;
+
+
+    
+
+    const handleDonation= async()=>{
+        try{
+            console.log("herrrrr");
+                console.log("keyy",import.meta.env.VITE_STRIPE_KEY);
+                
+            const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+            const response = await getSessionId()
+            console.log("response stri[[",response);
+            
+            const sessionId = response?.data;
+            console.log("sessionId",sessionId);
+            
+            await stripe?.redirectToCheckout({
+              sessionId: sessionId,
+            });
+            
+        }catch(error){
+            console.log("stripe",error);
+            
+        }
+    }
+
+
     return (
 
         <HelmetProvider>
@@ -80,7 +108,7 @@ const PostDetails: React.FC = () => {
                     {/* Left Column */}
                     <div className="md:w-2/3 p-4 bg-white shadow-lg rounded-lg">
                         <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
-                            <Carousel leftControl={<FaCircleChevronLeft size={40}/>} rightControl={<FaChevronCircleRight size={40}/>} slideInterval={2000} className="rounded-lg">
+                            <Carousel leftControl={<FaCircleChevronLeft size={40} />} rightControl={<FaChevronCircleRight size={40} />} slideInterval={2000} className="rounded-lg">
                                 {postDetails?.profilePic?.map((img, indx) => (
                                     <img src={img} key={indx} alt={`Slide ${indx + 1}`} />
                                 ))}
@@ -93,37 +121,37 @@ const PostDetails: React.FC = () => {
                             <span className='text-sm text-gray-500'> Target Date :{formatDate(postDetails?.targetDate)}</span>
                         </div>
                         <div>
-                          {
-                            postDetails?.category && postDetails.category === "education" ? (
-                                <div className="flex flex-col space-y-2 p-4">
-                                    <span className='text-lg font-semibold text-gray-800'>Institute Details</span>
-                                    <span className='text-md text-gray-600'> School Name : {postDetails?.educationDetails?.instituteName}</span>
-                                    <span className='text-md text-gray-600'> School Address : {postDetails?.educationDetails?.instituteDistrict}</span>
-                                    <span className='text-md text-gray-600'> Class : {postDetails?.educationDetails?.institutePostalAddress}</span>
-                                    <span className='text-md text-gray-600'>  state: {postDetails?.educationDetails?.instituteState}</span>
-                                </div>
-                            ):(
-                                <div className="flex flex-col space-y-2 p-4">
-                                    <span className='text-lg font-semibold text-gray-800'>Hospital Details</span>
-                                    <span className='text-md text-gray-600'> Hospital name : {postDetails?.medicalDetails?.hospitalName}</span>
-                                    <span className='text-md text-gray-600'> District : {postDetails?.medicalDetails?.hospitalDistrict}</span>
-                                    <span className='text-md text-gray-600'> Address : {postDetails?.medicalDetails?.hospitalPostalAddress}</span>
-                                    <span className='text-md text-gray-600'> State : {postDetails?.medicalDetails?.hospitalState}</span>
-                                </div>
-                            )
-                          }  
+                            {
+                                postDetails?.category && postDetails.category === "education" ? (
+                                    <div className="flex flex-col space-y-2 p-4">
+                                        <span className='text-lg font-semibold text-gray-800'>Institute Details</span>
+                                        <span className='text-md text-gray-600'> School Name : {postDetails?.educationDetails?.instituteName}</span>
+                                        <span className='text-md text-gray-600'> School Address : {postDetails?.educationDetails?.instituteDistrict}</span>
+                                        <span className='text-md text-gray-600'> Class : {postDetails?.educationDetails?.institutePostalAddress}</span>
+                                        <span className='text-md text-gray-600'>  state: {postDetails?.educationDetails?.instituteState}</span>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col space-y-2 p-4">
+                                        <span className='text-lg font-semibold text-gray-800'>Hospital Details</span>
+                                        <span className='text-md text-gray-600'> Hospital name : {postDetails?.medicalDetails?.hospitalName}</span>
+                                        <span className='text-md text-gray-600'> District : {postDetails?.medicalDetails?.hospitalDistrict}</span>
+                                        <span className='text-md text-gray-600'> Address : {postDetails?.medicalDetails?.hospitalPostalAddress}</span>
+                                        <span className='text-md text-gray-600'> State : {postDetails?.medicalDetails?.hospitalState}</span>
+                                    </div>
+                                )
+                            }
                         </div>
 
                         <div className="text-gray-700 mb-4">
                             {postDetails?.bio && parse(postDetails.bio)}
                         </div>
                         <div className="flex gap-4">
-                        <button className="bg-blue-500 text-white py-2 px-4 rounded-md">
-                            Read More
-                        </button>
-                        <div>
-                        <ReportModal/>
-                        </div>
+                            <button className="bg-blue-500 text-white py-2 px-4 rounded-md">
+                                Read More
+                            </button>
+                            <div>
+                                <ReportModal postId={postDetails?._id || ''} />
+                            </div>
                         </div>
                         <div>
                             <FacebookShareButton url={fullUrl} title={title}>
@@ -166,9 +194,14 @@ const PostDetails: React.FC = () => {
                                 placeholder="Enter amount"
                             />
                         </div>
-                        <button className="bg-green-500 text-white py-2 px-4 rounded-md w-full">
+                        <button className="bg-green-500 text-white py-2 px-4 rounded-md w-full" onClick={handleDonation}>
                             Donate Now
                         </button>
+
+                        
+                        
+
+
 
                         {/* Card */}
                         <Card className="max-w-sm mt-10">
@@ -223,7 +256,7 @@ const PostDetails: React.FC = () => {
                                 </ul>
                             </div>
                         </Card>
-                        
+
                     </div>
                 </div>
 

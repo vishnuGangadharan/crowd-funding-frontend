@@ -45,3 +45,13 @@ export const postApproval = async(postId : string , status : string)=>{
         errorHandler(err)
     }
 }
+
+export const getReport =async() => {
+    try{
+        const response = await Api.get(adminRoutes.allReports)
+        return response.data
+    }catch(error){
+        const err :Error = error as Error
+        errorHandler(err)
+    }
+}

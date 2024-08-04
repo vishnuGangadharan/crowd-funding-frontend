@@ -181,3 +181,26 @@ export const updatePassword  = async(passwordData : PasswordData, userId: string
     }
 
 }
+
+
+export const reportPost= async(reportData:string) => {
+    try{
+        const response = await Api.post(userRoutes.reportPost, reportData)
+        return response
+    }catch(error){
+        let err : Error = error as Error
+        errorHandler(err)
+    }
+}
+
+export const getSessionId = async()=> {
+    try{
+        const response = await Api.post(userRoutes.getSessionId)
+        console.log("dddddddddddd",response);
+        
+        return response.data
+    }catch(error){
+        let err : Error = error as Error
+        errorHandler(err)
+    }
+}

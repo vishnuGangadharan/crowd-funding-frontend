@@ -1,14 +1,14 @@
-import React from 'react'
-import SidePanel from '../../Components/admin/SidePanel'
-import CampaignRequest from './CampaignRequest'
+// import React from 'react'
+// import SidePanel from '../../Components/admin/SidePanel'
+// import CampaignRequest from './CampaignRequest'
 
-const Requiest = () => {
-  return (
-    <div className='bg-purple-400 h-full flex'>
-      <SidePanel/>
-      <CampaignRequest/>
-    </div>
-  )
-}
+// const Requiest = () => {
+//   return (
+//     <div className='bg-purple-400 h-full flex'>
+//       <SidePanel/>
+//       <CampaignRequest/>
+//     </div>
+//   )
+// }
 
-export default Requiest
+// export default Requiest

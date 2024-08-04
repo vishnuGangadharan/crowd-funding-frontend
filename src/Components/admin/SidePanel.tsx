@@ -39,8 +39,8 @@ const SidePanel = () => {
                         <Sidebar.Item as={Link} to='/admin/users' icon={HiUser} className="hover:bg-gray-700">
                             Users
                         </Sidebar.Item>
-                        <Sidebar.Item href="#" icon={HiShoppingBag} className="hover:bg-gray-700">
-                            Products
+                        <Sidebar.Item as={Link} to='/admin/reports' icon={HiShoppingBag} className="hover:bg-gray-700">
+                            Reported Posts
                         </Sidebar.Item>
                         <Sidebar.Item href="#" icon={HiArrowSmRight} className="hover:bg-gray-700">
                             Sign In

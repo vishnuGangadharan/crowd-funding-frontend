@@ -4,7 +4,8 @@ const adminRoutes = {
     listUsers:'/admin/users',
     handleBlockStatus: '/admin/block-status',
     campaignRequest : "/admin/campaign-request",
-    adminPostApproval: "/admin/post-approval"
+    adminPostApproval: "/admin/post-approval",
+    allReports : '/admin/all-reports'
 }
 
 export default adminRoutes;

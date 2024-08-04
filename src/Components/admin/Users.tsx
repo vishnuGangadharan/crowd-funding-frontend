@@ -30,7 +30,7 @@ const Users: React.FC = () => {
   };
 
   return (
-    <div className='bg-slate-700 h-[80%] mt-10 ml-6 mr-10 w-full rounded-lg p-4'>
+    <div className='bg-slate-700 h-[80%] mt-10  mr-10 w-full rounded-lg'>
         <h1 className='text-white text-lg'>Users List</h1>
       <div className="w-full bg-gray-400 rounded-lg">
         <table className="min-w-full text-red">

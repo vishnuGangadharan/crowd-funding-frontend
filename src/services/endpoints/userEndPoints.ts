@@ -14,7 +14,9 @@ const userRoutes={
     postComment : '/user/add-comment',
     getComment : '/user/get-comments',
     allPost : '/user/all-posts',
-    updatePassword : "/user/update-password"
+    updatePassword : "/user/update-password",
+    reportPost : '/user/report-post',
+    getSessionId: '/user/get-session-id',
 }
 
 export default userRoutes;

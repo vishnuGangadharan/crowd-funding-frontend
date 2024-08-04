@@ -38,7 +38,7 @@ const CampaignRequest: React.FC = () => {
   }, []);
 
   return (
-    <div className="p-4 w-[80%]">
+    <div className=" w-[80%]">
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow-md rounded my-6">
           <thead>
