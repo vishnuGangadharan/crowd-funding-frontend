@@ -27,12 +27,10 @@ Api.interceptors.response.use(
 Api.interceptors.request.use(
     (config) => {
         console.log('axios request config', config);
-        console.log(document.cookie);
         
         const jwtCookie = document.cookie.split('; ').find(row => row.startsWith('jwt='));
         const token = jwtCookie ? jwtCookie.split('=')[1] : undefined;
         if (token) {
-            console.log('token', token);
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;

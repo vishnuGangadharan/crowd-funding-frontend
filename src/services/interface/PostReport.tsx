@@ -6,3 +6,10 @@ export interface PostReport {
     createdAt?: Date;
     updatedAt?: Date;
 }
+
+export interface PaymentData  {
+    amount: number,
+    anonymousName: string ,
+    userId: string,
+    beneficiaryId: string,
+  };

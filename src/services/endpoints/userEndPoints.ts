@@ -17,6 +17,7 @@ const userRoutes={
     updatePassword : "/user/update-password",
     reportPost : '/user/report-post',
     getSessionId: '/user/get-session-id',
+    getDonations: '/user/get-donations',
 }
 
 export default userRoutes;

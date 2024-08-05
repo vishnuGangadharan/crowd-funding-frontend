@@ -21,3 +21,10 @@ export interface userFormData {
     new: boolean;
     confirm: boolean;
   }
+  export interface Donation {
+    id: string;
+    name: string;
+    email: string;
+    amount: number;
+    userId: userFormData;
+}

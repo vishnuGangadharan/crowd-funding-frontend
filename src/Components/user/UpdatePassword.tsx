@@ -80,8 +80,8 @@ const UpdatePassword: React.FC = () => {
 
   return (
     <>
-      <Button onPress={onOpen} color="primary">
-        Open Modal
+      <Button onPress={onOpen} className="bg-indigo-500 text-white px-4 py-2 rounded">
+        Change password
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
         <ModalContent>

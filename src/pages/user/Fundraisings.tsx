@@ -27,7 +27,7 @@ const Fundraising: React.FC = () => {
   }, []);
 
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen bg-gray-50 py-6'>
+    <div className='flex flex-col items-center   min-h-screen bg-gray-50 py-6'>
       <div className="w-full max-w-4xl p-4 mt-6 bg-white shadow-lg rounded-md">
         {fundraisings.length > 0 ? (
           fundraisings.map((fundraising, index) => (

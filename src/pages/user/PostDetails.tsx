@@ -13,9 +13,8 @@ import PostComments from './PostComments';
 import { formatDate } from '@/services/functions/Functions';
 import { FaCircleChevronLeft } from "react-icons/fa6";
 import { FaChevronCircleRight } from "react-icons/fa";
-import { loadStripe } from '@stripe/stripe-js';
-
-
+import PaymentModal from '@/Components/user/PaymentModal';
+import ShowDonations from '@/Components/user/ShowDonations';
 import {
     FacebookShareButton,
     FacebookIcon,
@@ -30,8 +29,17 @@ const PostDetails: React.FC = () => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [postDetails, setPostDetails] = useState<beneficiary>();
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const { userInfo } = useSelector((state: RootState) => state.auth);
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    // Function to close the modal
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     // Share
     const url = window.location.href;
@@ -66,35 +74,15 @@ const PostDetails: React.FC = () => {
     const balance = amount - contributedAmount;
 
 
-    
 
-    const handleDonation= async()=>{
-        try{
-            console.log("herrrrr");
-                console.log("keyy",import.meta.env.VITE_STRIPE_KEY);
-                
-            const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
-            const response = await getSessionId()
-            console.log("response stri[[",response);
-            
-            const sessionId = response?.data;
-            console.log("sessionId",sessionId);
-            
-            await stripe?.redirectToCheckout({
-              sessionId: sessionId,
-            });
-            
-        }catch(error){
-            console.log("stripe",error);
-            
-        }
-    }
+
+   
 
 
     return (
 
         <HelmetProvider>
-            <div className="container mx-auto p-4 bg-gradient-to-r from-blue-300 via-green-200 to-teal-100">
+            <div className=" mx-auto p-4 bg-gradient-to-r from-blue-300 via-green-200 to-teal-100">
                 {postDetails && (
                     <Helmet>
                         <meta property="og:url" content={window.location.href} />
@@ -150,9 +138,14 @@ const PostDetails: React.FC = () => {
                                 Read More
                             </button>
                             <div>
+                            {postDetails && postDetails.isApproved !== 'pending' ?(
+
                                 <ReportModal postId={postDetails?._id || ''} />
+                            ):("")}
                             </div>
                         </div>
+                        {postDetails && postDetails.isApproved !== 'pending' ?(
+
                         <div>
                             <FacebookShareButton url={fullUrl} title={title}>
                                 <FacebookIcon size={32} round />
@@ -166,9 +159,11 @@ const PostDetails: React.FC = () => {
                                 <WhatsappIcon size={32} round />
                             </WhatsappShareButton>
                         </div>
+                        ):("")}
                     </div>
 
                     {/* Right Column */}
+                    {postDetails?.isApproved !== "pending" ? (
                     <div className="md:w-1/3 p-4 bg-white shadow-lg rounded-lg md:ml-4 mt-4 md:mt-0">
                         <Card className="w-full shadow-lg rounded-lg">
                             <h3>Contribution Status</h3>
@@ -186,78 +181,22 @@ const PostDetails: React.FC = () => {
                             />
                         </Card>
                         <h2 className="text-2xl font-bold mb-4 mt-14">Contribute for me</h2>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-bold mb-2">Donation Amount</label>
-                            <input
-                                type="number"
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-                                placeholder="Enter amount"
-                            />
+            
+
+                        <div>
+                            <button className="bg-green-500 text-white py-2 px-4 rounded-md w-full" onClick={handleOpenModal}>Donate Now</button>
+
+                            {/* Render the PaymentModal component conditionally */}
+                            {isModalOpen && (
+                                <PaymentModal isOpen={isModalOpen} beneficiaryId={postDetails?._id} onClose={handleCloseModal} />
+                            )}
                         </div>
-                        <button className="bg-green-500 text-white py-2 px-4 rounded-md w-full" onClick={handleDonation}>
-                            Donate Now
-                        </button>
-
-                        
-                        
 
 
 
-                        {/* Card */}
-                        <Card className="max-w-sm mt-10">
-                            <div className="flex items-center justify-between">
-                                <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">Donations</h5>
-                                <p className="text-sm font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer">View all</p>
-                            </div>
-                            <div className="flow-root">
-                                <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                                    <li className="pb-0 pt-3 sm:pt-4">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="shrink-0">
-                                                {/* Profile image placeholder */}
-                                            </div>
-                                            <div className="min-w-0 flex-1">
-                                                <p className="truncate text-sm font-medium text-gray-900 dark:text-white">Thomas Lean</p>
-                                                <p className="truncate text-sm text-gray-500 dark:text-gray-400">email@windster.com</p>
-                                            </div>
-                                            <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                                $2367
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="pb-0 pt-3 sm:pt-4">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="shrink-0">
-                                                {/* Profile image placeholder */}
-                                            </div>
-                                            <div className="min-w-0 flex-1">
-                                                <p className="truncate text-sm font-medium text-gray-900 dark:text-white">Thomas Lean</p>
-                                                <p className="truncate text-sm text-gray-500 dark:text-gray-400">email@windster.com</p>
-                                            </div>
-                                            <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                                $2367
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="pb-0 pt-3 sm:pt-4">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="shrink-0">
-                                                {/* Profile image placeholder */}
-                                            </div>
-                                            <div className="min-w-0 flex-1">
-                                                <p className="truncate text-sm font-medium text-gray-900 dark:text-white">Thomas Lean</p>
-                                                <p className="truncate text-sm text-gray-500 dark:text-gray-400">email@windster.com</p>
-                                            </div>
-                                            <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                                $2367
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </Card>
-
+                    <ShowDonations beneficiaryId={postDetails?._id} />
                     </div>
+                    ): ("")}
                 </div>
 
                 {/* Parent Card with Supporting Documents and Fundraiser Details */}
@@ -297,8 +236,9 @@ const PostDetails: React.FC = () => {
                 </div>
 
                 {/* Comments */}
+                {postDetails && postDetails.isApproved !== 'pending' ?(
                 <PostComments postId={id} userId={userId} />
-
+                    ):("")}
                 <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-white'>
                     <ModalContent>
                         {(onClose) => (

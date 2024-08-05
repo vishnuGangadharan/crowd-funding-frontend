@@ -16,6 +16,7 @@ const Fundraising  = lazy(()=> import ("../pages/user/Fundraisings"))
 const OTPforFundRegister = lazy(()=> import ('../pages/user/OTPforFundRegister'))
 const PostDetails = lazy(()=> import('../pages/user/PostDetails'))
 const AllPosts = lazy(()=> import ('../pages/user/AllPosts'))
+const Shearing = lazy(()=> import ('../Components/user/Shearing'))
 
 const UserRoutes: React.FC = () => {
   return (
@@ -32,6 +33,8 @@ const UserRoutes: React.FC = () => {
             <Route path='/beneficiary-otp' element={<OTPforFundRegister/>}/>
             <Route path="/postdetails/:id" element={<PostDetails />} />
             <Route path='/all-posts' element={<AllPosts/>}/>
+            <Route path='/share' element={<Shearing/>}/>
+
           </Route>
             <Route path='/registration' element={<FundraisingRegister/>}/>
             <Route path='/media-uploader' element={<MediaUploader/>}/>

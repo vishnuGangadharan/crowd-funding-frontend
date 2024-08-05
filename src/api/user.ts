@@ -4,6 +4,7 @@ import errorHandler from "./error";
 import { beneficiary } from "../services/interface/interface";
 import { userFormData } from "../services/interface/user";
 import { PasswordData } from "../services/interface/user";
+import { PaymentData } from "@/services/interface/PostReport";
 
 export const signup  = async (userData: userFormData) => {
     try {
@@ -193,14 +194,25 @@ export const reportPost= async(reportData:string) => {
     }
 }
 
-export const getSessionId = async()=> {
+export const getSessionId = async(PaymentData : PaymentData)=> {
     try{
-        const response = await Api.post(userRoutes.getSessionId)
+        const response = await Api.post(userRoutes.getSessionId, PaymentData)
         console.log("dddddddddddd",response);
         
         return response.data
     }catch(error){
         let err : Error = error as Error
+        errorHandler(err)
+    }
+}
+
+
+export const getDonations =async(beneficiaryId:string) => {
+    try{
+         const response = await Api.get(userRoutes.getDonations, {params: {beneficiaryId}})
+         return response.data
+    }catch(error){
+        let  err : Error = error as Error
         errorHandler(err)
     }
 }
