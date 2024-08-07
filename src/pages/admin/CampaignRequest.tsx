@@ -3,11 +3,13 @@ import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@
 import { getRequest, postApproval } from "../../api/admin";
 import { beneficiary } from "../../services/interface/interface";
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+
 
 const CampaignRequest: React.FC = () => {
   const [request, setRequest] = useState<beneficiary[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<Record<string, string>>({});
-
+  const navigate = useNavigate()
   const handleApprove = async (postId: string, status: string) => {
     try {
       const response = await postApproval(postId, status);
@@ -36,6 +38,10 @@ const CampaignRequest: React.FC = () => {
   useEffect(() => {
     fetchRequest();
   }, []);
+
+  const handleView = (id:string | undefined) => {
+    navigate(`/admin/postDetails/${id}`);
+  };
 
   return (
     <div className=" w-[80%]">
@@ -69,7 +75,7 @@ const CampaignRequest: React.FC = () => {
                   <td className="py-3 px-4 text-left">{req?.email}</td>
                   <td className="py-3 px-4 text-left">{req?.amount}</td>
                   <td className="py-3 px-4 text-left">{formattedDate}</td>
-                  <td className="py-3 px-4 text-left">view</td>
+                  <td className="py-3 px-4 text-left" onClick={()=>handleView(req._id)}>view</td>
                   <td className="py-3 px-4 text-left">
                     {req.isApproved === 'pending' ? (
                       <Dropdown>

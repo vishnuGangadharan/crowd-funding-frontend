@@ -4,7 +4,6 @@ import { loadStripe } from '@stripe/stripe-js';
 import { getSessionId } from '@/api/user';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { PaymentData } from '@/services/interface/PostReport';
 
 interface PaymentModalProps {
   isOpen: boolean;

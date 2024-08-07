@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUsers, handleBlockStatus } from '../../api/admin';
 import { Spinner } from '@nextui-org/react';
-import { set } from 'date-fns';
 
 const Users: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
@@ -17,9 +16,12 @@ const Users: React.FC = () => {
 
   const fetchUsersDetails = async () => {
     try {
-      const response = await fetchUsers();
-      console.log("response", response.data.data);
+      console.log("searchhh",searchTerm);
+      
+      const response = await fetchUsers(page , limit, searchTerm);
+      console.log("response", response.data);
       setUsers(response.data.data);
+      setTotal(response?.data.total)
     } catch (error) {
       console.log("error", error);
     } finally {
@@ -29,7 +31,7 @@ const Users: React.FC = () => {
 
   useEffect(() => {
     fetchUsersDetails();
-  }, []);
+  }, [page,searchTerm]);
 
   const handleBlockUser = async (id: string, isBlocked: boolean) => {
     try {
@@ -93,7 +95,7 @@ const Users: React.FC = () => {
                 <tr key={index} className="bg-gray-50 hover:bg-gray-100 transition duration-300">
                   <td className="px-6 py-4 text-center border-b">{index + 1}</td>
                   <td className="px-6 py-4 text-center border-b">
-                    <img src={item.profilePicture} alt="Profile" className="w-10 h-10 rounded-full mx-auto" />
+                    <img src={item.profilePicture ? item.profilePicture : 'https://www.w3schools.com/w3images/avatar2.png'} alt="Profile" className="w-10 h-10 rounded-full mx-auto" />
                   </td>
                   <td className="px-6 py-4 text-center border-b">{item.name}</td>
                   <td className="px-6 py-4 text-center border-b">{item.email }</td>

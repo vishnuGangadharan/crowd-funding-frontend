@@ -49,10 +49,10 @@ const ShowDonations: React.FC<Props> = ({ beneficiaryId }) => {
                         <li key={index} className="pb-0 pt-3 sm:pt-4">
                             <div className="flex items-center space-x-4">
                                 <div className="shrink-0">
-                                    <img className='rounded-full w-10 h-10' src={donation.userId.profilePicture} alt="" />
+                                    <img className='rounded- w-10 h-10' src={donation.userId.profilePicture} alt="" />
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                    <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{donation.userId?.name}</p>
+                                    <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{donation.anonymousName }</p>
                                     <p className="truncate text-sm text-gray-500 dark:text-gray-400">{donation.email}</p>
                                 </div>
                                 <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">

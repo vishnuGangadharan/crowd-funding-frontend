@@ -23,7 +23,7 @@ export interface userFormData {
   }
   export interface Donation {
     id: string;
-    name: string;
+    anonymousName: string;
     email: string;
     amount: number;
     userId: userFormData;

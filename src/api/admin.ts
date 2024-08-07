@@ -4,12 +4,12 @@ import errorHandler from "./error";
 
 
 
-export const fetchUsers = async ()=>{
-    try{
-        const users = await Api.get(adminRoutes.listUsers)
-        return users.data
-    }catch(error){
-        const err:Error = error as Error;
+export const fetchUsers = async (page: number, limit: number, searchTerm: string) => {
+    try {
+        const users = await Api.get(adminRoutes.listUsers, { params: { page, limit, searchTerm } });
+        return users.data;
+    } catch (error) {
+        const err: Error = error as Error;
         errorHandler(err);
     }
 }
@@ -52,6 +52,18 @@ export const getReport =async() => {
         return response.data
     }catch(error){
         const err :Error = error as Error
+        errorHandler(err)
+    }
+}
+
+export const getPostDetails = async(postId:string) => {
+    try {
+
+        const response = await Api.get(adminRoutes.getPostDetails, {params: {postId}})
+        return response.data
+
+    }catch(error){
+        const err:Error = error as Error
         errorHandler(err)
     }
 }
