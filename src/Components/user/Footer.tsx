@@ -1,8 +1,8 @@
-import React from "react";
 import FundraiserBtn from "./FundraiserBtn";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
+import footerImg from '../../../public/User/image.png'
 
 const Footer = () => {
 
@@ -40,7 +40,7 @@ const Footer = () => {
           </ul>
           <FundraiserBtn className="w-[250px] h-[50px]" onclick={handleClick} />
         </div>
-        <img className="w-full md:w-[20%] lg:w-[35%] h-auto" src="./User/image.png" alt="img" />
+        <img className="w-full md:w-[20%] lg:w-[35%] h-auto" src={footerImg} alt="img" />
       </div>
       <div className="bg-black w-full h-10">
           <p className="flex justify-center text-center text-white">email: hopeSpring@gmial.com</p>

@@ -8,6 +8,7 @@ import { userLogout } from '../../redux/slice/authSlice';
 import cookies from 'js-cookie';
 import { useNavigate, Link } from 'react-router-dom';
 import { googleLogout } from '@react-oauth/google';
+import logo from '../../../public/logo.png'
 
 const NavBar : React.FC = () => {  
   const [menuOpen, setMenuOpen] = useState(false);
@@ -31,7 +32,7 @@ const NavBar : React.FC = () => {
       <div className="container mx-auto px-6 flex justify-between items-center">
 
         <div className="flex items-center">
-          <img src="logo.png" alt="Logo" className="w-36 h-auto mr-6" />
+          <img src={logo} alt="Logo" className="w-36 h-auto mr-6" />
         </div>
 
         <div className="md:hidden flex items-center">

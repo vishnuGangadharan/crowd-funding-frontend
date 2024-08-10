@@ -22,8 +22,7 @@ const SidePanel = () => {
         <div className="h-screen bg-gray-800 text-white" >
             <Sidebar aria-label="Sidebar with logo branding example" className='w-52'>
                 <div className="flex items-center justify-center py-6">
-                    <img src="/favicon.svg" alt="Flowbite logo" className="h-12 w-12" />
-                    <span className="ml-3 text-xl font-semibold">Flowbite</span>
+                    <img src="../logo.png" alt=" logo" className="h-28 w-28" />
                 </div>
                 <Sidebar.Items>
                     <Sidebar.ItemGroup>

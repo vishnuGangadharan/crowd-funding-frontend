@@ -5,7 +5,10 @@ export function capitalizeFirstLetter(word : string) {
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
 
-export function truncateText(text: string, wordLimit:number) {
+export function truncateText(text: string | undefined, wordLimit: number) {
+    if (!text) {
+        return '';
+    }
     const words = text.split(' ');
     if (words.length <= wordLimit) {
         return text;

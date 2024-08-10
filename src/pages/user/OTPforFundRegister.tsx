@@ -4,7 +4,7 @@ import {
     InputOTPGroup,
     InputOTPSeparator,
     InputOTPSlot,
-  } from "@/components/ui/input-otp";
+  } from "@/Components/ui/input-otp";
 import { useState } from "react";
   import { useLocation ,useNavigate } from 'react-router-dom';
 

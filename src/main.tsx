@@ -13,7 +13,7 @@ import {NextUIProvider} from '@nextui-org/react'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
-    <React.StrictMode>
+    {/* <React.StrictMode> */}
       {/* <ThemeProvider> */}
       <NextUIProvider>
     <GoogleOAuthProvider clientId="85148320232-367a5ten0cvni9tvpnq7jpju98m5vr6v.apps.googleusercontent.com">
@@ -22,6 +22,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
      </GoogleOAuthProvider>
      </NextUIProvider>
      {/* </ThemeProvider> */}
-    </React.StrictMode>
+    {/* </React.StrictMode> */}
   </Provider>
 );

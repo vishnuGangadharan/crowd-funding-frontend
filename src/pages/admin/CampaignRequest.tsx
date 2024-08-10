@@ -44,7 +44,8 @@ const CampaignRequest: React.FC = () => {
   };
 
   return (
-    <div className=" w-[80%]">
+    <div className=" w-[80%] ml-4 mt-10">
+      <h1 className="text-gray-800 text-2xl mb-6 font-semibold text-center">Campaign Request</h1>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow-md rounded my-6">
           <thead>
@@ -75,7 +76,7 @@ const CampaignRequest: React.FC = () => {
                   <td className="py-3 px-4 text-left">{req?.email}</td>
                   <td className="py-3 px-4 text-left">{req?.amount}</td>
                   <td className="py-3 px-4 text-left">{formattedDate}</td>
-                  <td className="py-3 px-4 text-left" onClick={()=>handleView(req._id)}>view</td>
+                  <td className="py-3 px-4 text-left cursor-pointer" onClick={()=>handleView(req._id)}>view</td>
                   <td className="py-3 px-4 text-left">
                     {req.isApproved === 'pending' ? (
                       <Dropdown>

@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { deleteBeneficiaryData } from '@/redux/slice/beneficiarySlice';
+import Spinner from '@/Components/user/Spinner';
 
 const schema = z.object({
   profilePics: z.instanceof(FileList).refine(files => files.length === 3, "Exactly 3 profile pictures are required"),
@@ -31,8 +32,10 @@ const ProfileAndDocsUploader: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const [profilePics, setProfilePics] = useState<string[]>([]);
   const [supportingDocs, setSupportingDocs] = useState<string[]>([]);
+  const [loading,setLoading] = useState(false)
 
   const onSubmit: SubmitHandler<FormData> = async data => {
+    setLoading(true)
     if (data.profilePics.length !== 3 || data.supportingDocs.length !== 3) {
       console.error("You must upload exactly 3 profile pictures and 3 supporting documents.");
       return;
@@ -46,6 +49,7 @@ const ProfileAndDocsUploader: React.FC = () => {
     formData.append('beneficiaries', JSON.stringify(beneficiaries));
 
     try {
+      setLoading(false)
       const response = await fileUploader(formData as any);
       console.log("Upload successful", response);
       if (response?.status === 200) {
@@ -79,6 +83,11 @@ const ProfileAndDocsUploader: React.FC = () => {
   };
 
   return (
+    <div>
+
+    {loading ? (
+   <Spinner/>
+    ):(
     <div className="container mx-auto p-4 bg-green-50 rounded-lg shadow-lg w-[70%] mt-20">
       <p className='text-center text text-red-500'>You're just 1 click ahead for your fundraising campaign</p>
       <h1 className="text-2xl font-bold text-center mb-8 text-gray-800">Upload Profile Pictures
@@ -139,6 +148,8 @@ const ProfileAndDocsUploader: React.FC = () => {
           <button type="submit" className="ml-5 bg-blue-500 text-white px-8 py-2 rounded-lg shadow-md hover:bg-blue-600 transition duration-300">Submit</button>
         </div>
       </form>
+    </div>
+    )}
     </div>
   );
 };

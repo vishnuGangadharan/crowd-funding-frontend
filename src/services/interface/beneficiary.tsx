@@ -1,4 +1,4 @@
-
+import { userFormData } from "./user";
 
 
 
@@ -23,7 +23,7 @@ interface EducationDetails {
 
 interface beneficiary{
     _id?: string;
-    fundraiser?:string;
+    fundraiser?:userFormData;
     name?:string;
     age?:number;
     isApproved?:string;

@@ -229,10 +229,3 @@ const dispatch = useDispatch()
 export default SignUp;
 
 
-
-// (credentialResponse) => {
-//   if (credentialResponse.credential) {
-//     const decoded = jwtDecode(credentialResponse.credential);
-//     console.log(decoded);
-//   }
-// }

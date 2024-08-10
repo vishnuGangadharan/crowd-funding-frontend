@@ -15,12 +15,15 @@ const MediaUploader = lazy(()=> import ("../pages/user/MediaUploader"))
 const Fundraising  = lazy(()=> import ("../pages/user/Fundraisings"))
 const OTPforFundRegister = lazy(()=> import ('../pages/user/OTPforFundRegister'))
 const PostDetails = lazy(()=> import('../pages/user/PostDetails'))
-const AllPosts = lazy(()=> import ('../pages/user/AllPosts'))
 const Shearing = lazy(()=> import ('../Components/user/Shearing'))
+const Spinner = lazy(()=> import ('../Components/user/Spinner'))
+import AllPosts from '../pages/user/AllPosts'; // Direct import for AllPosts
+const Dummy = lazy(() => import ('../pages/user/Dummy'))
+const Chat = lazy(() => import ('../pages/user/Chat'))
 
 const UserRoutes: React.FC = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Spinner/>}>
         <Routes>
             
             <Route path="/otp" element={<OTP />} />
@@ -34,8 +37,9 @@ const UserRoutes: React.FC = () => {
             <Route path="/postdetails/:id" element={<PostDetails />} />
             <Route path='/all-posts' element={<AllPosts/>}/>
             <Route path='/share' element={<Shearing/>}/>
-
+            <Route path='/dummy' element={<Dummy/>}/>
           </Route>
+            <Route path="/chat" element={<Chat/>}/>
             <Route path='/registration' element={<FundraisingRegister/>}/>
             <Route path='/media-uploader' element={<MediaUploader/>}/>
           </Route>
