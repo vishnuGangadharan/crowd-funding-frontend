@@ -8,6 +8,7 @@ import parse from 'html-react-parser';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { useNavigate } from 'react-router-dom';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
 import PostComments from './PostComments';
 import { formatDate } from '@/services/functions/Functions';
@@ -15,6 +16,8 @@ import { FaCircleChevronLeft } from "react-icons/fa6";
 import { FaChevronCircleRight } from "react-icons/fa";
 import PaymentModal from '@/Components/user/PaymentModal';
 import ShowDonations from '@/Components/user/ShowDonations';
+import { FaComments } from 'react-icons/fa'; 
+import Chat from '../user/Chat'
 import {
     FacebookShareButton,
     FacebookIcon,
@@ -30,6 +33,7 @@ const PostDetails: React.FC = () => {
     const [postDetails, setPostDetails] = useState<beneficiary>();
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     const { userInfo } = useSelector((state: RootState) => state.auth);
     const handleOpenModal = () => {
@@ -75,8 +79,11 @@ const PostDetails: React.FC = () => {
 
 
 
+    const fundraiserId = postDetails?.fundraiser?._id;
 
-   
+    const handleChatClick = () => {
+        navigate(`/chat?senderId=${userId}&receiverId=${fundraiserId}`)
+    };
 
 
     return (
@@ -138,65 +145,65 @@ const PostDetails: React.FC = () => {
                                 Read More
                             </button>
                             <div>
-                            {postDetails && postDetails.isApproved !== 'pending' ?(
+                                {postDetails && postDetails.isApproved !== 'pending' ? (
 
-                                <ReportModal postId={postDetails?._id || ''} />
-                            ):("")}
+                                    <ReportModal postId={postDetails?._id || ''} />
+                                ) : ("")}
                             </div>
                         </div>
-                        {postDetails && postDetails.isApproved !== 'pending' ?(
+                        {postDetails && postDetails.isApproved !== 'pending' ? (
 
-                        <div>
-                            <FacebookShareButton url={fullUrl} title={title}>
-                                <FacebookIcon size={32} round />
-                            </FacebookShareButton>
+                            <div>
+                                <FacebookShareButton url={fullUrl} title={title}>
+                                    <FacebookIcon size={32} round />
+                                </FacebookShareButton>
 
-                            <TwitterShareButton url={fullUrl} title={title}>
-                                <TwitterIcon size={32} round />
-                            </TwitterShareButton>
+                                <TwitterShareButton url={fullUrl} title={title}>
+                                    <TwitterIcon size={32} round />
+                                </TwitterShareButton>
 
-                            <WhatsappShareButton url={fullUrl} title={title}>
-                                <WhatsappIcon size={32} round />
-                            </WhatsappShareButton>
-                        </div>
-                        ):("")}
+                                <WhatsappShareButton url={fullUrl} title={title}>
+                                    <WhatsappIcon size={32} round />
+                                </WhatsappShareButton>
+                            </div>
+                        ) : ("")}
                     </div>
 
                     {/* Right Column */}
                     {postDetails?.isApproved !== "pending" ? (
-                    <div className="md:w-1/3 p-4 bg-white shadow-lg rounded-lg md:ml-4 mt-4 md:mt-0">
-                        <Card className="w-full shadow-lg rounded-lg">
-                            <h3>Contribution Status</h3>
-                            <p>Target Amount :{postDetails?.amount}</p>
-                            <p>Current Contributed amount : {postDetails?.contributedAmount}</p>
-                            <p>Balance :{balance}</p>
-                            <Progress
-                                progress={Number(((Number(postDetails?.contributedAmount) / Number(postDetails?.amount)) * 100).toFixed(2))}
-                                progressLabelPosition="inside"
-                                textLabel="contribution status"
-                                textLabelPosition="outside"
-                                size="lg"
-                                labelProgress
-                                labelText
-                            />
-                        </Card>
-                        <h2 className="text-2xl font-bold mb-4 mt-14">Contribute for me</h2>
-            
+                        <div className="md:w-1/3 p-4 bg-white shadow-lg rounded-lg md:ml-4 mt-4 md:mt-0">
+                            <Card className="w-full shadow-lg rounded-lg">
+                                <h3>Contribution Status</h3>
+                                <p>Target Amount :{postDetails?.amount}</p>
+                                <p>Current Contributed amount : {postDetails?.contributedAmount}</p>
+                                <p>Balance :{balance}</p>
+                                <Progress
+                                    progress={Number(((Number(postDetails?.contributedAmount) / Number(postDetails?.amount)) * 100).toFixed(2))}
+                                    progressLabelPosition="inside"
+                                    textLabel="contribution status"
+                                    textLabelPosition="outside"
+                                    size="lg"
+                                    labelProgress
+                                    labelText
+                                />
+                            </Card>
+                            <h2 className="text-2xl font-bold mb-4 mt-14">Contribute for me</h2>
 
-                        <div>
-                            <button className="bg-green-500 text-white py-2 px-4 rounded-md w-full" onClick={handleOpenModal}>Donate Now</button>
 
-                            {/* Render the PaymentModal component conditionally */}
-                            {isModalOpen && (
-                                <PaymentModal isOpen={isModalOpen} beneficiaryId={postDetails?._id} onClose={handleCloseModal} />
-                            )}
+                            <div>
+                                <button className="bg-green-500 text-white py-2 px-4 rounded-md w-full" onClick={handleOpenModal}>Donate Now</button>
+
+                                {/* Render the PaymentModal component conditionally */}
+                                {isModalOpen && (
+                                    <PaymentModal isOpen={isModalOpen} beneficiaryId={postDetails?._id} onClose={handleCloseModal} />
+                                )}
+                            </div>
+
+
+
+                            <ShowDonations beneficiaryId={postDetails?._id} />
                         </div>
-
-
-
-                    <ShowDonations beneficiaryId={postDetails?._id} />
-                    </div>
-                    ): ("")}
+                    ) : ("")}
                 </div>
 
                 {/* Parent Card with Supporting Documents and Fundraiser Details */}
@@ -219,8 +226,19 @@ const PostDetails: React.FC = () => {
                     </div>
 
                     {/* Fundraiser Details Card */}
-                    <div className="w-full md:w-1/2 shadow-lg rounded-lg p-4 bg-white flex flex-col items-center h-32">
+                    <div className="w-full md:w-1/2 shadow-lg rounded-lg p-2 bg-white flex flex-col items-center h-32">
+                    <div className='flex '>
                         <h3 className="text-xl font-semibold mb-2 text-center">Fundraiser Details</h3>
+
+                        <button
+                        onClick={handleChatClick}
+                            className="flex items-center justify-center gap-2 ml-5 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out shadow-md"
+                        >
+                            <FaComments className="w-5 h-5" />
+                            <span>Chat</span>
+                        
+                        </button>
+                        </div>
                         <div className="flex items-center justify-center lg:justify-start">
                             <img
                                 className="w-14 h-14 rounded-full shadow-md hover:shadow-lg transition-shadow duration-300"
@@ -236,9 +254,9 @@ const PostDetails: React.FC = () => {
                 </div>
 
                 {/* Comments */}
-                {postDetails && postDetails.isApproved !== 'pending' ?(
-                <PostComments postId={id} userId={userId} />
-                    ):("")}
+                {postDetails && postDetails.isApproved !== 'pending' ? (
+                    <PostComments postId={id} userId={userId} />
+                ) : ("")}
                 <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-white'>
                     <ModalContent>
                         {(onClose) => (

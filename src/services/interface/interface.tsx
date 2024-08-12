@@ -68,3 +68,13 @@ export interface beneficiary{
     panNumber?:string
     heading?:string;
 }
+
+
+export interface chatInterface { 
+    _id?:string;
+    senderId?:string;
+    receiverId?:string;
+    message?:string;
+    createdAt?:Date ;
+    updatedAt?:Date;
+}

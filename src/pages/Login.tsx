@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { login } from "../api/user";
 import { useDispatch } from "react-redux";
-import { RootState } from "../redux/store";
 import { setUserData } from "../redux/slice/authSlice";
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
