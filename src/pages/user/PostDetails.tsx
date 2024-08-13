@@ -17,6 +17,7 @@ import { FaChevronCircleRight } from "react-icons/fa";
 import PaymentModal from '@/Components/user/PaymentModal';
 import ShowDonations from '@/Components/user/ShowDonations';
 import { FaComments } from 'react-icons/fa'; 
+import PostUpdate from './PostUpdate';
 import Chat from '../user/Chat'
 import {
     FacebookShareButton,
@@ -150,15 +151,22 @@ const PostDetails: React.FC = () => {
                                     <ReportModal postId={postDetails?._id || ''} />
                                 ) : ("")}
                             </div>
+                            <button className="bg-blue-500 text-white py-2 px-4 rounded-md">
+                                post Updates
+                            </button>
+                            <button className="bg-blue-500 text-white py-2 px-4 rounded-md">
+                              previous updates
+                            </button>
+                            <PostUpdate/>
                         </div>
                         {postDetails && postDetails.isApproved !== 'pending' ? (
 
-                            <div>
+                            <div className='mt-5 gap-5'>
                                 <FacebookShareButton url={fullUrl} title={title}>
                                     <FacebookIcon size={32} round />
                                 </FacebookShareButton>
 
-                                <TwitterShareButton url={fullUrl} title={title}>
+                                <TwitterShareButton url={fullUrl} title={title} className='ml-3 mr-3'>
                                     <TwitterIcon size={32} round />
                                 </TwitterShareButton>
 

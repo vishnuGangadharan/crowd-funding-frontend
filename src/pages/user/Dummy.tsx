@@ -130,80 +130,95 @@
 
 // export default Dummy;
 
+import React, { useEffect, useState } from 'react';
+import io from 'socket.io-client';
+import { useLocation } from 'react-router-dom';
 
+const socket = io('http://localhost:3008');
 
-import React, { useState } from 'react';
-import axios from 'axios';
+interface Message {
+  senderId: string | null;
+  recipientId: string;
+  message: string;
+}
 
-const Dummy: React.FC = () => {
-  const [image, setImage] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null);
+const Chat: React.FC = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result as string);
+  const senderId = searchParams.get('senderId');
+  const receiverId = searchParams.get('receiverId');
+  const [currentUserId, setCurrentUserId] = useState(''); 
+  const [recipientId, setRecipientId] = useState(''); 
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    if (senderId) setCurrentUserId(senderId);
+    if (receiverId) setRecipientId(receiverId);
+  }, [senderId, receiverId]);
+
+  useEffect(() => {
+    if (currentUserId && recipientId) {
+      socket.emit('joinRoom', { userId: currentUserId, recipientId });
+
+      socket.on('receiveMessage', (newMessage: Message) => {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      });
+
+      return () => {
+        socket.off('receiveMessage'); 
+        socket.disconnect();
       };
-      reader.readAsDataURL(selectedFile);
-      setFile(selectedFile);
     }
-  };
+  }, [currentUserId, recipientId]);
 
-  const handleUpload = async () => {
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
+  const sendMessage = () => {
+    if (message.trim() === '') return;
 
-      try {
-        const response = await axios.post('/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        console.log('File uploaded successfully:', response.data);
-      } catch (error) {
-        console.error('Error uploading file:', error);
-      }
-    }
+    const newMessage = {
+      senderId: currentUserId,
+      recipientId: recipientId,
+      message: message,
+    };
+
+    socket.emit('sendMessage', newMessage);
+    setMessage(''); 
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <label className="cursor-pointer">
-        {image ? (
-          <img src={image} alt="Selected" className="w-24 h-24 rounded-full object-cover" />
-        ) : (
-          <div className="w-24 h-24 flex items-center justify-center rounded-full bg-gray-200">
-            <svg
-              className="w-12 h-12 text-gray-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 4v16m8-8H4"
-              ></path>
-            </svg>
+    <div className="flex flex-col max-w-md mx-auto h-screen bg-gray-100">
+      <div className="flex-grow p-4 overflow-y-auto bg-white shadow-md">
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`mb-2 p-2 rounded-lg ${
+              msg.senderId === currentUserId
+                ? 'bg-blue-500 text-white self-end'
+                : 'bg-gray-200 text-gray-800 self-start'
+            }`}
+          >
+            {msg.message}
           </div>
-        )}
-        <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-      </label>
-      {file && (
+        ))}
+      </div>
+      <div className="p-4 bg-gray-100 flex">
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type your message..."
+          className="flex-grow p-2 rounded-l-lg border border-gray-300 focus:outline-none"
+        />
         <button
-          onClick={handleUpload}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
+          onClick={sendMessage}
+          className="p-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600"
         >
-          Upload Image
+          Send
         </button>
-      )}
+      </div>
     </div>
   );
 };
 
-export default Dummy;
+export default Chat;

@@ -77,4 +77,5 @@ export interface chatInterface {
     message?:string;
     createdAt?:Date ;
     updatedAt?:Date;
+    timestamp?: Date;
 }
