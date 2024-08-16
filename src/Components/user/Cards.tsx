@@ -63,7 +63,14 @@ const Card: React.FC<CardProps> = ({ limit }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 p-4">
             {loading ? (
                 <>
-                    {Array.from({ length: limit || 3 }).map((_, index) => renderSkeleton())}
+
+                    {Array.from({ length: limit || 3 }).map((_, index) => (
+                        <div key={index}>
+
+                            {renderSkeleton()}
+                        </div>
+                    ))}
+
                 </>
             ) : (
                 displayedPosts.map((post, indx) => (

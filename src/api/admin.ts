@@ -1,3 +1,4 @@
+import { parseClassName } from "node_modules/react-toastify/dist/utils";
 import Api from "../services/axios";
 import adminRoutes from "../services/endpoints/adminEndPoints";
 import errorHandler from "./error";
@@ -56,9 +57,20 @@ export const getReport =async() => {
     }
 }
 
+export const blockPost = async(postId:string) =>{
+    try{
+        console.log('postId',postId)
+
+        const response = await Api.post(adminRoutes.blockPost, {params:{postId}})
+        return response.data        
+    }catch(error){
+        const err:Error = error as Error
+        errorHandler(err)
+    }
+}
+
 export const getPostDetails = async(postId:string) => {
     try {
-
         const response = await Api.get(adminRoutes.getPostDetails, {params: {postId}})
         return response.data
 

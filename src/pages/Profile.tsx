@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import UpdatePassword from '../Components/user/UpdatePassword';
 import { userFormData } from '@/services/interface/user';
 import { editUserProfile, getUser } from '@/api/user';
+import {toast}  from 'react-toastify'
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const Profile: React.FC = () => {
   const fetchUser = async () => {
     try {
       const response = await getUser(userId);
+      
       setUserDetails(response.data);
       setEmail(response.data.email);
       setPhone(response.data.phone);
@@ -76,6 +78,7 @@ const Profile: React.FC = () => {
           profilePicture: profilePicPreview || ''
         });
         setIsEditing(false);
+        toast.success('Profile updated successfully');
       } else {
         console.error('Failed to update profile');
       }
@@ -97,6 +100,9 @@ const Profile: React.FC = () => {
     navigate('/fundraising');
   };
 
+  const handleChatClick = () => {
+    navigate(`/chat?senderId=${userId}`)
+};
   return (
     <form onSubmit={handleSubmit} className="mx-auto p-6 mt-24 w-[60%] bg-gray-50 rounded-lg shadow-lg space-y-6 mb-36">
       <div className="flex flex-col items-center mb-6">
@@ -170,7 +176,9 @@ const Profile: React.FC = () => {
       <div className="mt-6 grid grid-cols-2 gap-4">
         <UpdatePassword />
         <button type="button" className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-purple-600 transition">Wallet</button>
-        <button type="button" className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-pink-600 transition">Chat</button>
+        <button type="button" className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-pink-600 transition"
+        onClick={handleChatClick}
+        >Chat</button>
         <button
           type="button"
           className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-yellow-600 transition"

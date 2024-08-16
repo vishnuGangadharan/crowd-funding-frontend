@@ -18,7 +18,6 @@ import PaymentModal from '@/Components/user/PaymentModal';
 import ShowDonations from '@/Components/user/ShowDonations';
 import { FaComments } from 'react-icons/fa'; 
 import PostUpdate from './PostUpdate';
-import Chat from '../user/Chat'
 import {
     FacebookShareButton,
     FacebookIcon,
@@ -86,6 +85,10 @@ const PostDetails: React.FC = () => {
         navigate(`/chat?senderId=${userId}&receiverId=${fundraiserId}`)
     };
 
+    const handleStatusRoute = () => {
+        navigate(`/status-updates?postId=${postId}`);
+    }
+
 
     return (
 
@@ -151,13 +154,16 @@ const PostDetails: React.FC = () => {
                                     <ReportModal postId={postDetails?._id || ''} />
                                 ) : ("")}
                             </div>
-                            <button className="bg-blue-500 text-white py-2 px-4 rounded-md">
-                                post Updates
-                            </button>
-                            <button className="bg-blue-500 text-white py-2 px-4 rounded-md">
+                            
+                            <button 
+                            className="bg-blue-500 text-white py-2 px-4 rounded-md"
+                            onClick={handleStatusRoute}
+                            >
                               previous updates
                             </button>
-                            <PostUpdate/>
+                            {userId === postDetails?.fundraiser?._id ? 
+                                    <PostUpdate postId={postDetails?._id || ''} /> : ''
+                            }
                         </div>
                         {postDetails && postDetails.isApproved !== 'pending' ? (
 
@@ -199,8 +205,11 @@ const PostDetails: React.FC = () => {
 
 
                             <div>
+                                {Number(postDetails?.amount) >= Number(postDetails?.contributedAmount) ? (
                                 <button className="bg-green-500 text-white py-2 px-4 rounded-md w-full" onClick={handleOpenModal}>Donate Now</button>
-
+                                ):(
+                                <button className="bg-green-500 text-white py-2 px-4 rounded-md w-full" >Completed</button>
+                                )}
                                 {/* Render the PaymentModal component conditionally */}
                                 {isModalOpen && (
                                     <PaymentModal isOpen={isModalOpen} beneficiaryId={postDetails?._id} onClose={handleCloseModal} />
@@ -209,7 +218,7 @@ const PostDetails: React.FC = () => {
 
 
 
-                            <ShowDonations beneficiaryId={postDetails?._id} />
+                            <ShowDonations beneficiaryId={postDetails?._id} widthClass='' limit={5}/>
                         </div>
                     ) : ("")}
                 </div>

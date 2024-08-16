@@ -18,6 +18,8 @@ const userRoutes={
     reportPost : '/user/report-post',
     getSessionId: '/user/get-session-id',
     getDonations: '/user/get-donations',
+    updateBeneficiary : '/user/update-beneficiary',
+    getUpdatedStatus: '/user/status-updates',
 }
 
 export default userRoutes;

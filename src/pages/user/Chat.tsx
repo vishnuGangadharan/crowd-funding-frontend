@@ -13,7 +13,9 @@ interface Message {
 
 interface Conversation {
   recipientId: string;
-  recipientName: string;
+  name: string;
+  _id: string;
+  profilePicture:string
 }
 
 const Chat: React.FC = () => {
@@ -42,43 +44,46 @@ const Chat: React.FC = () => {
       });
 
       return () => {
-        socket.off('receiveMessage'); 
-        socket.disconnect();
+        socket.emit('leaveRoom', { userId: currentUserId, recipientId });
+        socket.off('receiveMessage');
       };
     }
   }, [currentUserId, recipientId]);
 
   const sendMessage = () => {
     if (message.trim() === '') return;
-  
+
     const newMessage = {
       senderId: currentUserId,
       recipientId: recipientId,
       message: message,
     };
-  
+
     socket.emit('sendMessage', newMessage);
     setMessage('');
   };
-  
 
-  //chatted users
   useEffect(() => {
-    const allUsers = async() =>{
-      const response = await allUsersChatted(senderId as string)
-      console.log("ffffff",response);
-      
+    const allUsers = async () => {
+      try {
+        const response = await allUsersChatted(senderId as string);
+        console.log("sdsdsa",response.data);
+        
+        setConversations(response.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+    if (senderId) {
+      allUsers();
     }
-    allUsers()
-  },[senderId])
-
-
+  }, [senderId]);
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await getMessage(senderId, recipientId);
-        setMessages(response.data); // Set the fetched messages
+        const response = await getMessage(currentUserId, recipientId);
+        setMessages(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -89,33 +94,55 @@ const Chat: React.FC = () => {
     }
   }, [currentUserId, recipientId]);
 
+  const handleUserClick = (id: string) => {
+    setRecipientId(id);
+  };
+
   return (
     <div className="flex max-w-5xl mx-auto h-screen bg-gray-100">
       {/* Left Sidebar */}
-      <div className="w-1/4 bg-white shadow-lg p-4 overflow-y-auto">
-        <h2 className="text-lg font-bold mb-4">Conversations</h2>
-        {Array.isArray(conversations) && conversations.map((conversation, index) => (
-          <div
-            key={index}
-            className="p-2 mb-2 cursor-pointer hover:bg-blue-500 hover:text-white rounded-lg"
-            onClick={() => setRecipientId(conversation.recipientId)}
-          >
-            {conversation.recipientName}
-          </div>
-        ))}
-      </div>
+      <div className="w-1/4 bg-white shadow-lg p-4 overflow-y-auto border-r">
+  <h2 className="text-lg font-bold mb-4">Conversations</h2>
+  {Array.isArray(conversations) &&
+    conversations
+      .filter(conversation => conversation._id !== senderId) // Filter out the senderId user
+      .map((conversation) => (
+        <div
+          key={conversation._id}
+          className={`flex items-center p-3 mb-2 cursor-pointer rounded-lg ${
+            recipientId === conversation._id
+              ? 'bg-blue-500 text-white'
+              : 'hover:bg-blue-100'
+          }`}
+          onClick={() => handleUserClick(conversation._id)}
+        >
+          {/* Profile Picture */}
+          <img
+            src={conversation.profilePicture}
+            alt={conversation.name}
+            className="w-10 h-10 rounded-full mr-3" // Circular shape and margin-right
+          />
+          {/* User Name */}
+          <span>{conversation.name}</span>
+        </div>
+      ))}
+</div>
+
 
       {/* Chat Window */}
-      <div className="flex-grow flex flex-col">
-        <div className="flex-grow p-4 overflow-y-auto bg-white shadow-md">
+      <div className="flex-grow flex flex-col bg-gray-200">
+        <div className="flex-grow p-4 overflow-y-auto">
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`mb-2 p-2 rounded-lg ${
+              className={`mb-3 p-3 max-w-sm rounded-lg shadow-md ${
                 msg.senderId === currentUserId
-                  ? 'bg-blue-500 text-white self-end'
-                  : 'bg-gray-200 text-gray-800 self-start'
+                  ? 'bg-blue-500 text-white self-end ml-[40%]'
+                  : 'bg-white text-gray-800 self-start'
               }`}
+              style={{
+                alignSelf: msg.senderId === currentUserId ? 'flex-end' : 'flex-start',
+              }}
             >
               {msg.message}
             </div>
@@ -123,21 +150,28 @@ const Chat: React.FC = () => {
         </div>
 
         {/* Message Input */}
-        <div className="p-4 bg-gray-100 flex">
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type your message..."
-            className="flex-grow p-2 rounded-l-lg border border-gray-300 focus:outline-none"
-          />
-          <button
-            onClick={sendMessage}
-            className="p-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600"
-          >
-            Send
-          </button>
-        </div>
+        <form
+  onSubmit={(e) => {
+    e.preventDefault(); 
+    sendMessage(); 
+  }}
+  className="p-4 bg-gray-100 flex"
+>
+  <input
+    type="text"
+    value={message}
+    onChange={(e) => setMessage(e.target.value)}
+    placeholder="Type your message..."
+    className="flex-grow p-2 rounded-l-lg border border-gray-300 focus:outline-none"
+  />
+  <button
+    type="submit"
+    className="p-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600"
+  >
+    Send
+  </button>
+</form>
+
       </div>
     </div>
   );

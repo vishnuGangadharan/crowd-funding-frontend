@@ -17,9 +17,11 @@ const OTPforFundRegister = lazy(()=> import ('../pages/user/OTPforFundRegister')
 const PostDetails = lazy(()=> import('../pages/user/PostDetails'))
 const Shearing = lazy(()=> import ('../Components/user/Shearing'))
 const Spinner = lazy(()=> import ('../Components/user/Spinner'))
-import AllPosts from '../pages/user/AllPosts'; // Direct import for AllPosts
+import AllPosts from '../pages/user/AllPosts'; 
 const Dummy = lazy(() => import ('../pages/user/Dummy'))
 const Chat = lazy(() => import ('../pages/user/Chat'))
+const ShowUpdates = lazy(() => import ('../pages/user/ShowUpdates'))
+const ShowAllDonations = lazy(() => import ('../pages/user/ShowAllDonations'))
 
 const UserRoutes: React.FC = () => {
   return (
@@ -38,6 +40,8 @@ const UserRoutes: React.FC = () => {
             <Route path='/all-posts' element={<AllPosts/>}/>
             <Route path='/share' element={<Shearing/>}/>
             <Route path='/dummy' element={<Dummy/>}/>
+            <Route path="/status-updates" element={<ShowUpdates/>}/>
+            <Route path="/all-donations" element={<ShowAllDonations/>}/>
           </Route>
             <Route path="/chat" element={<Chat/>}/>
             <Route path='/registration' element={<FundraisingRegister/>}/>

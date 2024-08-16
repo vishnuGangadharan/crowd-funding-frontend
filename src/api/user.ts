@@ -1,7 +1,7 @@
 import Api from "../services/axios";
 import userRoutes from "../services/endpoints/userEndPoints";
 import errorHandler from "./error";
-import { beneficiary } from "../services/interface/interface";
+import { beneficiary, updateData } from "../services/interface/interface";
 import { userFormData } from "../services/interface/user";
 import { PasswordData } from "../services/interface/user";
 import { PaymentData } from "@/services/interface/PostReport";
@@ -215,4 +215,25 @@ export const getDonations =async(beneficiaryId:string) => {
         let  err : Error = error as Error
         errorHandler(err)
     }
+}
+
+export const updateBeneficiaryData = async(data : FormData)=> {
+    try{
+        const response = await Api.post(userRoutes.updateBeneficiary, data)
+        return response
+    }catch(error){
+        let err : Error = error as Error
+        errorHandler(err)
+    }
+}
+
+export const getStatusUpdate = async(postID: string ) => {
+    try{
+        const response = await Api.get(userRoutes.getUpdatedStatus, {params: {postID}})
+        return response.data
+    }catch(error){
+        let err : Error = error as Error
+        errorHandler(err)
+    }
+
 }

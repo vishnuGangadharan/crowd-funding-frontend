@@ -6,7 +6,8 @@ const adminRoutes = {
     campaignRequest : "/admin/campaign-request",
     adminPostApproval: "/admin/post-approval",
     allReports : '/admin/all-reports',
-    getPostDetails:'/admin/post-details'
+    getPostDetails:'/admin/post-details',
+    blockPost:'/admin/block-post'
 }
 
 export default adminRoutes;

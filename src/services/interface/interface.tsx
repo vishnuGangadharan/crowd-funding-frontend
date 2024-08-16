@@ -79,3 +79,17 @@ export interface chatInterface {
     updatedAt?:Date;
     timestamp?: Date;
 }
+
+export interface updateData{
+    updateFiles:File[] | null | string;
+    content : string
+}
+
+
+
+export interface updates {
+    content?: string;
+    postId?: string;
+    image?: string[];
+    video?: string[];
+  }

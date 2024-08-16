@@ -5,6 +5,7 @@ export interface PostReport {
     comment?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    count?: number;
 }
 
 export interface PaymentData  {

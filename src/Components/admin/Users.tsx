@@ -3,12 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUsers, handleBlockStatus } from '../../api/admin';
 import { Spinner } from '@nextui-org/react';
-
+import ConfirmationModal from './ConfirmationModal';
 const Users: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState(1);
-  const limit = 5;  
+  const limit = 5;
   const [total, setTotal] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -16,9 +16,9 @@ const Users: React.FC = () => {
 
   const fetchUsersDetails = async () => {
     try {
-      console.log("searchhh",searchTerm);
-      
-      const response = await fetchUsers(page , limit, searchTerm);
+      console.log("searchhh", searchTerm);
+
+      const response = await fetchUsers(page, limit, searchTerm);
       console.log("response", response.data);
       setUsers(response.data.data);
       setTotal(response?.data.total)
@@ -31,11 +31,14 @@ const Users: React.FC = () => {
 
   useEffect(() => {
     fetchUsersDetails();
-  }, [page,searchTerm]);
+  }, [page, searchTerm]);
 
   const handleBlockUser = async (id: string, isBlocked: boolean) => {
     try {
       const response = await handleBlockStatus(id, !isBlocked);
+      console.log("ssss", response);
+
+
       if (response) {
         fetchUsersDetails();
       }
@@ -49,14 +52,14 @@ const Users: React.FC = () => {
     setPage(1);
   }
 
-  const handlePreviousPage = () =>{
-    if( page >  1){
+  const handlePreviousPage = () => {
+    if (page > 1) {
       setPage(page - 1);
     }
   }
 
-  const handleNextPage = () =>{
-    if( page < total){
+  const handleNextPage = () => {
+    if (page < total) {
       setPage(page + 1);
     }
   }
@@ -98,15 +101,19 @@ const Users: React.FC = () => {
                     <img src={item.profilePicture ? item.profilePicture : 'https://www.w3schools.com/w3images/avatar2.png'} alt="Profile" className="w-10 h-10 rounded-full mx-auto" />
                   </td>
                   <td className="px-6 py-4 text-center border-b">{item.name}</td>
-                  <td className="px-6 py-4 text-center border-b">{item.email }</td>
+                  <td className="px-6 py-4 text-center border-b">{item.email}</td>
                   <td className="px-6 py-4 text-center border-b">{item.isFundraiser ? 'Yes' : 'No'}</td>
                   <td className="px-6 py-4 text-center border-b">
-                    <button
-                      className={`py-1 px-3 rounded text-white transition duration-300 ${item.isBlocked ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}
-                      onClick={() => handleBlockUser(item._id, item.isBlocked)}
-                    >
-                      {item.isBlocked ? "Unblock" : "Block"}
-                    </button>
+
+                    <ConfirmationModal
+                      buttonText={item.isBlocked ? "Unblock User" : "Block User"}
+                      title={`Are you sure you want to ${item.isBlocked ? "unblock" : "block"} this user?`}
+                      message={`${item.isBlocked
+                        ? "Unblocking this user will restore their access to the platform."
+                        : "Blocking this user will prevent them from accessing the platform."
+                        }`}
+                      onConfirm={() => handleBlockUser(item._id, item.isBlocked)}
+                    />
                   </td>
                 </tr>
               ))}

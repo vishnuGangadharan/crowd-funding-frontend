@@ -24,6 +24,7 @@ interface EducationDetails {
 interface beneficiary{
     _id?: string;
     fundraiser?:userFormData;
+    blocked?:boolean;
     name?:string;
     age?:number;
     isApproved?:string;
