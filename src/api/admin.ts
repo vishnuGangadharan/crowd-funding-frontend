@@ -61,7 +61,9 @@ export const blockPost = async(postId:string) =>{
     try{
         console.log('postId',postId)
 
-        const response = await Api.post(adminRoutes.blockPost, {params:{postId}})
+        const response = await Api.post(adminRoutes.blockPost, {
+            postId,
+        });
         return response.data        
     }catch(error){
         const err:Error = error as Error

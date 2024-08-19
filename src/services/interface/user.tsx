@@ -1,3 +1,5 @@
+import { beneficiary } from "./interface";
+
 export interface userFormData {
   _id?: string | null;
     name?: string;
@@ -23,9 +25,23 @@ export interface userFormData {
     confirm: boolean;
   }
   export interface Donation {
-    id: string;
-    anonymousName: string;
-    email: string;
-    amount: number;
-    userId: userFormData;
+    id?: string;
+    anonymousName?: string;
+    email?: string;
+    amount?: number;
+    userId?: userFormData;
+    beneficiaryId?:string,
+    method?: string;
+}
+
+
+export interface walletType{
+  userId: userFormData;
+  balance:number;
+  transactions: {
+      beneficiary: beneficiary;
+      description: string;
+      type: string; //debit/credit
+      amount: number;
+  }[];
 }

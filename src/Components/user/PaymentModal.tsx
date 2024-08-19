@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import { loadStripe } from '@stripe/stripe-js';
-import { getSessionId } from '@/api/user';
+import { getSessionId, walletPayment } from '@/api/user';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-
+import { Donation } from '@/services/interface/user';
+import { PaymentData } from '@/services/interface/PostReport';
+import { toast } from 'react-toastify';
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,9 +16,16 @@ interface PaymentModalProps {
 const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, beneficiaryId }) => {
     const { userInfo } = useSelector((state: RootState) => state.auth);
   
-    const [amount, setAmount] = useState<number | undefined>(undefined);
-    const [anonymousName, setAnonymousName] = useState('');
+    const [amount, setAmount] = useState<number | string>(''); 
+    const [anonymousName, setAnonymousName] = useState<string>('');
     const [error, setError] = useState('');
+    const [selectedOption, setSelectedOption] = useState<string>('card');
+    const [paymentSuccessful, setPaymentSuccessful] = useState<boolean>(false); // State to manage payment success
+
+
+    const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedOption(event.target.value);
+    };
   
     const userId = userInfo._id;
     const userName = userInfo.name;
@@ -26,10 +35,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, beneficiar
       try{
       const trimmedAnonymousName = anonymousName.trim();
   
-      if (!amount) {
+      if (!amount || Number(amount) <= 0) { 
         setError('Amount is required');
         return;
-      } else if (amount < 100) {
+      } else if (Number(amount) < 100) {
         setError('Amount should be greater than 100');
         return;
       } else if (!trimmedAnonymousName) {
@@ -40,16 +49,28 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, beneficiar
   
   
       const PaymentData = {
-        amount: amount,
+        amount: Number(amount), 
         anonymousName: trimmedAnonymousName || userName,
         userId: userId,
         beneficiaryId: beneficiaryId,
+        method: selectedOption
       };
-      
-  
-        const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
-        const response = await getSessionId(PaymentData as any)
+      if(PaymentData.method === 'wallet'){
+        console.log('wallet');
+        const response = await walletPayment(PaymentData as PaymentData);
+        if(response && response.status === 200){
+          toast.success('Payment successful');
+          setPaymentSuccessful( paymentSuccessful=>!paymentSuccessful);
+          setAmount('');
+          setAnonymousName('');
+          setSelectedOption('card');
+          onClose();
+        }
+       
         
+      }else{
+        const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+        const response = await getSessionId(PaymentData as PaymentData)
             onClose();
         
 
@@ -57,6 +78,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, beneficiar
         await stripe?.redirectToCheckout({
             sessionId: sessionId,
         });
+        
+      }   
 
     } catch (error) {
         console.log("stripe", error);
@@ -64,11 +87,15 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, beneficiar
     }
 }
 
+useEffect(()=>{
+  
+},[paymentSuccessful])
+
   return (
     <>
       <Modal isOpen={isOpen} onOpenChange={onClose} placement="top-center">
         <ModalContent>
-              <form onSubmit={handleDonation} className="space-y-4">
+         <form onSubmit={handleDonation} className="space-y-4">
           <>
             <ModalHeader className="flex flex-col gap-1">Donate</ModalHeader>
             <ModalBody>
@@ -101,6 +128,28 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, beneficiar
                     onChange={(e) => setAnonymousName(e.target.value)}
                   />
                 </div>
+                <div>
+        <label>
+          <input
+            type="radio"
+            value="card"
+            checked={selectedOption === 'card'}
+            onChange={handleOptionChange}
+          />
+           card Payment
+        </label>
+      </div>
+      <div>
+        <label>
+          <input
+            type="radio"
+            value="wallet"
+            checked={selectedOption === 'wallet'}
+            onChange={handleOptionChange}
+          />
+           wallet payment
+        </label>
+      </div>
             </ModalBody>
             <ModalFooter>
               <Button color="danger" variant="flat" onPress={onClose}>

@@ -100,6 +100,9 @@ const Profile: React.FC = () => {
     navigate('/fundraising');
   };
 
+  const handleWalletClick = () =>{
+    navigate(`/wallet?userId=${userId}`);
+  }
   const handleChatClick = () => {
     navigate(`/chat?senderId=${userId}`)
 };
@@ -175,7 +178,12 @@ const Profile: React.FC = () => {
 
       <div className="mt-6 grid grid-cols-2 gap-4">
         <UpdatePassword />
-        <button type="button" className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-purple-600 transition">Wallet</button>
+        <button type="button" 
+          className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-purple-600 transition"
+          onClick={handleWalletClick}
+          >
+            Wallet
+        </button>
         <button type="button" className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md shadow-sm hover:bg-pink-600 transition"
         onClick={handleChatClick}
         >Chat</button>

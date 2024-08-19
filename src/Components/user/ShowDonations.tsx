@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Card } from 'flowbite-react';
 import { getDonations } from '@/api/user';
 import { Donation } from '../../services/interface/user';
+import { useNavigate } from 'react-router-dom';
+import { constrainedMemory } from 'process';
 
 interface Props {
     beneficiaryId: string | undefined;
@@ -14,6 +16,8 @@ const ShowDonations: React.FC<Props> = ({ beneficiaryId, widthClass = 'max-w-sm'
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isLimited, setIsLimited] = useState(false);
+
+    const navigate = useNavigate();
 
 
     const fetchDonations = async () => {
@@ -43,6 +47,10 @@ const ShowDonations: React.FC<Props> = ({ beneficiaryId, widthClass = 'max-w-sm'
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
 
+    const handleViewDonation = ()=>{
+        navigate(`/all-donations/${beneficiaryId}`)
+    }
+
     return (
         <div>
             {donations && donations.length > 0 ? (
@@ -50,7 +58,9 @@ const ShowDonations: React.FC<Props> = ({ beneficiaryId, widthClass = 'max-w-sm'
                     <div className="flex items-center justify-between">
                         <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">Donations</h5>
                         {isLimited && (
-                            <p className="text-sm font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer">
+                            <p className="text-sm font-medium text-cyan-600 hover:underline dark:text-cyan-500 cursor-pointer"
+                            onClick={handleViewDonation}
+                            >
                                 View all
                             </p>
                         )}
@@ -61,7 +71,7 @@ const ShowDonations: React.FC<Props> = ({ beneficiaryId, widthClass = 'max-w-sm'
                                 <li key={index} className="pb-0 pt-3 sm:pt-4">
                                     <div className="flex items-center space-x-4">
                                         <div className="shrink-0">
-                                            <img className='rounded- w-10 h-10' src={donation.userId.profilePicture} alt="" />
+                                            <img className='rounded- w-10 h-10' src={donation.userId?.profilePicture} alt="" />
                                         </div>
                                         <div className="min-w-0 flex-1">
                                             <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{donation.anonymousName}</p>

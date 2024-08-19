@@ -4,7 +4,7 @@ import { allPosts } from '@/api/user';
 import { CircularProgress } from "@nextui-org/react";
 import { capitalizeFirstLetter, truncateText } from '@/services/functions/Functions';
 import { useNavigate } from 'react-router-dom';
-import { Card as NextUICard, Skeleton } from "@nextui-org/react";
+import { Skeleton } from "@nextui-org/react";
 
 interface CardProps {
     limit?: number;
@@ -25,10 +25,10 @@ const Card: React.FC<CardProps> = ({ limit }) => {
                 // Add delay here before setting loading to false
                 setTimeout(() => {
                     setLoading(false);
-                }, 2000); // 2000 milliseconds = 2 seconds delay
+                }, 1000); // 2000 milliseconds = 2 seconds delay
             } catch (error) {
                 console.log("Error fetching fundraising details:", error);
-                setLoading(false); // Ensure loading state is set to false in case of error
+                setLoading(false); 
             }
         };
 
@@ -63,27 +63,32 @@ const Card: React.FC<CardProps> = ({ limit }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 p-4">
             {loading ? (
                 <>
-
                     {Array.from({ length: limit || 3 }).map((_, index) => (
                         <div key={index}>
-
                             {renderSkeleton()}
                         </div>
                     ))}
-
                 </>
             ) : (
                 displayedPosts.map((post, indx) => (
-                    <div key={indx} className="relative flex flex-col mb-32 mt-6 text-gray-700 bg-white md:w shadow-md rounded-xl w-80 mx-4">
+                    <div 
+                        key={indx} 
+                        className="relative flex flex-col mb-32 mt-6 text-gray-700 bg-white md:w shadow-md rounded-xl w-80 mx-4"
+                        role="region" 
+                        aria-labelledby={`post-heading-${indx}`}
+                    >
                         <div className="relative h-56 -mt-6 overflow-hidden text-white shadow-lg rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
                             <img
                                 src={post.profilePic && post.profilePic[0] ? (typeof post.profilePic[0] === 'string' ? post.profilePic[0] : URL.createObjectURL(post.profilePic[0])) : "https://i.sstatic.net/l60Hf.png"}
-                                alt="card"
+                                alt={`${post.name} profile`}
                                 className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-105"
                             />
                         </div>
                         <div className="p-6">
-                            <h5 className="mb-2 font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900">
+                            <h5 
+                                id={`post-heading-${indx}`} 
+                                className="mb-2 font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900"
+                            >
                                 {post.name}
                             </h5>
                             <div className='flex'>
@@ -92,15 +97,16 @@ const Card: React.FC<CardProps> = ({ limit }) => {
                                     value={Number(((Number(post.contributedAmount) / Number(post.amount)) * 100).toFixed(2))}
                                     color="success"
                                     showValueLabel={true}
+                                    aria-label={`${post.contributedAmount} out of ${post.amount} raised`}
                                 />
                                 <div className='ml-2'>
                                     <p className="text-green-600 font-bold">
-                                        Raised :
+                                        Raised:
                                         <br /> {post.contributedAmount}
                                     </p>
                                     <p className="text-red-600 font-bold">
-                                        Need : 
-                                        <br />{post.amount}
+                                        Need:
+                                        <br /> {post.amount}
                                     </p>
                                 </div>
                                 <div className="w-px h-24 bg-gray-300 mx-4"></div>
@@ -118,6 +124,7 @@ const Card: React.FC<CardProps> = ({ limit }) => {
                                 className="font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md hover:shadow-lg focus:opacity-85 active:opacity-85"
                                 type="button"
                                 onClick={() => navigate(`/postdetails/${post._id}`)}
+                                aria-label={`Read more about ${post.name}`} 
                             >
                                 Read More
                             </button>

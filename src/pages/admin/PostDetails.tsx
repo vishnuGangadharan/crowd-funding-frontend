@@ -44,7 +44,7 @@ const PostDetails = () => {
             >
                 <AiOutlineArrowLeft className="mr-2" /> Go Back
             </button>
-            
+
             <div className="flex flex-col md:flex-row md:gap-6">
                 <div className="md:w-1/2 bg-white p-4 rounded-lg shadow-md overflow-y-auto">
                     {postDetails && postDetails.fundraiser ? (
@@ -96,10 +96,10 @@ const PostDetails = () => {
                             <div className="flex flex-wrap gap-4">
                                 {postDetails?.profilePic && postDetails.profilePic.map((item, index) => (
                                     <div key={index} className="relative w-28 h-28">
-                                        <img 
-                                            src={item} 
-                                            alt={`Profile Pic ${index}`} 
-                                            className="w-full h-full object-cover rounded-lg shadow-md cursor-pointer" 
+                                        <img
+                                            src={item}
+                                            alt={`Profile Pic ${index}`}
+                                            className="w-full h-full object-cover rounded-lg shadow-md cursor-pointer"
                                             onClick={() => handleImageClick(item)}
                                         />
                                     </div>
@@ -112,10 +112,10 @@ const PostDetails = () => {
                             <div className="flex flex-wrap gap-4">
                                 {postDetails?.supportingDocs && postDetails.supportingDocs.map((item, index) => (
                                     <div key={index} className="relative w-28 h-28">
-                                        <img 
-                                            src={item} 
-                                            alt={`Supporting Doc ${index}`} 
-                                            className="w-full h-full object-cover rounded-lg shadow-md cursor-pointer" 
+                                        <img
+                                            src={item}
+                                            alt={`Supporting Doc ${index}`}
+                                            className="w-full h-full object-cover rounded-lg shadow-md cursor-pointer"
                                             onClick={() => handleImageClick(item)}
                                         />
                                     </div>

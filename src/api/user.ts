@@ -206,6 +206,16 @@ export const getSessionId = async(PaymentData : PaymentData)=> {
     }
 }
 
+export const walletPayment = async(paymentData: PaymentData) => {
+    try{
+        const response = await Api.post(userRoutes.walletPayment, paymentData)
+        return response
+    }catch(error){
+        let err : Error = error as Error
+        errorHandler(err)
+    }
+}
+
 
 export const getDonations =async(beneficiaryId:string) => {
     try{
@@ -236,4 +246,14 @@ export const getStatusUpdate = async(postID: string ) => {
         errorHandler(err)
     }
 
+}
+
+export const getWallet = async(userId: string)=>{
+    try{
+    const response =  await Api.get(userRoutes.getWallet,{params:{userId}})
+    return response.data
+    }catch(error){
+        let err : Error = error as Error
+        errorHandler(err)
+    }
 }

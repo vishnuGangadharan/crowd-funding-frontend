@@ -22,6 +22,8 @@ const Dummy = lazy(() => import ('../pages/user/Dummy'))
 const Chat = lazy(() => import ('../pages/user/Chat'))
 const ShowUpdates = lazy(() => import ('../pages/user/ShowUpdates'))
 const ShowAllDonations = lazy(() => import ('../pages/user/ShowAllDonations'))
+const Wallet = lazy(() => import ('../pages/user/Wallet'))
+const RadioButtonForm = lazy(()=> import ('../Components/user/mutipleForm/Try'))
 
 const UserRoutes: React.FC = () => {
   return (
@@ -41,7 +43,10 @@ const UserRoutes: React.FC = () => {
             <Route path='/share' element={<Shearing/>}/>
             <Route path='/dummy' element={<Dummy/>}/>
             <Route path="/status-updates" element={<ShowUpdates/>}/>
-            <Route path="/all-donations" element={<ShowAllDonations/>}/>
+            <Route path="/all-donations/:beneficiaryId" element={<ShowAllDonations/>}/>
+            <Route path="/wallet" element={<Wallet/>}/>
+            <Route path="/try" element={<RadioButtonForm/>}/>
+
           </Route>
             <Route path="/chat" element={<Chat/>}/>
             <Route path='/registration' element={<FundraisingRegister/>}/>

@@ -20,6 +20,8 @@ const userRoutes={
     getDonations: '/user/get-donations',
     updateBeneficiary : '/user/update-beneficiary',
     getUpdatedStatus: '/user/status-updates',
+    getWallet: '/user/get-wallet', 
+    walletPayment: '/user/wallet-payment' 
 }
 
 export default userRoutes;

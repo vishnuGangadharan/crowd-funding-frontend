@@ -4,11 +4,13 @@ import { blockPost, getReport } from '@/api/admin';
 import { PostReport } from '@/services/interface/PostReport';
 import { useNavigate } from 'react-router-dom';
 import ConfirmationModal from '@/Components/admin/ConfirmationModal';
+import { toast } from 'react-toastify';
 
 const ReportedPosts: React.FC = () => {
   const [reports, setReports] = useState<PostReport[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [refresh,setRefresh] = useState<boolean>(false)
 
   const navigate = useNavigate();
 
@@ -18,7 +20,7 @@ const ReportedPosts: React.FC = () => {
       console.log("Response:", response);
       if (response && Array.isArray(response.data)) {
         setReports(response.data);
-      } else {
+      } else {~
         setError("Invalid response format");
       }
     } catch (error) {
@@ -31,18 +33,24 @@ const ReportedPosts: React.FC = () => {
 
   useEffect(() => {
     fetchReports();
-  }, []);
 
-  const blockPosts = async (id:string) =>{
-    console.log('inside blockkkk',id);
-    try{
+  }, [refresh]);
+ 
+
+  const blockPosts = async (id: string) => {
+    try {
       const response = await blockPost(id);
-      console.log('blockrespose',response);
-
-    }catch(error){
-    console.log('error',error);  
+      console.log('blocked', response);
+      if(response.status == true){
+        toast.success(response.message);
+      }
+      setRefresh(refresh => !refresh)
+    } catch (error) {
+      console.log('error', error);
+    }
   }
-}
+
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -52,9 +60,10 @@ const ReportedPosts: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
-
-  const handleView = (id:string | undefined) => {
-    navigate(`/admin/postDetails/${id}`);
+  const handleView = (id: string | undefined) => {
+    if (id) {
+      navigate(`/admin/postDetails/${id}`);
+    }
   };
 
   return (
@@ -62,33 +71,36 @@ const ReportedPosts: React.FC = () => {
       {reports.length === 0 ? (
         <p>No reports found.</p>
       ) : (
-        reports.map((report, index) => (
-          <Card key={index} className="mb-4 w-full shadow-md">
+        reports.map((report) => (
+          <Card key={report._id} className="mb-4 w-full shadow-md">
             <CardBody>
               <div className="flex flex-col md:flex-row justify-between">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold mb-2">Reported Post</h3>
-                  <p className="mb-2"><strong>Reason:</strong> {report.reason}</p>
-                  <p className="mb-2"><strong>Comment:</strong> {report.comment}</p>
-                  <p className="mb-2"><strong>Reported count:</strong> {report.count}</p>
-                  <p className="mb-2"><strong>User ID:</strong> {report.userId}</p>
-                  <p className="mb-2"><strong>Post ID:</strong> {report.postId}</p>
+                  <p className="mb-2"><strong>Reason:</strong> {report.reason || "No reason provided"}</p>
+                  <p className="mb-2"><strong>Comment:</strong> {report.comment || "No comment provided"}</p>
+                  <p className="mb-2"><strong>Reported count:</strong> {report.count ?? "N/A"}</p>
+                  <p className="mb-2"><strong>User ID:</strong> {report?.userId|| "N/A"}</p>
+                  <p className="mb-2"><strong>Post ID:</strong> {report.postId?._id  || "N/A"}</p>
+                  <p className="mb-2"><strong>Blocked:</strong> {report.postId?.blocked ? 'true' : 'false'}</p>
                 </div>
                 <div className="flex flex-col space-y-2 mt-4 md:mt-0 md:ml-4">
-                  <Button color="primary" variant="light" onClick={()=>handleView(report.postId)}>
+                  <Button color="primary" variant="light" onClick={() => report.postId && handleView(report.postId._id)}>
                     View Post Details
                   </Button>
-                  {/* <Button color="danger" variant="light" onClick={() => console.log(`Blocking post ${report.postId}`)}>
-                    Block Post
-                  </Button> */}
+                  
+                  {/* {report.postId?.blocked ? ( */}
                   <ConfirmationModal
-                  buttonText='confirm blocking'
-                  title='Confirm Blocking'
-                  message='confirm to block this post and refund the money to the dynameter wallet'
-                  onConfirm={() => report.postId && blockPosts(report.postId)}                           />
-                </div>
+                    buttonText='Confirm Blocking'
+                    title='Confirm Blocking'
+                    message='Confirm to block this post and refund the money to the dynameter wallet'
+
+                    onConfirm={() => report.postId && report.postId._id && blockPosts(report.postId._id)}
+                  />
+                   {/* ):( <p className='text-red-600'>post is blocked</p> )} */}
+                    </div>
               </div>
-              {index < reports.length - 1 && <Divider />}
+              <Divider />
             </CardBody>
           </Card>
         ))
