@@ -18,6 +18,7 @@ import PaymentModal from '@/Components/user/PaymentModal';
 import ShowDonations from '@/Components/user/ShowDonations';
 import { FaComments } from 'react-icons/fa'; 
 import PostUpdate from './PostUpdate';
+import { countDown } from '@/services/functions/Functions';
 import {
     FacebookShareButton,
     FacebookIcon,
@@ -114,6 +115,7 @@ const PostDetails: React.FC = () => {
                             </Carousel>
                         </div>
                         <h1 className="text-3xl font-bold mb-4 mt-12 text-center">{postDetails?.heading}</h1>
+                        <h1 className='text-2xl ml-2 font-semibold text-red-500'>Days Left : {countDown(postDetails?.targetDate)} Days</h1>
                         <div className='flex flex-col space-y-2 p-4 '>
                             <span className='text-lg font-semibold text-gray-800'>Name : {postDetails?.name}</span>
                             <span className='text-md text-gray-600'>Age : {postDetails?.age} years old</span>
@@ -145,7 +147,7 @@ const PostDetails: React.FC = () => {
                             {postDetails?.bio && parse(postDetails.bio)}
                         </div>
                         <div className="flex gap-4">
-                            <button className="bg-blue-500 text-white py-2 px-4 rounded-md">
+                            <button className="bg-gradient-to-tr from-[#B249F8] to-[#FF1CF7]  hover:from-[#FF1CF7] hover:to-[#B249F8] transition duration-300 font-semibold text-white py-2 px-4 rounded-md">
                                 Read More
                             </button>
                             <div>
@@ -156,14 +158,23 @@ const PostDetails: React.FC = () => {
                             </div>
                             
                             <button 
-                            className="bg-blue-500 text-white py-2 px-4 rounded-md"
+                            className="bg-gradient-to-tr from-[#B249F8] to-[#FF1CF7]  hover:from-[#FF1CF7] hover:to-[#B249F8] transition duration-300 text-white py-2 px-4 rounded-md"
                             onClick={handleStatusRoute}
                             >
                               previous updates
                             </button>
+
+
+
                             {userId === postDetails?.fundraiser?._id ? 
                                     <PostUpdate postId={postDetails?._id || ''} /> : ''
                             }
+
+                            <button className='bg-gradient-to-tr from-[#B249F8] to-[#FF1CF7] text-white shadow-lg text-small font-semibold rounded-md p-2'>
+                                refund
+                            </button>
+
+
                         </div>
                         {postDetails && postDetails.isApproved !== 'pending' ? (
 
@@ -249,7 +260,7 @@ const PostDetails: React.FC = () => {
 
                         <button
                         onClick={handleChatClick}
-                            className="flex items-center justify-center gap-2 ml-5 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out shadow-md"
+                            className="flex items-center justify-center gap-2 ml-5 px-4 py-2 bg-gradient-to-tr from-[#B249F8] to-[#FF1CF7] text-white rounded-lg hover:from-[#FF1CF7] hover:to-[#B249F8] transition duration-300 ease-in-out shadow-md"
                         >
                             <FaComments className="w-5 h-5" />
                             <span>Chat</span>

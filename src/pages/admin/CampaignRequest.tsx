@@ -44,17 +44,17 @@ const CampaignRequest: React.FC = () => {
   };
 
   return (
-    <div className=" w-[80%] ml-4 mt-10">
+    <div className=" w-full ml-4 mr-5 mt-10">
       <h1 className="text-gray-800 text-2xl mb-6 font-semibold text-center">Campaign Request</h1>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow-md rounded my-6">
           <thead>
             <tr className="bg-gray-800 text-white">
               <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm text-left">No</th>
-              <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm text-left">Name</th>
-              <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm text-left">Category</th>
-              <th className="w-3/12 py-3 px-4 uppercase font-semibold text-sm text-left">Email</th>
-              <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm text-left">Amount</th>
+              <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm text-left">Name</th>
+              <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm text-left">Category</th>
+              <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm text-left">Email</th>
+              <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm text-left">Amount</th>
               <th className="w-2/12 py-3 px-4 uppercase font-semibold text-sm text-left">Last Date</th>
               <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm text-left">Documents</th>
               <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm text-left">Status</th>

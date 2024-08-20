@@ -67,6 +67,8 @@ export interface beneficiary{
     userAadharNumber?:string;
     panNumber?:string
     heading?:string;
+    requestedAmount:boolean;
+    targetDateFinished:boolean;
 }
 
 

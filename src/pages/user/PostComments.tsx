@@ -4,42 +4,42 @@ import React, { useEffect, useState } from 'react'
 interface commentProps {
     postId?: string | undefined
     userId?: string
-    comment?:string;
+    comment?: string;
     createdAt?: Date;
     updatedAt?: Date;
-    userName?:string
-    
+    userName?: string
+
 }
 
-const PostComments :React.FC<commentProps>= ({postId, userId}) => {
+const PostComments: React.FC<commentProps> = ({ postId, userId }) => {
 
     const [comment, setComment] = useState('');
-    const [showComment, setShowComment] = useState<commentProps[]>([]); 
+    const [showComment, setShowComment] = useState<commentProps[]>([]);
 
 
     const fetchComments = async () => {
-        try{
-            console.log("inside",postId);
-            
+        try {
+            console.log("inside", postId);
+
             const response = await geComments(postId as string)
-            console.log("resmes",response.data);
+            console.log("resmes", response.data);
             setShowComment(response.data)
-            
-        }catch(error){
+
+        } catch (error) {
             console.log(error);
-            
+
         }
     }
 
     useEffect(() => {
-     fetchComments()
-     console.log("efff");
-     
-
-    },[])
+        fetchComments()
+        console.log("efff");
 
 
-    
+    }, [])
+
+
+
     const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
@@ -47,9 +47,9 @@ const PostComments :React.FC<commentProps>= ({postId, userId}) => {
                 return;
             }
             const response = await postComment(comment, postId as string, userId as string);
-           console.log("Comment posted successfully", response);
-           setComment("");
-           fetchComments();
+            console.log("Comment posted successfully", response);
+            setComment("");
+            fetchComments();
         } catch (error) {
             console.log("Error posting comment:", error);
         }
@@ -69,14 +69,15 @@ const PostComments :React.FC<commentProps>= ({postId, userId}) => {
                 />
                 <button
                     type="submit"
-                    className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+                    className="bg-gradient-to-tr from-[#B249F8] to-[#FF1CF7] text-white py-2 px-4 rounded-md hover:text-black transition duration-300"
                 >
                     Submit
                 </button>
+
             </form>
 
             <div className="flex items-center justify-between mt-4">
-                
+
             </div>
             <div className="mt-2 max-h-96 overflow-y-auto custom-scrollbar">
                 {showComment.map((item, indx) => (

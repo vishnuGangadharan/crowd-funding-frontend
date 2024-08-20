@@ -81,3 +81,14 @@ export const getPostDetails = async(postId:string) => {
         errorHandler(err)
     }
 }
+
+
+export const getFundRequest = async() => {
+    try{
+        const response = await Api.get(adminRoutes.getFundRequest)
+        return response.data
+    }catch(error){
+        const err:Error = error as Error
+        errorHandler(err)
+    }
+}

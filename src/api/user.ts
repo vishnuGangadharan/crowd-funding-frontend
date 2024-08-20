@@ -125,6 +125,16 @@ export const getUser = async(userId:string) =>{
     }
 }
 
+export const makeFundRequest = async(id:string |undefined) =>{
+    try{
+        const response = await Api.put(userRoutes.makeFundRequest, {id})
+        return response
+    }catch(error){
+        const err:Error = error as Error
+        errorHandler(err)
+    }
+} 
+
 
 export const getPostDetails = async(postId:string) => {
     try {

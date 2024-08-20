@@ -19,32 +19,34 @@ const SidePanel = () => {
     };
 
     return (
-        <div className="h-screen bg-gray-800 text-white" >
-            <Sidebar aria-label="Sidebar with logo branding example" className='w-52'>
+        
+        <div className="fixed top-0 left-0 h-screen bg-gray-800 text-white " >
+            <Sidebar aria-label="Sidebar with logo branding example" className='w-56'>
                 <div className="flex items-center justify-center py-6">
                     <img src="../logo.png" alt=" logo" className="h-28 w-28" />
                 </div>
                 <Sidebar.Items>
                     <Sidebar.ItemGroup>
-                        <Sidebar.Item href="#" icon={HiChartPie} className="hover:bg-gray-700">
+                        <Sidebar.Item href="#" icon={HiChartPie} className="hover:bg-gray-700 font-semibold">
                             Dashboard
                         </Sidebar.Item>
-                        <Sidebar.Item href="#" icon={HiViewBoards} className="hover:bg-gray-700">
-                            Kanban
-                        </Sidebar.Item>
-                        <Sidebar.Item as={Link} to='/admin/request' icon={HiInbox} className="hover:bg-gray-700">
-                            Campaign Request
-                        </Sidebar.Item>
-                        <Sidebar.Item as={Link} to='/admin/users' icon={HiUser} className="hover:bg-gray-700">
+                        <Sidebar.Item as={Link} to='/admin/users' icon={HiUser} className="hover:bg-gray-700 font-semibold">
                             Users
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} to='/admin/reports' icon={HiShoppingBag} className="hover:bg-gray-700">
+                        
+                        <Sidebar.Item as={Link} to='/admin/request' icon={HiInbox} className="hover:bg-gray-700 font-semibold">
+                            Campaign Request
+                        </Sidebar.Item>
+                        <Sidebar.Item as={Link} to='/admin/fundRequest' icon={HiViewBoards} className="hover:bg-gray-700 font-semibold">
+                           Fund request <br /> from benificiary 
+                        </Sidebar.Item>
+                        <Sidebar.Item as={Link} to='/admin/reports' icon={HiShoppingBag} className="hover:bg-gray-700 font-semibold">
                             Reported Posts
                         </Sidebar.Item>
-                        <Sidebar.Item href="#" icon={HiArrowSmRight} className="hover:bg-gray-700">
+                        {/* <Sidebar.Item href="#" icon={HiArrowSmRight} className="hover:bg-gray-700 ">
                             Sign In
-                        </Sidebar.Item>
-                        <Sidebar.Item onClick={handleLogout} icon={HiTable} className="hover:bg-gray-700">
+                        </Sidebar.Item> */}
+                        <Sidebar.Item onClick={handleLogout} icon={HiTable} className="hover:bg-gray-700 font-semibold text-red-500">
                             Logout
                         </Sidebar.Item>
                     </Sidebar.ItemGroup>

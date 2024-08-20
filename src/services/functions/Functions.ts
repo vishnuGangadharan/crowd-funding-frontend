@@ -20,10 +20,24 @@ export function formatDate(data: Date | undefined):string {
 if (!data) {
     return '';
 }
-const formattedDate = new Date(data).toLocaleDateString('en-US', {
+ const formattedDate = new Date(data).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   });
 return  formattedDate;
+}
+
+
+
+export function countDown(targetDate : Date | undefined) {
+    if (!targetDate) {
+      return 0;
+    }
+    const now = new Date();
+    const target = new Date(targetDate);
+    const timeDifference = target.getTime() - now.getTime();
+    const days = Math.ceil(timeDifference / (1000 * 3600 * 24));
+    return days;
+  ;
 }

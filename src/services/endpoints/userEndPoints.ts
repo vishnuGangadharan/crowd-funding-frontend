@@ -21,7 +21,8 @@ const userRoutes={
     updateBeneficiary : '/user/update-beneficiary',
     getUpdatedStatus: '/user/status-updates',
     getWallet: '/user/get-wallet', 
-    walletPayment: '/user/wallet-payment' 
+    walletPayment: '/user/wallet-payment',
+    makeFundRequest:'/user/requesting-fund'
 }
 
 export default userRoutes;

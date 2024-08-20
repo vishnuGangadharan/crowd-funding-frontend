@@ -7,7 +7,8 @@ const adminRoutes = {
     adminPostApproval: "/admin/post-approval",
     allReports : '/admin/all-reports',
     getPostDetails:'/admin/post-details',
-    blockPost:'/admin/block-post'
+    blockPost:'/admin/block-post',
+    getFundRequest:'/admin/fund-request',
 }
 
 export default adminRoutes;

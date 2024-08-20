@@ -8,6 +8,9 @@ const CampaignRequest= lazy(()=> import ('../pages/admin/CampaignRequest'))
 const AdminLayout = lazy(()=> import ( "../layout/AdminLayout"))
 const ReportedPosts = lazy(()=> import ('../pages/admin/ReportedPosts'))
 const PostDetails = lazy(()=> import ('../pages/admin/PostDetails'))
+const FundRequest = lazy(() => import ('../pages/admin/FundRequest'))
+
+
 const AdminRoutes = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -18,6 +21,7 @@ const AdminRoutes = () => {
           <Route path="/request" element={<CampaignRequest />} />
           <Route path='/reports' element={<ReportedPosts/>}/>
           <Route path='/postDetails/:id' element={<PostDetails/>} />
+          <Route path='/fundRequest' element={<FundRequest/>} />
         </Route>
         </Route>
       </Routes>
