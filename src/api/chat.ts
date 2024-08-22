@@ -4,7 +4,7 @@ import errorHandler from "./error";
 import { chatInterface } from "@/services/interface/interface";
 
 
-export const sendMessages = async(data : chatInterface) => {
+export const sendMessages = async(data : FormData) => {
     try{
         const response = await Api.post(chatRoutes.sendMessage, data)
         return response

@@ -170,10 +170,7 @@ const PostDetails: React.FC = () => {
                                     <PostUpdate postId={postDetails?._id || ''} /> : ''
                             }
 
-                            <button className='bg-gradient-to-tr from-[#B249F8] to-[#FF1CF7] text-white shadow-lg text-small font-semibold rounded-md p-2'>
-                                refund
-                            </button>
-
+                            
 
                         </div>
                         {postDetails && postDetails.isApproved !== 'pending' ? (

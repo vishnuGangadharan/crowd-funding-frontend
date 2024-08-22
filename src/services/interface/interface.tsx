@@ -76,7 +76,8 @@ export interface chatInterface {
     _id?:string;
     senderId?:string;
     receiverId?:string;
-    message?:string;
+    message: string | null;
+    fileUrl?: string | undefined;
     createdAt?:Date ;
     updatedAt?:Date;
     timestamp?: Date;
