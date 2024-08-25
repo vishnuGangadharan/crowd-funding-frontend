@@ -136,11 +136,14 @@
 
 //original dont make changes
 
-
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { useLocation } from 'react-router-dom';
 import { allUsersChatted, getMessage, sendMessages } from '../../api/chat';
+import Picker from 'emoji-picker-react';
+import { BsEmojiSmile } from "react-icons/bs";
+import { set } from 'date-fns/set';
+
 
 const socket = io('http://localhost:3008');
 
@@ -148,13 +151,15 @@ interface Message {
   senderId: string | null;
   recipientId: string;
   message: string;
+  mediaUrl?: string;  // Optional field for file URL
+  messageType?: string; // Optional field for file type
 }
 
 interface Conversation {
   recipientId: string;
   name: string;
   _id: string;
-  profilePicture: string
+  profilePicture: string;
 }
 
 const Chat: React.FC = () => {
@@ -168,6 +173,10 @@ const Chat: React.FC = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [file, setFile] = useState<File | null>(null); // State to handle file upload
+  const [filePreview, setFilePreview] = useState<string | null>(null); // State to handle file preview
+  const [showPicker, setShowPicker] = useState(false);
+
 
   useEffect(() => {
     if (senderId) setCurrentUserId(senderId);
@@ -179,6 +188,19 @@ const Chat: React.FC = () => {
       socket.emit('joinRoom', { userId: currentUserId, recipientId });
 
       socket.on('receiveMessage', (newMessage: Message) => {
+        // Handle file extraction if a file URL is provided
+        if (newMessage.mediaUrl && newMessage.messageType) {
+          // Handle different file types
+          if (newMessage.messageType === 'image') {
+            console.log('Received an image:', newMessage.mediaUrl);
+          } else if (newMessage.messageType === 'video') {
+            console.log('Received a video:', newMessage.mediaUrl);
+          } else {
+            console.log('Received a file:', newMessage.mediaUrl);
+          }
+        }
+
+        // Update the messages state with the new message
         setMessages((prevMessages) => [...prevMessages, newMessage]);
       });
 
@@ -189,26 +211,63 @@ const Chat: React.FC = () => {
     }
   }, [currentUserId, recipientId]);
 
-  const sendMessage = async() => {
-    if (message.trim() === '') return;
 
-    const newMessage = {
+
+
+  // Handle file selection
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0] || null;
+    setFile(selectedFile);
+
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFilePreview(reader.result as string); // Set base64 string as preview
+      };
+      reader.readAsDataURL(selectedFile);
+    } else {
+      setFilePreview(null);
+    }
+  };
+
+
+  const sendMessage = async () => {
+    if (message.trim() === '' && !file) return;
+
+
+    const newMessage: Message = {
       senderId: currentUserId,
       recipientId: recipientId,
       message: message,
+
     };
 
+    const formData = new FormData();
+    formData.append('senderId', currentUserId as string);
+    formData.append('recipientId', recipientId as string);
+    formData.append('message', message);
+
+    if (file && filePreview) {
+      formData.append('fileUrl', file);
+      formData.append('fileType', file.type.split('/')[0]);
+      newMessage.messageType = file.type.split('/')[0]; // Extract file type (e.g., 'image', 'video', etc.)
+      newMessage.mediaUrl = filePreview
+      console.log('file type', newMessage.messageType);
+
+    }
+
+    // Emit the message and file to the server
     socket.emit('sendMessage', newMessage);
-    const response = await sendMessages(newMessage);
+    const response = await sendMessages(formData); // Send the FormData to the backend
     setMessage('');
+    setFile(null); // Clear the selected file after sending
+    setFilePreview(null); // Clear the file preview after sending
   };
 
   useEffect(() => {
     const allUsers = async () => {
       try {
         const response = await allUsersChatted(senderId as string);
-        console.log("sdsdsa", response.data);
-
         setConversations(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -223,6 +282,8 @@ const Chat: React.FC = () => {
     const fetchMessages = async () => {
       try {
         const response = await getMessage(currentUserId, recipientId);
+        console.log('lllllll', response.data);
+
         setMessages(response.data);
       } catch (error) {
         console.error(error);
@@ -238,6 +299,11 @@ const Chat: React.FC = () => {
     setRecipientId(id);
   };
 
+  const onEmojiClick = (emojiObject: any) => {
+    setMessage((prevInput) => prevInput + emojiObject.emoji);
+    
+  };
+
   return (
     <div className="flex max-w-5xl mx-auto h-screen bg-gray-100">
       {/* Left Sidebar */}
@@ -250,8 +316,8 @@ const Chat: React.FC = () => {
               <div
                 key={conversation._id}
                 className={`flex items-center p-3 mb-2 cursor-pointer rounded-lg ${recipientId === conversation._id
-                    ? 'bg-blue-500 text-white'
-                    : 'hover:bg-blue-100'
+                  ? 'bg-blue-500 text-white'
+                  : 'hover:bg-blue-100'
                   }`}
                 onClick={() => handleUserClick(conversation._id)}
               >
@@ -267,7 +333,6 @@ const Chat: React.FC = () => {
             ))}
       </div>
 
-
       {/* Chat Window */}
       <div className="flex-grow flex flex-col bg-gray-200">
         <div className="flex-grow p-4 overflow-y-auto">
@@ -275,17 +340,53 @@ const Chat: React.FC = () => {
             <div
               key={index}
               className={`mb-3 p-3 max-w-sm rounded-lg shadow-md ${msg.senderId === currentUserId
-                  ? 'bg-blue-500 text-white self-end ml-[40%]'
-                  : 'bg-white text-gray-800 self-start'
+                ? 'bg-blue-500 text-white self-end ml-[40%]'
+                : 'bg-white text-gray-800 self-start'
                 }`}
               style={{
                 alignSelf: msg.senderId === currentUserId ? 'flex-end' : 'flex-start',
               }}
             >
               {msg.message}
+              {/* Display file preview if a file is part of the message */}
+              {msg.mediaUrl && (
+                <div className="mt-2">
+                  {msg.messageType === 'image' ? (
+                    <img src={msg.mediaUrl} alt="Sent file" className="max-w-full max-h-40 rounded-lg" />
+                  ) : msg.messageType === 'video' ? (
+                    <video controls className="max-w-full max-h-40 rounded-lg">
+                      <source src={msg.mediaUrl} type="video/mp4" />
+                    </video>
+                  ) : (
+                    <a href={msg.mediaUrl} download className="text-blue-500">
+                      Download File
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>
+
+        {/* File preview section */}
+        {filePreview && (
+          <div className="p-4 bg-gray-300 flex items-center justify-between">
+            <div>
+              {file?.type.startsWith('image/') ? (
+                <img src={filePreview} alt="Preview" className="max-w-xs max-h-20 rounded-lg" />
+              ) : file?.type.startsWith('video/') ? (
+                <video controls className="max-w-xs max-h-20 rounded-lg">
+                  <source src={filePreview} type={file.type} />
+                </video>
+              ) : (
+                <div className="text-gray-700">Selected file: {file?.name}</div>
+              )}
+            </div>
+            <button onClick={() => setFile(null)} className="ml-4 text-red-500">
+              Remove
+            </button>
+          </div>
+        )}
 
         {/* Message Input */}
         <form
@@ -293,8 +394,18 @@ const Chat: React.FC = () => {
             e.preventDefault();
             sendMessage();
           }}
-          className="p-4 bg-gray-100 flex"
+          className="p-4 bg-gray-100 flex items-center"
         >
+          <BsEmojiSmile
+            onClick={() => setShowPicker((val) => !val)}
+            className="cursor-pointer text-2xl"
+          />
+
+          {showPicker && (
+            <div className="absolute bottom-12 left-0 z-10">
+              <Picker onEmojiClick={onEmojiClick} />
+            </div>
+          )}
           <input
             type="text"
             value={message}
@@ -302,9 +413,20 @@ const Chat: React.FC = () => {
             placeholder="Type your message..."
             className="flex-grow p-2 rounded-l-lg border border-gray-300 focus:outline-none"
           />
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="hidden"
+            id="file-upload"
+          />
+          <label htmlFor="file-upload" className="p-2 bg-gray-200 border border-gray-300 cursor-pointer">
+            📎
+          </label>
+
+          
           <button
             type="submit"
-            className="p-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600"
+            className="p-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 ml-2"
           >
             Send
           </button>
@@ -316,6 +438,7 @@ const Chat: React.FC = () => {
 };
 
 export default Chat;
+
 
 
 //chat current full dont make changes
