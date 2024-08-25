@@ -27,7 +27,7 @@ const SidePanel = () => {
                 </div>
                 <Sidebar.Items>
                     <Sidebar.ItemGroup>
-                        <Sidebar.Item href="#" icon={HiChartPie} className="hover:bg-gray-700 font-semibold">
+                        <Sidebar.Item as={Link} to='/admin/dashboard' className="hover:bg-gray-700 font-semibold">
                             Dashboard
                         </Sidebar.Item>
                         <Sidebar.Item as={Link} to='/admin/users' icon={HiUser} className="hover:bg-gray-700 font-semibold">

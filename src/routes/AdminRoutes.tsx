@@ -9,7 +9,7 @@ const AdminLayout = lazy(()=> import ( "../layout/AdminLayout"))
 const ReportedPosts = lazy(()=> import ('../pages/admin/ReportedPosts'))
 const PostDetails = lazy(()=> import ('../pages/admin/PostDetails'))
 const FundRequest = lazy(() => import ('../pages/admin/FundRequest'))
-
+const Dashboard = lazy(()=> import ('../pages/admin/Dashboard'))
 
 const AdminRoutes = () => {
   return (
@@ -22,6 +22,7 @@ const AdminRoutes = () => {
           <Route path='/reports' element={<ReportedPosts/>}/>
           <Route path='/postDetails/:id' element={<PostDetails/>} />
           <Route path='/fundRequest' element={<FundRequest/>} />
+          <Route path='/dashboard' element={<Dashboard/>} />
         </Route>
         </Route>
       </Routes>
