@@ -92,3 +92,23 @@ export const getFundRequest = async() => {
         errorHandler(err)
     }
 }
+
+export const actionOnFundRequest= async(id:string | undefined)=>{
+    try{
+        const response = await Api.post(adminRoutes.actionOnFundRequest,{id})
+        return response
+    }catch(error){
+        const err:Error = error as Error
+        errorHandler(err)
+    }
+}
+
+export const getDashboardData = async()=> {
+    try{
+        const response = await Api.get(adminRoutes.getDashboardData)
+        return response.data
+    }catch(error){
+        const err:Error = error as Error
+        errorHandler(err)
+    }
+}

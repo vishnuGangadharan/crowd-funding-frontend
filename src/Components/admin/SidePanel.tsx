@@ -11,11 +11,15 @@ const SidePanel = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        dispatch(adminLogout());
-        cookies.remove('jwt');
-        googleLogout();
-        navigate('/login');
+    const handleLogout = async () => {
+        try {
+            dispatch(adminLogout());
+            cookies.remove('jwt');
+            googleLogout();
+            navigate('/login');
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
     };
 
     return (

@@ -16,7 +16,7 @@ import { FaCircleChevronLeft } from "react-icons/fa6";
 import { FaChevronCircleRight } from "react-icons/fa";
 import PaymentModal from '@/Components/user/PaymentModal';
 import ShowDonations from '@/Components/user/ShowDonations';
-import { FaComments } from 'react-icons/fa'; 
+import { FaComments } from 'react-icons/fa';
 import PostUpdate from './PostUpdate';
 import { countDown } from '@/services/functions/Functions';
 import {
@@ -115,7 +115,9 @@ const PostDetails: React.FC = () => {
                             </Carousel>
                         </div>
                         <h1 className="text-3xl font-bold mb-4 mt-12 text-center">{postDetails?.heading}</h1>
-                        <h1 className='text-2xl ml-2 font-semibold text-red-500'>Days Left : {countDown(postDetails?.targetDate)} Days</h1>
+                        {postDetails?.fundRequestConfirmed || postDetails?.targetDateFinished ? (<p className='text-red-500 font-semibold  text-2xl'>campaign is completed</p>) : (
+                            <h1 className='text-2xl ml-2 font-semibold text-red-500'>Days Left : {countDown(postDetails?.targetDate)} Days</h1>
+                        )}
                         <div className='flex flex-col space-y-2 p-4 '>
                             <span className='text-lg font-semibold text-gray-800'>Name : {postDetails?.name}</span>
                             <span className='text-md text-gray-600'>Age : {postDetails?.age} years old</span>
@@ -152,28 +154,27 @@ const PostDetails: React.FC = () => {
                             </button>
                             <div>
                                 {postDetails && postDetails.isApproved !== 'pending' ? (
-
                                     <ReportModal postId={postDetails?._id || ''} />
                                 ) : ("")}
                             </div>
-                            
-                            <button 
-                            className="bg-gradient-to-tr from-[#B249F8] to-[#FF1CF7]  hover:from-[#FF1CF7] hover:to-[#B249F8] transition duration-300 text-white py-2 px-4 rounded-md"
-                            onClick={handleStatusRoute}
+
+                            <button
+                                className="bg-gradient-to-tr from-[#B249F8] to-[#FF1CF7]  hover:from-[#FF1CF7] hover:to-[#B249F8] transition duration-300 text-white py-2 px-4 rounded-md"
+                                onClick={handleStatusRoute}
                             >
-                              previous updates
+                                previous updates
                             </button>
 
 
 
-                            {userId === postDetails?.fundraiser?._id ? 
-                                    <PostUpdate postId={postDetails?._id || ''} /> : ''
+                            {userId === postDetails?.fundraiser?._id ?
+                                <PostUpdate postId={postDetails?._id || ''} /> : ''
                             }
 
-                            
+
 
                         </div>
-                        {postDetails && postDetails.isApproved !== 'pending' ? (
+                        {postDetails && postDetails.isApproved !== 'pending' && postDetails?.fundRequestConfirmed || postDetails?.targetDateFinished ? (
 
                             <div className='mt-5 gap-5'>
                                 <FacebookShareButton url={fullUrl} title={title}>
@@ -213,20 +214,25 @@ const PostDetails: React.FC = () => {
 
 
                             <div>
-                                {Number(postDetails?.amount) >= Number(postDetails?.contributedAmount) ? (
-                                <button className="bg-green-500 text-white py-2 px-4 rounded-md w-full" onClick={handleOpenModal}>Donate Now</button>
-                                ):(
-                                <button className="bg-green-500 text-white py-2 px-4 rounded-md w-full" >Completed</button>
-                                )}
-                                {/* Render the PaymentModal component conditionally */}
-                                {isModalOpen && (
-                                    <PaymentModal isOpen={isModalOpen} beneficiaryId={postDetails?._id} onClose={handleCloseModal} />
+
+                                {postDetails?.fundRequestConfirmed ? (<p className='text-red-500 font-semibold text-center text-2xl'>campaign is completed</p>) : (
+                                    <div>
+                                        {Number(postDetails?.amount) >= Number(postDetails?.contributedAmount) ? (
+                                            <button className="bg-green-500 text-white py-2 px-4 rounded-md w-full" onClick={handleOpenModal}>Donate Now</button>
+                                        ) : (
+                                            <button className="bg-green-500 text-white py-2 px-4 rounded-md w-full" >Completed</button>
+                                        )}
+                                        {/* Render the PaymentModal component conditionally */}
+                                        {isModalOpen && (
+                                            <PaymentModal isOpen={isModalOpen} beneficiaryId={postDetails?._id} onClose={handleCloseModal} />
+                                        )}
+                                    </div>
                                 )}
                             </div>
 
 
 
-                            <ShowDonations beneficiaryId={postDetails?._id} widthClass='' limit={5}/>
+                            <ShowDonations beneficiaryId={postDetails?._id} widthClass='' limit={5} />
                         </div>
                     ) : ("")}
                 </div>
@@ -252,17 +258,17 @@ const PostDetails: React.FC = () => {
 
                     {/* Fundraiser Details Card */}
                     <div className="w-full md:w-1/2 shadow-lg rounded-lg p-2 bg-white flex flex-col items-center h-32">
-                    <div className='flex '>
-                        <h3 className="text-xl font-semibold mb-2 text-center">Fundraiser Details</h3>
+                        <div className='flex '>
+                            <h3 className="text-xl font-semibold mb-2 text-center">Fundraiser Details</h3>
 
-                        <button
-                        onClick={handleChatClick}
-                            className="flex items-center justify-center gap-2 ml-5 px-4 py-2 bg-gradient-to-tr from-[#B249F8] to-[#FF1CF7] text-white rounded-lg hover:from-[#FF1CF7] hover:to-[#B249F8] transition duration-300 ease-in-out shadow-md"
-                        >
-                            <FaComments className="w-5 h-5" />
-                            <span>Chat</span>
-                        
-                        </button>
+                            <button
+                                onClick={handleChatClick}
+                                className="flex items-center justify-center gap-2 ml-5 px-4 py-2 bg-gradient-to-tr from-[#B249F8] to-[#FF1CF7] text-white rounded-lg hover:from-[#FF1CF7] hover:to-[#B249F8] transition duration-300 ease-in-out shadow-md"
+                            >
+                                <FaComments className="w-5 h-5" />
+                                <span>Chat</span>
+
+                            </button>
                         </div>
                         <div className="flex items-center justify-center lg:justify-start">
                             <img

@@ -12,10 +12,10 @@ const Home = () => {
 
       <div>
         <div className="mt-4 px-6 flex flex-col items-center">
-          <h1 className="sm:text-sm lg:text-4xl font-semibold text-center lg:text-left m-7">
+          <h1 className="sm:text-sm lg:text-4xl font-semibold text-center lg:text-left mt-7">
             Thousands are fundraising online on Helping Hands
           </h1>
-          <div className=" bg-white flex items-center justify-center border border-gray-300 w-[60%] rounded-lg p-2">
+          {/* <div className=" bg-white flex items-center justify-center border border-gray-300 w-[60%] rounded-lg p-2">
             <input
               type="text"
               placeholder="Search..."
@@ -26,7 +26,7 @@ const Home = () => {
             >
               Search
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
 

@@ -67,10 +67,12 @@ const Fundraising: React.FC = () => {
                 </div>
               </div>
               {fundraising && fundraising.isApproved== 'approved' ? (
-              <button className={`${fundraising.requestedAmount ? 'bg-green-300 hover:bg-green-700' : 'bg-red-300  hover:bg-red-700'} text-black font-bold py-2 px-4 rounded-full`}
+              <button className={`${fundraising.requestedAmount ? 'bg-green-300 hover:bg-green-700 cursor-not-allowed' : 'bg-red-300  hover:bg-red-700'} text-black font-bold py-2 px-4 rounded-full`}
               onClick={() => handleFundRequest(fundraising._id)}
+              disabled={fundraising.requestedAmount}
               >
-                {fundraising && fundraising.requestedAmount ? 'Request send' : 'Request fund'}
+                {fundraising && fundraising.fundRequestConfirmed ? 'Permission Granted' : fundraising.requestedAmount ?
+                 "Request has send" : 'Request fund'} 
               </button>
             ) : ('')}
 

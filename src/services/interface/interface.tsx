@@ -1,5 +1,6 @@
 import { userFormData } from "./user";
 
+
 export interface form1Types{
     email: string,
     name: string,
@@ -69,6 +70,9 @@ export interface beneficiary{
     heading?:string;
     requestedAmount:boolean;
     targetDateFinished:boolean;
+    fundRequestConfirmed:boolean;
+    supportingDocsts:File[] 
+    
 }
 
 
@@ -83,6 +87,9 @@ export interface chatInterface {
     timestamp?: Date;
 }
 
+
+
+
 export interface updateData{
     updateFiles:File[] | null | string;
     content : string
@@ -96,3 +103,5 @@ export interface updates {
     image?: string[];
     video?: string[];
   }
+
+

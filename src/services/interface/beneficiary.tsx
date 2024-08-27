@@ -53,5 +53,26 @@ interface beneficiary{
     category?:string;
     bio?:string | undefined;
     supportingDocs:string[];
+    fundRequestConfirmed?:boolean;
 }
 export default beneficiary
+
+
+
+export interface profit{
+    totalProfit?: number;
+    adminId?:number;
+    transactions : {
+        beneficiary?:string;
+        amount?: number;
+        date?: Date;
+    }[];
+}
+
+export interface allData{
+    beneficiary: beneficiary[];
+    completedPosts:number;
+    postsThisMonth:number;
+    totalPosts: number;
+    totalProfit: profit;
+}

@@ -9,6 +9,8 @@ const adminRoutes = {
     getPostDetails:'/admin/post-details',
     blockPost:'/admin/block-post',
     getFundRequest:'/admin/fund-request',
+    actionOnFundRequest:'/admin/confirm-funding',
+    getDashboardData:'/admin/dashboard'
 }
 
 export default adminRoutes;
