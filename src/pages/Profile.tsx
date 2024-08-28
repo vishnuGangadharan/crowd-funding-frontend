@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { useNavigate } from 'react-router-dom';
@@ -42,7 +42,7 @@ const Profile: React.FC = () => {
     fetchUser();
   }, [userId]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback( async (e: React.FormEvent) => {
     e.preventDefault();
 
     const validationErrors: { [key: string]: string } = {};
@@ -85,16 +85,16 @@ const Profile: React.FC = () => {
     } catch (error) {
       console.error('Error updating profile:', error);
     }
-  };
+  },[email, phone, name, image, userDetails, profilePicPreview]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       const previewUrl = URL.createObjectURL(file);
       setProfilePicPreview(previewUrl);
       setImage(file);
     }
-  };
+  },[]);
 
   const handleFundraisingNavigate = () => {
     navigate('/fundraising');

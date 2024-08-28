@@ -69,7 +69,7 @@ const MyBarChart: React.FC<MyBarChartProps> = ({ barChart }) => {
       },
       title: {
         display: true,
-        text: 'Horizontal Bar Chart',
+        text: 'funding progress',
       },
     },
     scales: {

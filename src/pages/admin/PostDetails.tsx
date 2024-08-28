@@ -18,7 +18,6 @@ const PostDetails = () => {
         const fetchPostDetails = async () => {
             try {
                 const response = await getPostDetails(id as string);
-                console.log("admin", response);
                 setPostDetails(response.data);
             } catch (error) {
                 console.log("Error fetching fundraising details:", error);

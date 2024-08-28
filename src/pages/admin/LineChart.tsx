@@ -28,7 +28,6 @@ interface LineChartProps {
 }
 
 const LineChart: React.FC<LineChartProps> = ({ lineChart }) => {
-  console.log('LineChart data:', lineChart);
 
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -53,7 +52,7 @@ const LineChart: React.FC<LineChartProps> = ({ lineChart }) => {
     labels,
     datasets: [
       {
-        label: 'Daily Transactions',
+        label: 'Daily Profit',
         data: dataArray,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
@@ -70,7 +69,7 @@ const LineChart: React.FC<LineChartProps> = ({ lineChart }) => {
       },
       title: {
         display: true,
-        text: 'Transactions Over Time',
+        text: 'Profit',
       },
     },
     scales: {

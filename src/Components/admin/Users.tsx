@@ -16,10 +16,8 @@ const Users: React.FC = () => {
 
   const fetchUsersDetails = async () => {
     try {
-      console.log("searchhh", searchTerm);
 
       const response = await fetchUsers(page, limit, searchTerm);
-      console.log("response", response.data);
       setUsers(response.data.data);
       setTotal(response?.data.total)
     } catch (error) {
@@ -36,7 +34,6 @@ const Users: React.FC = () => {
   const handleBlockUser = async (id: string, isBlocked: boolean) => {
     try {
       const response = await handleBlockStatus(id, !isBlocked);
-      console.log("ssss", response);
 
 
       if (response) {

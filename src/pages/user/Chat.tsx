@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import { useLocation } from 'react-router-dom';
 import { allUsersChatted, getMessage, sendMessages } from '../../api/chat';
@@ -40,8 +40,18 @@ const Chat: React.FC = () => {
   const [file, setFile] = useState<File | null>(null); // State to handle file upload
   const [filePreview, setFilePreview] = useState<string | null>(null); // State to handle file preview
   const [showPicker, setShowPicker] = useState(false);
+  const [unreadCounts, setUnreadCounts] = useState<{ [key: string]: number }>({});
+
+
+  const lastMessageRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
+   useEffect(() => {
     if (senderId) setCurrentUserId(senderId);
     if (receiverId) setRecipientId(receiverId);
   }, [senderId, receiverId]);
@@ -51,7 +61,12 @@ const Chat: React.FC = () => {
       socket.emit('joinRoom', { userId: currentUserId, recipientId });
 
       socket.on('receiveMessage', (newMessage: Message) => {
+        if
+        ((newMessage.senderId === currentUserId && newMessage.recipientId === recipientId)||
+          (newMessage.senderId === recipientId && newMessage.recipientId === currentUserId)
+        ){
         setMessages((prevMessages) => [...prevMessages, newMessage]);
+        }
       });
 
       return () => {
@@ -139,6 +154,8 @@ const Chat: React.FC = () => {
 
   const handleUserClick = (id: string) => {
     setRecipientId(id);
+    socket.emit('markMessagesAsRead', { recipientId: currentUserId, senderId: id });
+    setMessages([]);
   };
 
   const onEmojiClick = (emojiObject: any) => {
@@ -158,7 +175,6 @@ const Chat: React.FC = () => {
       const formData = new FormData();
       formData.append('senderId', currentUserId as string);
       formData.append('recipientId', recipientId as string);
-      // formData.append('message', 'Audio message');
       formData.append('fileUrl', blob, 'audio.webm');
       formData.append('fileType', 'audio');
 
@@ -177,6 +193,20 @@ const Chat: React.FC = () => {
 
     reader.readAsDataURL(blob);
   };
+
+
+  useEffect(() => {
+    socket.on('updateUnreadCount', ({ senderId, unreadCount }) => {
+      setUnreadCounts(prevCounts => ({
+        ...prevCounts,
+        [senderId]: unreadCount,
+      }));
+    });
+
+    return () => {
+      socket.off('updateUnreadCount');
+    };
+  }, []);
 
   return (
     <div className="flex max-w-5xl mx-auto h-screen bg-gray-100">
@@ -203,6 +233,11 @@ const Chat: React.FC = () => {
                 />
                 {/* User Name */}
                 <span>{conversation.name}</span>
+                {unreadCounts[conversation._id] > 0 && (
+                  <span className='ml-auto bg-red-500 text-white text-sm rounded-full px-2 py-1'>
+                    {unreadCounts[conversation._id]}
+                  </span>
+                )}
               </div>
             ))}
       </div>
@@ -213,6 +248,7 @@ const Chat: React.FC = () => {
           {messages.map((msg, index) => (
             <div
               key={index}
+              ref={index === messages.length - 1 ? lastMessageRef : null} 
               className={`mb-3 p-3 max-w-sm rounded-lg shadow-md ${msg.senderId === currentUserId
                 ? 'bg-blue-500 text-white self-end ml-[40%]'
                 : 'bg-white text-gray-800 self-start'

@@ -169,9 +169,9 @@ export const geComments = async(id: string)=> {
     }
 }
 
-export const allPosts = async (page:number,searchTerm:string)=> {
+export const allPosts = async (page:number,searchTerm:string, category:string) => {
     try{
-        const response = await Api.get(userRoutes.allPost , {params: {page,searchTerm}})
+        const response = await Api.get(userRoutes.allPost , {params: {page, searchTerm, category}})
         
         return response.data
     }catch(error){

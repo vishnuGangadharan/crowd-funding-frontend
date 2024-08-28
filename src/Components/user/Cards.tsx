@@ -9,6 +9,7 @@ import { Input } from "@/Components/ui/input"
 import { GrLinkPrevious } from "react-icons/gr";
 import { GrLinkNext } from "react-icons/gr";
 import _ from 'lodash';
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 
 
 interface CardProps {
@@ -21,44 +22,43 @@ const Card: React.FC<CardProps> = ({ limit }) => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(0);
+    const [category,setCategory] = useState<string>('')
 
 
 
     const navigate = useNavigate();
 
-   
-        const fetchPostDetails = useCallback( async () => {
-            try {
-                setLoading(true);
-                const response = await allPosts(currentPage,searchTerm);
-                setPostDetails(response.data.data);
-                setTotalPages(response.data.totalPages);
-                console.log(response.data.data);
 
-               
-                    setLoading(false);
-                
-            } catch (error) {
-                console.log("Error fetching fundraising details:", error);
-                setLoading(false);
-            }
+    const fetchPostDetails = useCallback(async () => {
+        try {
+            setLoading(true);
+            const response = await allPosts(currentPage, searchTerm, category);
+            setPostDetails(response.data.data);
+            setTotalPages(response.data.totalPages);
+            console.log(response.data.data);
+            setLoading(false);
+
+        } catch (error) {
+            console.log("Error fetching fundraising details:", error);
+            setLoading(false);
         }
-        , [currentPage,searchTerm]);
+    }
+        , [currentPage, searchTerm, category]);
 
-   
+
 
     const debouncedFetchPostDetails = useCallback(_.debounce(fetchPostDetails, 500), [fetchPostDetails]);
 
 
     const displayedPosts = limit ? postDetails.slice(0, limit) : postDetails;
 
-    useEffect(()=>{
+    useEffect(() => {
         debouncedFetchPostDetails();
 
-        return(()=>{
+        return (() => {
             debouncedFetchPostDetails.cancel();
         })
-    },[debouncedFetchPostDetails])
+    }, [debouncedFetchPostDetails])
 
     const renderSkeleton = () => (
         <div className="relative flex flex-col mb-32 mt-6 text-gray-700 bg-white md:w shadow-md rounded-xl w-80 mx-4">
@@ -87,33 +87,58 @@ const Card: React.FC<CardProps> = ({ limit }) => {
         setCurrentPage(1);
     }
 
-    const handleNextPage = () =>{
-        console.log('current page',currentPage);
-        
-        if(currentPage < totalPages){
-            setCurrentPage((prevPage) => prevPage +1);
-            console.log('current page',currentPage);
+    const handleNextPage = () => {
+        console.log('current page', currentPage);
+
+        if (currentPage < totalPages) {
+            setCurrentPage((prevPage) => prevPage + 1);
+            console.log('current page', currentPage);
 
         }
     }
 
-    const handlePreviousPage = ()=>{
-        if(currentPage > 1){
-            setCurrentPage((prevPage) => prevPage -1)
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage((prevPage) => prevPage - 1)
         }
     }
+
+    const categorySelection = (key: React.Key) => {
+        setCategory(String(key))
+       
+    }
+   
 
     return (
         <div className='flex flex-col justify-center items-center'>
             {!limit &&
+                <div className='flex '>
+                    <Input
+                        placeholder='Search for posts'
+                        className='w-96  mb-10 mr-5'
+                        onChange={handleSearch}
+                    />
 
-            <Input 
-            placeholder='Search for posts'
-             className='w-8/12  mb-10 ' 
-             onChange={handleSearch}
-             />
+
+                    <Dropdown>
+                        <DropdownTrigger>
+                            <Button
+                                variant="bordered"
+                            >
+                               Filter by Category
+                            </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu aria-label="Dynamic Actions" onAction={categorySelection}>
+                            <DropdownItem key="">All</DropdownItem>
+                            <DropdownItem key="medical">medical</DropdownItem>
+                            <DropdownItem key="education">education</DropdownItem>
+
+                        </DropdownMenu>
+                    </Dropdown>
+
+                </div>
             }
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 p-4">
                 {loading ? (
                     <>
@@ -188,23 +213,22 @@ const Card: React.FC<CardProps> = ({ limit }) => {
                 )}
             </div>
             {!limit &&
-            <div className='flex justify-center items-center w-full mb-10 gap-6'>
-                <button className='w-10 h-10 flex items-center justify-center rounded-full border p-2  hover:bg-blue-gray-300'
-                onClick={handlePreviousPage}
-                >
-                    <GrLinkPrevious />
-                </button>
+                <div className='flex justify-center items-center w-full mb-10 gap-6'>
+                    <button className='w-10 h-10 flex items-center justify-center rounded-full border p-2  hover:bg-blue-gray-300'
+                        onClick={handlePreviousPage}
+                    >
+                        <GrLinkPrevious />
+                    </button>
 
-                <button className='w-10 h-10 flex items-center justify-center rounded-full border p-2 hover:bg-blue-gray-300 '
-                onClick={handleNextPage}
-                >
-                    <GrLinkNext />
-                </button>
+                    <button className='w-10 h-10 flex items-center justify-center rounded-full border p-2 hover:bg-blue-gray-300 '
+                        onClick={handleNextPage}
+                    >
+                        <GrLinkNext />
+                    </button>
 
-            </div>
+                </div>
             }
         </div>
     );
 };
-
 export default Card;

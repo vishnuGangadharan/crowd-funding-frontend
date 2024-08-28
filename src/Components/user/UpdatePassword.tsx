@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useCallback, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -18,7 +18,7 @@ import {toast}  from 'react-toastify'
 
 
 
-const UpdatePassword: React.FC = () => {
+const UpdatePassword = React.memo(() => {
 
   const { userInfo } = useSelector((state:RootState)=> state.auth)
   let userId = userInfo._id
@@ -61,7 +61,7 @@ const UpdatePassword: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = useCallback(async (e: FormEvent) => {
     e.preventDefault();
 
     if (!validate()) return;
@@ -70,13 +70,18 @@ const UpdatePassword: React.FC = () => {
       const response = await updatePassword(passwordData,userId);
       if ( response && response.status == 200) {
        toast.success(response.data.message);
-
+        setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
         console.log("Password updated successfully", response);
       }
     } catch (error) {
       console.log("An error occurred", error);
     }
-  };
+  },[passwordData, validate]);
+
 
   return (
     <>
@@ -88,8 +93,9 @@ const UpdatePassword: React.FC = () => {
           {(onClose) => (
             <form
               onSubmit={(e) => {
+                e.stopPropagation()
                 handleSubmit(e);
-                // onClose();
+                onClose();
               }}
             >
               <ModalHeader className="flex flex-col gap-1">Update Password</ModalHeader>
@@ -144,6 +150,6 @@ const UpdatePassword: React.FC = () => {
       </Modal>
     </>
   );
-};
+});
 
 export default UpdatePassword;

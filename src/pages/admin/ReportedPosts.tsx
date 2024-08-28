@@ -17,7 +17,6 @@ const ReportedPosts: React.FC = () => {
   const fetchReports = async () => {
     try {
       const response = await getReport();
-      console.log("Response:", response);
       if (response && Array.isArray(response.data)) {
         setReports(response.data);
       } else {
@@ -38,7 +37,6 @@ const ReportedPosts: React.FC = () => {
   const blockPosts = async (id: string) => {
     try {
       const response = await blockPost(id);
-      console.log('blocked', response);
       if (response.status === true) {
         toast.success(response.message);
       }

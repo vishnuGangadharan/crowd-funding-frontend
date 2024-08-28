@@ -14,7 +14,6 @@ const Dashboard: React.FC = () => {
   const DashboardData = async () => {
     try {
       const response = await getDashboardData();
-      console.log(response.data);
       setAllData(response.data);
     }catch (error) {
       console.log(error);
