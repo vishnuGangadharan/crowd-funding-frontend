@@ -1,6 +1,5 @@
-import React from 'react';
 import { Sidebar } from "flowbite-react";
-import { HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards } from "react-icons/hi";
+import { HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards } from "react-icons/hi";
 import { Link, useNavigate } from 'react-router-dom';
 import { googleLogout } from '@react-oauth/google';
 import { useDispatch } from 'react-redux';

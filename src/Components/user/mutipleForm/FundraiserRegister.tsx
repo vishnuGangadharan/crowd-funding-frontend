@@ -38,7 +38,8 @@ const MultiStepForm: React.FC = () => {
   const [email, setEmail] = useState<string | null>("");
   const [bio, setBio] = useState('');
 
-
+  console.log(heading,phone,email);
+  
   const dispatch = useDispatch();
 
   const editor = useRef(null);
@@ -60,7 +61,7 @@ const MultiStepForm: React.FC = () => {
     resolver: zodResolver(finalStepSchema)
   });
 
-  const { register: registerStep4, handleSubmit: handleSubmitStep4, setValue: setValueStep4, formState: { errors: errorsStep4 } } = useForm<Step4Data>({
+  const {  handleSubmit: handleSubmitStep4, setValue: setValueStep4, formState: { errors: errorsStep4 } } = useForm<Step4Data>({
     resolver: zodResolver(step4Schema)
   });
 

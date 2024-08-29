@@ -4,7 +4,6 @@ import { loadStripe } from '@stripe/stripe-js';
 import { getSessionId, walletPayment } from '@/api/user';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { Donation } from '@/services/interface/user';
 import { PaymentData } from '@/services/interface/PostReport';
 import { toast } from 'react-toastify';
 interface PaymentModalProps {

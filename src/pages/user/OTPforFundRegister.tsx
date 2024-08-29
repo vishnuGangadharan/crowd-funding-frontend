@@ -1,4 +1,4 @@
-import { beneficiaryOtpVerify, verifyOtp } from "@/api/user";
+import { beneficiaryOtpVerify } from "@/api/user";
 import {
     InputOTP,
     InputOTPGroup,
@@ -11,10 +11,9 @@ import { useState } from "react";
   
   const OTPforFundRegister = () => {
     const location = useLocation();
-    const { email, name, phone } = location.state || {};
+    const { email} = location.state || {};
     const [error, setError] = useState<string | null>(null);
     const [otp, setOtp] = useState('');
-    const [isOtpVisible, setIsOtpVisible] = useState(false);
 
     const navigate = useNavigate()
     const handleSubmit = async () => {

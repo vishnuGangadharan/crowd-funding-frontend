@@ -8,7 +8,6 @@ import {
   Title,
   Tooltip,
   Legend,
-  Ticks,
 } from 'chart.js';
 import beneficiary from '@/services/interface/beneficiary';
 

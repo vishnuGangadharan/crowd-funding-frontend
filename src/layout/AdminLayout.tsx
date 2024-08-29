@@ -1,4 +1,3 @@
-import React from 'react'
 import SidePanel from '@/Components/admin/SidePanel'
 import { Outlet } from 'react-router-dom'
 

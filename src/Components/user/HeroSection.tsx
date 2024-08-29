@@ -1,13 +1,12 @@
-import React from 'react';
 import FundraiserBtn from './FundraiserBtn';
 import ResponsiveImage from '../../Components/user/ImageResponsive';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+// import { useSelector } from 'react-redux';
+// import { RootState } from '../../redux/store';
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const { userInfo } = useSelector((state: RootState) => state.auth);
+  // const { userInfo } = useSelector((state: RootState) => state.auth);
 
   const handleClick = () => {
     navigate('/registration');

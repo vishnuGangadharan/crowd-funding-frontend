@@ -86,7 +86,7 @@ const PostUpdate: React.FC<PostUpdateProps> = ({postId}) => {
       <Button className='bg-gradient-to-tr from-[#B249F8] to-[#FF1CF7] hover:from-[#FF1CF7] hover:to-[#B249F8] transition duration-300 text-white font-semibold' onPress={onOpen}>update status</Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
   <ModalContent>
-    {(onClose) => (
+    {() => (
       <form onSubmit={handleSubmit}>
         <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
         <ModalBody>

@@ -1,4 +1,3 @@
-import { userFormData } from "./user";
 
 
 export interface form1Types{

@@ -25,7 +25,6 @@ const Card: React.FC<CardProps> = ({ limit }) => {
     const [category,setCategory] = useState<string>('')
 
 
-
     const navigate = useNavigate();
 
 
@@ -125,7 +124,7 @@ const Card: React.FC<CardProps> = ({ limit }) => {
                             <Button
                                 variant="bordered"
                             >
-                               Filter by Category
+                              {category ? capitalizeFirstLetter(category) : 'Category'}
                             </Button>
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Dynamic Actions" onAction={categorySelection}>

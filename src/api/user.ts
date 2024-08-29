@@ -1,7 +1,7 @@
 import Api from "../services/axios";
 import userRoutes from "../services/endpoints/userEndPoints";
 import errorHandler from "./error";
-import { beneficiary, updateData } from "../services/interface/interface";
+import { beneficiary,  } from "../services/interface/interface";
 import { userFormData } from "../services/interface/user";
 import { PasswordData } from "../services/interface/user";
 import { PaymentData } from "@/services/interface/PostReport";

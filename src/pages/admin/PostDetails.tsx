@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import beneficiary from '@/services/interface/beneficiary';
 import { getPostDetails } from '../../api/admin';
 import { useParams, useNavigate } from 'react-router-dom';

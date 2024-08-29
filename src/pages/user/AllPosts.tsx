@@ -1,5 +1,4 @@
 import Card from '@/Components/user/Cards'
-import React from 'react'
 
 
 

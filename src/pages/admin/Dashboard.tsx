@@ -6,7 +6,6 @@ import MyBarChart from "./Bar"
 import { getDashboardData } from "@/api/admin";
 import { useEffect, useState } from "react";
 import LineChart from "./LineChart";
-import beneficiary from "@/services/interface/beneficiary";
 import { allData } from "@/services/interface/beneficiary";
 const Dashboard: React.FC = () => {
 

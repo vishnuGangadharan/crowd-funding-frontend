@@ -107,7 +107,7 @@ const Profile: React.FC = () => {
     navigate(`/chat?senderId=${userId}`)
 };
   return (
-    <form onSubmit={handleSubmit} className="mx-auto p-6 mt-24 w-[60%] bg-gray-50 rounded-lg shadow-lg space-y-6 mb-36">
+    <form onSubmit={handleSubmit} className="mx-auto p-4 md:p-6 mt-24 w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] bg-gray-50 rounded-lg shadow-lg space-y-6 mb-36">
       <div className="flex flex-col items-center mb-6">
         <input
           type="file"
@@ -116,7 +116,7 @@ const Profile: React.FC = () => {
           onChange={handleFileChange}
         />
         <label htmlFor="profilePicture" className="cursor-pointer">
-          <div className="w-40 h-40 rounded-full bg-gray-500 flex items-center justify-center overflow-hidden hover:bg-gray-300 transition">
+          <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gray-500 flex items-center justify-center overflow-hidden hover:bg-gray-300 transition">
             {profilePicPreview ? (
               <img src={profilePicPreview} alt="Profile" className="object-cover w-full h-full transition-transform duration-300 ease-in-out transform hover:scale-105" />
             ) : (
@@ -125,7 +125,7 @@ const Profile: React.FC = () => {
           </div>
         </label>
       </div>
-      <div className='w-[50%] ml-40 ' >
+      <div className='w-[100%] sm:w-[70%] md:w-[60%] lg:w-[50%] mx-auto' >
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Name</label>
           <input

@@ -1,7 +1,6 @@
 import Api from "@/services/axios";
 import chatRoutes from "@/services/endpoints/chatEndpoint";
 import errorHandler from "./error";
-import { chatInterface } from "@/services/interface/interface";
 
 
 export const sendMessages = async(data : FormData) => {

@@ -66,19 +66,23 @@ const NavBar : React.FC = () => {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden text-white py-4 px-6 space-y-4 absolute w-full top-full left-0" style={{background:'#55AD9B'}}>
-          <a href="#home" className="block text-lg hover:text-blue-300">Home</a>
-          <a href="#donate" className="block text-lg hover:text-blue-300">Donate</a>
+        <div className="md:hidden text-white py-4 px-6 space-y-4 absolute w-full top-full left-0 " style={{background:'#55AD9B'}}>
+          <div className='flex flex-col'>
+          <Link to="/home" className="text-white hover:text-black text-xl mb-2">Home</Link>
+          <Link to="/all-posts" className="text-white hover:text-black text-xl ">Donate</Link>
+          </div>
           <a href="#about" className="block text-lg hover:text-blue-300">About Us</a>
           <a href="#contact" className="block text-lg hover:text-blue-300">Contact Us</a>
-          <button className="w-full bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
+          <button className="w-full bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700"
+            onClick={() => navigate('/registration')}
+          >
             Start a Fundraiser
           </button>
           <div className="flex justify-center">
             {userInfo ? (
               <>
-                <CgProfile size={28} className="cursor-pointer hover:text-blue-300" />
-                <p className='ml-4'>Logout</p>
+                <CgProfile size={28} className="cursor-pointer hover:text-blue-300"  onClick={handleProfile}/>
+                <p className='ml-4 cursor-pointer' onClick={handleLogout}>Logout</p>
               </>
             ) : (
               "Login"

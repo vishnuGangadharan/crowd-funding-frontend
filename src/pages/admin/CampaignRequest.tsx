@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 const CampaignRequest: React.FC = () => {
   const [request, setRequest] = useState<beneficiary[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState<Record<string, string>>({});
+  // const [selectedStatus, setSelectedStatus] = useState<Record<string, string>>({});
   const navigate = useNavigate()
   const handleApprove = async (postId: string, status: string) => {
     try {

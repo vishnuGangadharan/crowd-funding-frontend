@@ -23,6 +23,7 @@ const OTP = () => {
   const location = useLocation();
   const { email, name, phone } = location.state || {};
 
+ console.log(name,phone);
  
   
   useEffect(() => {

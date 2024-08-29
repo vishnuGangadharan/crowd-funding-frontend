@@ -140,7 +140,6 @@ const Chat: React.FC = () => {
       try {
         const response = await getMessage(currentUserId, recipientId);
         setMessages(response.data);
-        console.log('Messages:', response.data);
 
       } catch (error) {
         console.error(error);
@@ -165,10 +164,8 @@ const Chat: React.FC = () => {
 
 
   const handleAudioRecordingComplete = async (blob: Blob) => {
-    const audioUrl = URL.createObjectURL(blob);
     const reader = new FileReader();
 
-    // Read the blob as Data URL (base64)
     reader.onloadend = async () => {
       const base64Audio = reader.result as string;
 

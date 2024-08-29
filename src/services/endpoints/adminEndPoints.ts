@@ -1,4 +1,3 @@
-import {  handleBlockStatus,  } from "../../api/admin";
 
 const adminRoutes = {
     listUsers:'/admin/users',

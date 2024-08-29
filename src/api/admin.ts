@@ -1,4 +1,3 @@
-import { parseClassName } from "node_modules/react-toastify/dist/utils";
 import Api from "../services/axios";
 import adminRoutes from "../services/endpoints/adminEndPoints";
 import errorHandler from "./error";

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Carousel } from "flowbite-react";
-import { Card, Progress, TextInput } from "flowbite-react";
+import { Card, Progress } from "flowbite-react";
 import { useParams } from 'react-router-dom';
-import { getPostDetails, getSessionId } from '../../api/user';
+import { getPostDetails } from '../../api/user';
 import beneficiary from '@/services/interface/beneficiary';
 import parse from 'html-react-parser';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
