@@ -2,6 +2,7 @@ import axios from "axios";
 import errorHandler from "../api/error";
 
 const BASE_URL = import.meta.env.VITE_API;
+console.log('ddddddddd',import.meta.env.VITE_API);
 
 const Api = axios.create({
     baseURL: BASE_URL,
