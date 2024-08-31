@@ -41,3 +41,16 @@ export function countDown(targetDate : Date | undefined) {
     return days;
   ;
 }
+
+
+
+export const timeGet = (createdAt: Date | undefined):string =>{
+  if (!createdAt) {
+    return ''; // or you can return a default time like '00:00'
+  }
+  const time = new Date(createdAt).toLocaleTimeString([], {
+   hour: '2-digit',
+   minute: '2-digit',
+ });
+ return time
+}

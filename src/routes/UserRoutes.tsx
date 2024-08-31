@@ -32,7 +32,7 @@ const UserRoutes: React.FC = () => {
         <Routes>
             
             <Route path="/otp" element={<OTP />} />
-            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<Home />} />
 
           <Route element={<UserProtected />}>
           <Route element={<UserLayout />}>

@@ -7,7 +7,7 @@ const UserProtected: React.FC = () => {
 
     const {userInfo} = useSelector((state: RootState) => state.auth);
     
-    return userInfo ?  <Outlet /> : <Navigate to="/home"  />
+    return userInfo ?  <Outlet /> : <Navigate to="/"  />
 };
 
 export default UserProtected;

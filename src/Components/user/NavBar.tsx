@@ -42,7 +42,7 @@ const NavBar : React.FC = () => {
         </div>
 
         <div className="hidden md:flex items-center space-x-20">
-        <Link to="/home" className="text-white hover:text-black text-xl">Home</Link>
+        <Link to="/" className="text-white hover:text-black text-xl">Home</Link>
         <Link to="/all-posts" className="text-white hover:text-black text-xl">Donate</Link>
         <a href="#about" className="text-white hover:text-black text-xl">About Us</a>
           <a href="#contact" className="text-white hover:text-black text-xl">Contact Us</a>
@@ -68,7 +68,7 @@ const NavBar : React.FC = () => {
       {menuOpen && (
         <div className="md:hidden text-white py-4 px-6 space-y-4 absolute w-full top-full left-0 " style={{background:'#55AD9B'}}>
           <div className='flex flex-col'>
-          <Link to="/home" className="text-white hover:text-black text-xl mb-2">Home</Link>
+          <Link to="/" className="text-white hover:text-black text-xl mb-2">Home</Link>
           <Link to="/all-posts" className="text-white hover:text-black text-xl ">Donate</Link>
           </div>
           <a href="#about" className="block text-lg hover:text-blue-300">About Us</a>

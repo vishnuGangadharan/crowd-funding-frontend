@@ -7,6 +7,7 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { AudioRecorder } from 'react-audio-voice-recorder';
 import { TbBookUpload } from "react-icons/tb";
 import { MdDeleteForever } from "react-icons/md";
+import { timeGet } from '@/services/functions/Functions';
 
 
 const socket = io('http://localhost:3008');
@@ -15,8 +16,9 @@ interface Message {
   senderId: string | null;
   recipientId: string;
   message?: string;
-  mediaUrl?: string;  // Optional field for file URL or base64 data
-  messageType?: string; // Optional field for file type
+  mediaUrl?: string;  
+  messageType?: string;
+  createdAt?:Date | undefined
 }
 
 interface Conversation {
@@ -37,11 +39,13 @@ const Chat: React.FC = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [file, setFile] = useState<File | null>(null); // State to handle file upload
-  const [filePreview, setFilePreview] = useState<string | null>(null); // State to handle file preview
+  const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null); 
   const [showPicker, setShowPicker] = useState(false);
   const [unreadCounts, setUnreadCounts] = useState<{ [key: string]: number }>({});
-
+  const [isTyping, setIsTyping] = useState(false);
+  const [isRecipientTyping, setIsRecipientTyping] = useState(false);
+  let typingTimeout: NodeJS.Timeout | null = null;
 
   const lastMessageRef = useRef<HTMLDivElement>(null)
 
@@ -51,7 +55,7 @@ const Chat: React.FC = () => {
     }
   }, [messages]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (senderId) setCurrentUserId(senderId);
     if (receiverId) setRecipientId(receiverId);
   }, [senderId, receiverId]);
@@ -62,10 +66,10 @@ const Chat: React.FC = () => {
 
       socket.on('receiveMessage', (newMessage: Message) => {
         if
-        ((newMessage.senderId === currentUserId && newMessage.recipientId === recipientId)||
+          ((newMessage.senderId === currentUserId && newMessage.recipientId === recipientId) ||
           (newMessage.senderId === recipientId && newMessage.recipientId === currentUserId)
-        ){
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        ) {
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
       });
 
@@ -92,6 +96,46 @@ const Chat: React.FC = () => {
     }
   };
 
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessage(e.target.value);
+
+    if (!isTyping) {
+      socket.emit('typing', { senderId: currentUserId, recipientId });
+      setIsTyping(true);
+    }
+
+    if (typingTimeout) clearTimeout(typingTimeout);
+
+    typingTimeout = setTimeout(() => {
+      socket.emit('stopTyping', { senderId: currentUserId, recipientId });
+      setIsTyping(false);
+    }, 1000);
+  };
+
+
+  useEffect(() => {
+    socket.on('typing', ({ senderId }) => {
+      if (senderId === recipientId) {
+
+        setIsRecipientTyping(true);
+      }
+    });
+
+    socket.on('stopTyping', ({ senderId }) => {
+      if (senderId === recipientId) {
+
+        setIsRecipientTyping(false);
+      }
+    });
+
+    return () => {
+      socket.off('typing');
+      socket.off('stopTyping');
+    };
+  }, [recipientId]);
+
+
   const sendMessage = async () => {
     if (message.trim() === '' && !file) return;
 
@@ -99,6 +143,7 @@ const Chat: React.FC = () => {
       senderId: currentUserId,
       recipientId: recipientId,
       message: message,
+      createdAt: new Date()
     };
 
     const formData = new FormData();
@@ -113,12 +158,12 @@ const Chat: React.FC = () => {
       newMessage.mediaUrl = filePreview;
     }
 
-    // Emit the message and file to the server
+    
     socket.emit('sendMessage', newMessage);
-    await sendMessages(formData); // Send the FormData to the backend
+    await sendMessages(formData); 
     setMessage('');
-    setFile(null); // Clear the selected file after sending
-    setFilePreview(null); // Clear the file preview after sending
+    setFile(null); 
+    setFilePreview(null); 
   };
 
   useEffect(() => {
@@ -140,7 +185,8 @@ const Chat: React.FC = () => {
       try {
         const response = await getMessage(currentUserId, recipientId);
         setMessages(response.data);
-
+        console.log('response', response.data);
+        
       } catch (error) {
         console.error(error);
       }
@@ -181,6 +227,7 @@ const Chat: React.FC = () => {
         // message: 'Audio message',
         mediaUrl: base64Audio,
         messageType: 'audio',
+        createdAt: new Date()
       };
 
       socket.emit('sendMessage', newMessage);
@@ -193,6 +240,7 @@ const Chat: React.FC = () => {
 
 
   useEffect(() => {
+    
     socket.on('updateUnreadCount', ({ senderId, unreadCount }) => {
       setUnreadCounts(prevCounts => ({
         ...prevCounts,
@@ -209,7 +257,7 @@ const Chat: React.FC = () => {
     <div className="flex max-w-5xl mx-auto h-screen bg-gray-100">
       {/* Left Sidebar */}
       <div className="w-1/4 bg-white shadow-lg p-4 overflow-y-auto border-r">
-        <h2 className="text-lg font-bold mb-4">Conversations</h2>
+        <h2 className="text-lg  font-bold mb-4">Conversations</h2>
         {Array.isArray(conversations) &&
           conversations
             .filter(conversation => conversation._id !== senderId) // Filter out the senderId user
@@ -228,25 +276,44 @@ const Chat: React.FC = () => {
                   alt={conversation.name}
                   className="w-10 h-10 rounded-full mr-3" // Circular shape and margin-right
                 />
-                {/* User Name */}
+                <div className='flex flex-col'>
                 <span>{conversation.name}</span>
+                {isRecipientTyping && recipientId === conversation._id && (
+                  <div className=" text-green-500 italic">typing...</div>
+                )}
+
+                </div>
                 {unreadCounts[conversation._id] > 0 && (
                   <span className='ml-auto bg-red-500 text-white text-sm rounded-full px-2 py-1'>
                     {unreadCounts[conversation._id]}
                   </span>
                 )}
+
               </div>
             ))}
       </div>
 
       {/* Chat Window */}
       <div className="flex-grow flex flex-col bg-gray-200">
+        <div className='w-full py-3 bg-white-smoke' >
+          {Array.isArray(conversations) && conversations.map((item) => (
+            <div>
+              {item._id == recipientId &&
+                <div className='flex text-center'>
+                  <img src={item.profilePicture} className='w-12 h-12 rounded-full ml-5' alt="" />
+                  <span className='ml-3 mt-3 font-semibold'> {item.name}</span>
+                 
+                </div>
+              }
+            </div>
+          ))}
+        </div>
         <div className="flex-grow p-4 overflow-y-auto">
           {messages.map((msg, index) => (
             <div
               key={index}
-              ref={index === messages.length - 1 ? lastMessageRef : null} 
-              className={`mb-3 p-3 max-w-sm rounded-lg shadow-md ${msg.senderId === currentUserId
+              ref={index === messages.length - 1 ? lastMessageRef : null}
+              className={`mb-3 p-3 max-w-sm rounded-lg shadow-md relative ${msg.senderId === currentUserId
                 ? 'bg-blue-500 text-white self-end ml-[40%]'
                 : 'bg-white text-gray-800 self-start'
                 }`}
@@ -255,6 +322,7 @@ const Chat: React.FC = () => {
               }}
             >
               {msg.message}
+              <span className='absolute right-2 bottom-2 text-xs text-gray-300'>{timeGet(msg.createdAt)}</span>
               {/* Display file preview if a file is part of the message */}
               {msg.mediaUrl && (
                 <div className="mt-2">
@@ -277,10 +345,11 @@ const Chat: React.FC = () => {
               )}
             </div>
           ))}
+
         </div>
 
         {/* File preview section */}
-        {filePreview && file &&(
+        {filePreview && file && (
           <div className="relative p-4">
             <div className="bg-gray-300 p-4 rounded-lg flex relative">
               <div className="relative">
@@ -293,9 +362,9 @@ const Chat: React.FC = () => {
                 ) : (
                   ''
                 )}
-                {file && 
-                
-                <div className="absolute top-0 right-0 text-red-500 text-xl"><MdDeleteForever onClick={()=> setFile(null)}/></div>
+                {file &&
+
+                  <div className="absolute top-0 right-0 text-red-500 text-xl"><MdDeleteForever onClick={() => setFile(null)} /></div>
                 }
               </div>
             </div>
@@ -328,7 +397,13 @@ const Chat: React.FC = () => {
               placeholder="Type a message"
               className="flex-grow bg-white p-2 rounded-full mx-2 border border-gray-300 focus:outline-none focus:border-blue-500"
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  sendMessage();
+                }
+              }}
             />
 
             {/* File input */}
