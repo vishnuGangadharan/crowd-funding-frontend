@@ -5,7 +5,7 @@ import { PostReport } from '@/services/interface/PostReport';
 import { useNavigate } from 'react-router-dom';
 import ConfirmationModal from '@/Components/admin/ConfirmationModal';
 import { toast } from 'react-toastify';
-
+import { formatDate } from '../../services/functions/Functions';
 const ReportedPosts: React.FC = () => {
   const [reports, setReports] = useState<PostReport[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -19,6 +19,8 @@ const ReportedPosts: React.FC = () => {
       const response = await getReport();
       if (response && Array.isArray(response.data)) {
         setReports(response.data);
+        console.log('Reports:', response.data);
+        
       } else {
         setError("Invalid response format");
       }
@@ -75,9 +77,9 @@ const ReportedPosts: React.FC = () => {
                     <p className="mb-2"><strong>Reason:</strong> {report.reason || "No reason provided"}</p>
                     <p className="mb-2"><strong>Comment:</strong> {report.comment || "No comment provided"}</p>
                     <p className="mb-2"><strong>Reported count:</strong> {report.count ?? "N/A"}</p>
-                    <p className="mb-2"><strong>User ID:</strong> {report?.userId || "N/A"}</p>
-                    <p className="mb-2"><strong>Post ID:</strong> {report.postId?._id || "N/A"}</p>
-                    <p className="mb-2"><strong>Blocked:</strong> {report.postId?.blocked ? 'true' : 'false'}</p>
+                    <p className="mb-2"><strong>Blocked By:</strong> {report.userId?.name || "N/A"}</p>
+                    <p className="mb-2"><strong>Beneficiary Name :</strong> {report.postId?.name || "N/A"}</p>
+                    <p className="mb-2"><strong>Blocked Date :</strong> {report.createdAt ? formatDate(new Date(report.createdAt)) : "N/A"}</p>
                   </div>
                   <div className="flex flex-col space-y-2 mt-4 md:mt-0 md:ml-4">
                     <Button color="primary" variant="light" onClick={() => report.postId && handleView(report.postId._id)}>
@@ -94,7 +96,7 @@ const ReportedPosts: React.FC = () => {
                 <Divider />
               </CardBody>
             </Card>
-          ))}
+          ))}   
         </div>
       )}
     </div>

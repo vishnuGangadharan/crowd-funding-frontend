@@ -1,8 +1,8 @@
 import beneficiary from "./beneficiary";
+import { userFormData } from "./user";
 
 export interface PostReport {
     postId?: beneficiary
-    userId?: string;
     reason?: string;
     comment?: string;
     count?: number;
@@ -31,6 +31,7 @@ export interface PostReport {
     updatedAt: string;
     __v: number;
     blocked: boolean;
+    userId:userFormData
   
   
 }

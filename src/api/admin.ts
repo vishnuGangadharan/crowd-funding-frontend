@@ -25,9 +25,9 @@ export const handleBlockStatus= async (id:string,status:boolean)=>{
     }
 }
 
-export const getRequest = async()=> {
+export const getRequest = async(currentPage:number)=> {
     try{
-        const response = await Api.get(adminRoutes.campaignRequest)
+        const response = await Api.get(adminRoutes.campaignRequest, {params:{currentPage}})
         return response.data
     }catch(error){
         const err:Error = error as Error;
@@ -82,9 +82,9 @@ export const getPostDetails = async(postId:string) => {
 }
 
 
-export const getFundRequest = async() => {
+export const getFundRequest = async(currentPage:number) => {
     try{
-        const response = await Api.get(adminRoutes.getFundRequest)
+        const response = await Api.get(adminRoutes.getFundRequest , {params:{currentPage}})
         return response.data
     }catch(error){
         const err:Error = error as Error

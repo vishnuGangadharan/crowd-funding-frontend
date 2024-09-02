@@ -87,12 +87,8 @@ const Card: React.FC<CardProps> = ({ limit }) => {
     }
 
     const handleNextPage = () => {
-        console.log('current page', currentPage);
-
         if (currentPage < totalPages) {
             setCurrentPage((prevPage) => prevPage + 1);
-            console.log('current page', currentPage);
-
         }
     }
 
@@ -109,12 +105,12 @@ const Card: React.FC<CardProps> = ({ limit }) => {
    
 
     return (
-        <div className='flex flex-col justify-center items-center'>
+        <div className='flex flex-col justify-center items-center px-4 '>
             {!limit &&
-                <div className='flex '>
+                <div className='flex flex-col md:flex-row justify-between w-full mb-6'>
                     <Input
                         placeholder='Search for posts'
-                        className='w-96  mb-10 mr-5'
+                        className='w-full md:w-96 mb-4 md:mb-0 md:mr-5'
                         onChange={handleSearch}
                     />
 
@@ -138,7 +134,7 @@ const Card: React.FC<CardProps> = ({ limit }) => {
                 </div>
             }
 
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 p-4">
+            <div className="flex flex-wrap justify-center gap-6 p-4 w-full">
                 {loading ? (
                     <>
                         {Array.from({ length: limit || 3 }).map((_, index) => (
@@ -199,7 +195,7 @@ const Card: React.FC<CardProps> = ({ limit }) => {
                             </div>
                             <div className="p-6 pt-0">
                                 <button
-                                    className="font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md hover:shadow-lg focus:opacity-85 active:opacity-85"
+                                    className="font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md hover:shadow-lg focus:opacity-85 active:opacity-85 w-full"
                                     type="button"
                                     onClick={() => navigate(`/postdetails/${post._id}`)}
                                     aria-label={`Read more about ${post.name}`}

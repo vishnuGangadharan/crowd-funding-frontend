@@ -6,7 +6,7 @@ import Footer from '../Components/user/Footer';
 
 const Home = () => {
   return (
-    <div className='' style={{background:'#FFF6E9'}}>
+    <div className='' style={{ background: '#FFF6E9' }}>
       <NavBar />
       <HeroSection />
 
@@ -15,36 +15,25 @@ const Home = () => {
           <h1 className="sm:text-sm lg:text-4xl font-semibold text-center lg:text-left mt-7">
             Thousands are fundraising online on Helping Hands
           </h1>
-          {/* <div className=" bg-white flex items-center justify-center border border-gray-300 w-[60%] rounded-lg p-2">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="outline-none px-3 py-2 w-full rounded-sm"
-            />
-            <button
-              className="ml-2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            >
-              Search
-            </button>
-          </div> */}
+
         </div>
       </div>
 
       {/* Card */}
       <div className='flex gap-5 justify-center m-20'>
 
-      <Card limit={3} />
-        
+        <Card limit={3} />
+
       </div>
       <div className="flex flex-col items-center mb-52">
         <h1 className="text-3xl font-bold mb-8">Questions We Get</h1>
-        <div className="w-2/4 sm:w-3/4 ">
+        <div className="w-full sm:w-5/6 md:w-3/4 lg:w-2/3 xl:w-1/2">
           <Accordion />
         </div>
       </div>
-    <div className='mt-4'>
-    <Footer />
-    </div>
+      <div className='mt-4'>
+        <Footer />
+      </div>
     </div>
 
   );

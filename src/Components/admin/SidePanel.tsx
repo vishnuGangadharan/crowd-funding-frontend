@@ -5,13 +5,16 @@ import { googleLogout } from '@react-oauth/google';
 import { useDispatch } from 'react-redux';
 import { adminLogout } from '../../redux/slice/adminSlice';
 import cookies from 'js-cookie';
+import { useState } from "react";
 
 const SidePanel = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [active, setActive] = useState<string>('');
 
     const handleLogout = async () => {
         try {
+            
             dispatch(adminLogout());
             cookies.remove('jwt');
             googleLogout();
@@ -20,6 +23,10 @@ const SidePanel = () => {
             console.error("Logout error:", error);
         }
     };
+
+    const handleSelection= (key:string)=>{
+        setActive(key)
+    }
 
     return (
         
@@ -30,25 +37,34 @@ const SidePanel = () => {
                 </div>
                 <Sidebar.Items>
                     <Sidebar.ItemGroup>
-                        <Sidebar.Item as={Link} to='/admin/dashboard' className="hover:bg-gray-700 font-semibold">
+                        <Sidebar.Item as={Link} to='/admin/dashboard' icon={HiInbox} className={`${active === 'dashboard'? 'bg-gray-400' :''} hover:bg-gray-700 font-semibold`}
+                        onClick={()=> handleSelection('dashboard')}
+                        >
                             Dashboard
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} to='/admin/users' icon={HiUser} className="hover:bg-gray-700 font-semibold">
+                        <Sidebar.Item as={Link} to='/admin/users' icon={HiUser} className={`${active === 'users'? 'bg-gray-400' :''} hover:bg-gray-700 font-semibold`}
+                        onClick={()=> handleSelection('users')}
+                        >
                             Users
                         </Sidebar.Item>
                         
-                        <Sidebar.Item as={Link} to='/admin/request' icon={HiInbox} className="hover:bg-gray-700 font-semibold">
+                        <Sidebar.Item as={Link} to='/admin/request' icon={HiInbox} className={`${active === 'campaignRequest'? 'bg-gray-400' :''} hover:bg-gray-700 font-semibold`}
+                        onClick={()=> handleSelection('campaignRequest')}
+                        >
                             Campaign Request
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} to='/admin/fundRequest' icon={HiViewBoards} className="hover:bg-gray-700 font-semibold">
-                           Fund request <br /> from benificiary 
+                        <Sidebar.Item as={Link} to='/admin/fundRequest' icon={HiViewBoards} className={`${active === 'fundRequest'? 'bg-gray-400' :''} hover:bg-gray-700 font-semibold`}
+                        onClick={()=> handleSelection('fundRequest')}
+                        >
+                           Fund request <br/> from beneficiary 
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} to='/admin/reports' icon={HiShoppingBag} className="hover:bg-gray-700 font-semibold">
-                            Reported Posts
+                        
+                        <Sidebar.Item as={Link} to='/admin/reports' icon={HiShoppingBag} className={`${active === 'reports'? 'bg-gray-400' :''} hover:bg-gray-700 font-semibold`}
+                        onClick={()=> handleSelection('reports')}
+                        >
+                        Reported Posts
                         </Sidebar.Item>
-                        {/* <Sidebar.Item href="#" icon={HiArrowSmRight} className="hover:bg-gray-700 ">
-                            Sign In
-                        </Sidebar.Item> */}
+                       
                         <Sidebar.Item onClick={handleLogout} icon={HiTable} className="hover:bg-gray-700 font-semibold text-red-500">
                             Logout
                         </Sidebar.Item>

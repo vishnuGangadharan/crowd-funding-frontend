@@ -4,11 +4,14 @@ import { getRequest, postApproval } from "../../api/admin";
 import { beneficiary } from "../../services/interface/interface";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
+import { GrLinkPrevious } from "react-icons/gr";
+import { GrLinkNext } from "react-icons/gr";
 
 const CampaignRequest: React.FC = () => {
   const [request, setRequest] = useState<beneficiary[]>([]);
-  // const [selectedStatus, setSelectedStatus] = useState<Record<string, string>>({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+
   const navigate = useNavigate()
   const handleApprove = async (postId: string, status: string) => {
     try {
@@ -28,8 +31,9 @@ const CampaignRequest: React.FC = () => {
 
   const fetchRequest = async () => {
     try {
-      const response = await getRequest();
-      setRequest(response.data.data);
+      const response = await getRequest(currentPage);
+      setTotalPages(response.data.data.totalPages);
+      setRequest(response.data.data.request);
     } catch (error) {
       console.error("Error fetching request:", error);
     }
@@ -37,11 +41,23 @@ const CampaignRequest: React.FC = () => {
 
   useEffect(() => {
     fetchRequest();
-  }, []);
+  }, [currentPage]);
 
   const handleView = (id:string | undefined) => {
     navigate(`/admin/postDetails/${id}`);
   };
+
+  const handlePreviousPage = () =>{
+    if(currentPage >1){
+      setCurrentPage((prev) => prev -1)
+    }
+  }
+
+  const handleNextPage = () => {
+    if(currentPage < totalPages){
+      setCurrentPage((prev) => prev + 1)
+    }
+  }
 
   return (
     <div className=" w-full ml-4 mr-5 mt-10">
@@ -113,6 +129,20 @@ const CampaignRequest: React.FC = () => {
           </tbody>
         </table>
       </div>
+      <div className='flex justify-center items-center w-full mb-10 gap-6'>
+                    <button className='w-10 h-10 flex items-center justify-center rounded-full border p-2  hover:bg-blue-gray-300'
+                        onClick={handlePreviousPage}
+                    >
+                        <GrLinkPrevious />
+                    </button>
+
+                    <button className='w-10 h-10 flex items-center justify-center rounded-full border p-2 hover:bg-blue-gray-300 '
+                        onClick={handleNextPage}
+                    >
+                        <GrLinkNext />
+                    </button>
+
+                </div>  
     </div>
   );
 };

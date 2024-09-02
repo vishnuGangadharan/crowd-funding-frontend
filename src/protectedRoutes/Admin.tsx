@@ -4,7 +4,7 @@ import { Outlet, Navigate } from "react-router-dom";
 
 const AdminProtected: React.FC = () => {
     const adminInfo = useSelector((state: RootState) => state.admin.adminInfo);
-
+    
     if (!adminInfo) {
         return <Navigate to="/login" replace />;
     }

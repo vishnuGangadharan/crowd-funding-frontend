@@ -87,7 +87,7 @@ const Login: React.FC = () => {
           if(response.data.isAdmin){
             console.log("Login successful admin:", response.data);
             dispatch(setAdminData(response.data.message))
-            navigate("/admin/users")
+            navigate("/admin/dashboard")
           }
           else{
             dispatch(setUserData(response.data.message))
