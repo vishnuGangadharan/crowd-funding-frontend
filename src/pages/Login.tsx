@@ -86,12 +86,15 @@ const Login: React.FC = () => {
         if(response){
           if(response.data.isAdmin){
             console.log("Login successful admin:", response.data);
+            localStorage.setItem('token', response.data.token);
             dispatch(setAdminData(response.data.message))
             navigate("/admin/dashboard")
           }
           else{
+            console.log("Login successful:", response.data);
+            localStorage.setItem('token', response.data.token);
             dispatch(setUserData(response.data.message))
-            navigate("/home")
+            // navigate("/home")
           }
         }
       }catch(error){

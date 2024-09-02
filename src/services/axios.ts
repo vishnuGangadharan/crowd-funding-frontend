@@ -1,7 +1,7 @@
 import axios from "axios";
 import errorHandler from "../api/error";
 
-const BASE_URL = 'http://51.20.74.174/api'
+const BASE_URL = 'http://localhost:3008/api'
 
 //import.meta.env.VITE_API
 const Api = axios.create({
@@ -28,9 +28,9 @@ Api.interceptors.response.use(
 Api.interceptors.request.use(
     (config) => {
         console.log('axios request config', config);
-        
-        const jwtCookie = document.cookie.split('; ').find(row => row.startsWith('jwt='));
-        const token = jwtCookie ? jwtCookie.split('=')[1] : undefined;
+        const token = localStorage.getItem("token");
+        // const jwtCookie = document.cookie.split('; ').find(row => row.startsWith('jwt='));
+        // const token = jwtCookie ? jwtCookie.split('=')[1] : undefined;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
