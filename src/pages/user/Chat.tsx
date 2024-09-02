@@ -10,7 +10,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { timeGet } from '@/services/functions/Functions';
 
 
-const socket = io('http://localhost:3008');
+const socket = io('http://51.20.74.174/api');
 
 interface Message {
   senderId: string | null;
