@@ -5,7 +5,6 @@ import FundraiserBtn from './FundraiserBtn';
 import { useDispatch,useSelector } from 'react-redux';
 import { RootState } from "../../redux/store";
 import { userLogout } from '../../redux/slice/authSlice';
-import cookies from 'js-cookie';
 import { useNavigate, Link } from 'react-router-dom';
 import { googleLogout } from '@react-oauth/google';
 import logo from '../../../public/logo.png'
