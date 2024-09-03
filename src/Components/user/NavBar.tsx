@@ -18,7 +18,7 @@ const NavBar : React.FC = () => {
 
   const handleLogout = () => {
     dispatch(userLogout());
-    cookies.remove('jwt');
+    localStorage.removeItem('token');
     googleLogout();
   };
 

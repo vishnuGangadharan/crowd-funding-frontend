@@ -16,7 +16,7 @@ const SidePanel = () => {
         try {
             
             dispatch(adminLogout());
-            cookies.remove('jwt');
+            localStorage.removeItem('token');
             googleLogout();
             navigate('/login', { replace: true });
         } catch (error) {
