@@ -10,7 +10,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { timeGet } from '@/services/functions/Functions';
 
 
-const socket = io('http://51.20.74.174/api');
+const socket = io(import.meta.env.VITE_API);
 
 interface Message {
   senderId: string | null;
@@ -186,7 +186,6 @@ const Chat: React.FC = () => {
         const response = await getMessage(currentUserId, recipientId);
         setMessages(response.data);
         console.log('response', response.data);
-        
       } catch (error) {
         console.error(error);
       }
