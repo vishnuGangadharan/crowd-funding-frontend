@@ -10,7 +10,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { timeGet } from '@/services/functions/Functions';
 
 
-const socket = io(import.meta.env.VITE_API);
+const socket = io(import.meta.env.VITE_API_URL);
 
 interface Message {
   senderId: string | null;
@@ -65,7 +65,9 @@ const Chat: React.FC = () => {
       socket.emit('joinRoom', { userId: currentUserId, recipientId });
 
       socket.on('receiveMessage', (newMessage: Message) => {
+        console.log('Received message:', newMessage);
         if
+        
           ((newMessage.senderId === currentUserId && newMessage.recipientId === recipientId) ||
           (newMessage.senderId === recipientId && newMessage.recipientId === currentUserId)
         ) {
