@@ -60,10 +60,13 @@ const Login: React.FC = () => {
 
         if (response.data.isAdmin) {
           console.log("Login successful:", response.data);
-          navigate("/admin/dashboard")
+            localStorage.setItem('token', response.data.token);
+            dispatch(setAdminData(response.data.message))
+            navigate("/admin/dashboard")
         } else {
+          localStorage.setItem('token', response.data.token);
           dispatch(setUserData(response.data.message))
-          navigate("/home")
+          navigate("/")
 
         }
       }
@@ -83,6 +86,8 @@ const Login: React.FC = () => {
           password:"12345aA@",
         }
         const response = await login(data)
+        console.log('response',response);
+        
         if(response){
           if(response.data.isAdmin){
             console.log("Login successful admin:", response.data);
@@ -94,7 +99,7 @@ const Login: React.FC = () => {
             console.log("Login successful:", response.data);
             localStorage.setItem('token', response.data.token);
             dispatch(setUserData(response.data.message))
-            // navigate("/home")
+            navigate("/")
           }
         }
       }catch(error){
