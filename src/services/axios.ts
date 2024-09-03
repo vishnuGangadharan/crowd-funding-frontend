@@ -1,9 +1,9 @@
 import axios from "axios";
 import errorHandler from "../api/error";
 
-const BASE_URL = 'http://51.20.74.174/api'
+const BASE_URL = import.meta.env.VITE_API
 
-//import.meta.env.VITE_API
+
 const Api = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
