@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { googleLogout } from '@react-oauth/google';
 import { useDispatch } from 'react-redux';
 import { adminLogout } from '../../redux/slice/adminSlice';
-import cookies from 'js-cookie';
 import { useState } from "react";
 
 const SidePanel = () => {
