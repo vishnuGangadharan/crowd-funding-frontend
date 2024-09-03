@@ -69,7 +69,7 @@ const OTP = () => {
       if(response){
         toast.success(response.data.message);
         dispatch(setUserData(response.data.data))
-       navigate('/home');
+       navigate('/');
       }
       // Add logic to handle successful OTP verification
     } catch (error) {
