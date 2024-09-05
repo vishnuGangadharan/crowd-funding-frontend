@@ -103,6 +103,11 @@ const Card: React.FC<CardProps> = ({ limit }) => {
        
     }
    
+    const showPostDetails = (id: string) => {
+        navigate('/postdetails', {
+            state: {id: id}
+            })
+    }
 
     return (
         <div className='flex flex-col justify-center items-center px-4 '>
@@ -197,7 +202,7 @@ const Card: React.FC<CardProps> = ({ limit }) => {
                                 <button
                                     className="font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md hover:shadow-lg focus:opacity-85 active:opacity-85 w-full"
                                     type="button"
-                                    onClick={() => navigate(`/postdetails/${post._id}`)}
+                                    onClick={() => post._id && showPostDetails(post._id)}
                                     aria-label={`Read more about ${post.name}`}
                                 >
                                     Read More

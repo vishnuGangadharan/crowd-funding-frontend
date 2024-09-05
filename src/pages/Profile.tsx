@@ -103,8 +103,13 @@ const Profile: React.FC = () => {
   const handleWalletClick = () =>{
     navigate(`/wallet?userId=${userId}`);
   }
+  
   const handleChatClick = () => {
-    navigate(`/chat?senderId=${userId}`)
+    navigate('/chat' , {
+      state: {
+        senderId : userId,
+      }
+    })
 };
   return (
     <form onSubmit={handleSubmit} className="mx-auto p-4 md:p-6 mt-24 w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] bg-gray-50 rounded-lg shadow-lg space-y-6 mb-36">

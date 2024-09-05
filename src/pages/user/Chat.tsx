@@ -11,14 +11,14 @@ import { timeGet } from '@/services/functions/Functions';
 
 
 const socket = io(import.meta.env.VITE_API_URL);
-
+//'http://localhost:3008'  ,import.meta.env.VITE_API_URL
 interface Message {
   senderId: string | null;
   recipientId: string;
   message?: string;
-  mediaUrl?: string;  
+  mediaUrl?: string;
   messageType?: string;
-  createdAt?:Date | undefined
+  createdAt?: Date | undefined
 }
 
 interface Conversation {
@@ -30,17 +30,15 @@ interface Conversation {
 
 const Chat: React.FC = () => {
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const { senderId, receiverId } = location.state || {};
 
-  const senderId = searchParams.get('senderId');
-  const receiverId = searchParams.get('receiverId');
   const [currentUserId, setCurrentUserId] = useState('');
   const [recipientId, setRecipientId] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [file, setFile] = useState<File | null>(null);
-  const [filePreview, setFilePreview] = useState<string | null>(null); 
+  const [filePreview, setFilePreview] = useState<string | null>(null);
   const [showPicker, setShowPicker] = useState(false);
   const [unreadCounts, setUnreadCounts] = useState<{ [key: string]: number }>({});
   const [isTyping, setIsTyping] = useState(false);
@@ -67,7 +65,7 @@ const Chat: React.FC = () => {
       socket.on('receiveMessage', (newMessage: Message) => {
         console.log('Received message:', newMessage);
         if
-        
+
           ((newMessage.senderId === currentUserId && newMessage.recipientId === recipientId) ||
           (newMessage.senderId === recipientId && newMessage.recipientId === currentUserId)
         ) {
@@ -160,12 +158,12 @@ const Chat: React.FC = () => {
       newMessage.mediaUrl = filePreview;
     }
 
-    
+
     socket.emit('sendMessage', newMessage);
-    await sendMessages(formData); 
+    await sendMessages(formData);
     setMessage('');
-    setFile(null); 
-    setFilePreview(null); 
+    setFile(null);
+    setFilePreview(null);
   };
 
   useEffect(() => {
@@ -187,7 +185,6 @@ const Chat: React.FC = () => {
       try {
         const response = await getMessage(currentUserId, recipientId);
         setMessages(response.data);
-        console.log('response', response.data);
       } catch (error) {
         console.error(error);
       }
@@ -241,8 +238,10 @@ const Chat: React.FC = () => {
 
 
   useEffect(() => {
-    
+
     socket.on('updateUnreadCount', ({ senderId, unreadCount }) => {
+      console.log('Received updateUnreadCount:', senderId, unreadCount);
+
       setUnreadCounts(prevCounts => ({
         ...prevCounts,
         [senderId]: unreadCount,
@@ -266,7 +265,7 @@ const Chat: React.FC = () => {
               <div
                 key={conversation._id}
                 className={`flex items-center p-3 mb-2 cursor-pointer rounded-lg ${recipientId === conversation._id
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-gray-500 text-white'
                   : 'hover:bg-blue-100'
                   }`}
                 onClick={() => handleUserClick(conversation._id)}
@@ -278,10 +277,10 @@ const Chat: React.FC = () => {
                   className="w-10 h-10 rounded-full mr-3" // Circular shape and margin-right
                 />
                 <div className='flex flex-col'>
-                <span>{conversation.name}</span>
-                {isRecipientTyping && recipientId === conversation._id && (
-                  <div className=" text-green-500 italic">typing...</div>
-                )}
+                  <span>{conversation.name}</span>
+                  {isRecipientTyping && recipientId === conversation._id && (
+                    <div className=" text-green-500 italic">typing...</div>
+                  )}
 
                 </div>
                 {unreadCounts[conversation._id] > 0 && (
@@ -303,7 +302,7 @@ const Chat: React.FC = () => {
                 <div className='flex text-center'>
                   <img src={item.profilePicture} className='w-12 h-12 rounded-full ml-5' alt="" />
                   <span className='ml-3 mt-3 font-semibold'> {item.name}</span>
-                 
+
                 </div>
               }
             </div>

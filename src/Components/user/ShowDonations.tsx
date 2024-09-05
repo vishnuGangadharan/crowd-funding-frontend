@@ -41,7 +41,7 @@ const ShowDonations: React.FC<Props> = ({ beneficiaryId, widthClass = 'max-w-sm'
         if (beneficiaryId) {
             fetchDonations();
         }
-    }, [beneficiaryId]);
+    }, []);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;

@@ -19,10 +19,8 @@ const PostComments: React.FC<commentProps> = ({ postId, userId }) => {
 
     const fetchComments = async () => {
         try {
-            console.log("inside", postId);
 
             const response = await geComments(postId as string)
-            console.log("resmes", response.data);
             setShowComment(response.data)
 
         } catch (error) {
@@ -33,8 +31,6 @@ const PostComments: React.FC<commentProps> = ({ postId, userId }) => {
 
     useEffect(() => {
         fetchComments()
-        console.log("efff");
-
 
     }, [])
 

@@ -18,6 +18,7 @@ import PaymentModal from '@/Components/user/PaymentModal';
 import ShowDonations from '@/Components/user/ShowDonations';
 import { FaComments } from 'react-icons/fa';
 import PostUpdate from './PostUpdate';
+import { useLocation } from 'react-router-dom';
 import { countDown } from '@/services/functions/Functions';
 import {
     FacebookShareButton,
@@ -51,8 +52,11 @@ const PostDetails: React.FC = () => {
     const title = postDetails?.heading as string;
     const image = postDetails?.profilePic ? postDetails.profilePic[0] : "";
     const fullUrl = `${url}?title=${encodeURIComponent(title)}&image=${encodeURIComponent(image)}`;
-
-    const { id } = useParams<{ id: string }>();
+    console.log('llllllllllll',url);
+    
+    //const { id } = useParams<{ id: string }>();
+    const location = useLocation();
+    const { id } = location.state || {};
 
     useEffect(() => {
         const fetchPostDetails = async () => {
@@ -83,7 +87,9 @@ const PostDetails: React.FC = () => {
     const fundraiserId = postDetails?.fundraiser?._id;
 
     const handleChatClick = () => {
-        navigate(`/chat?senderId=${userId}&receiverId=${fundraiserId}`)
+        navigate('/chat', {
+            state: { senderId: userId, receiverId: fundraiserId }
+        });
     };
 
     const handleStatusRoute = () => {
