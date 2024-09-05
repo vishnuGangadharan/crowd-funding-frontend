@@ -53,7 +53,6 @@ const PostDetails: React.FC = () => {
     const fullUrl = `${url}?title=${encodeURIComponent(title)}&image=${encodeURIComponent(image)}`;
     console.log('llllllllllll',url);
     
-    //const { id } = useParams<{ id: string }>();
     const location = useLocation();
     const { id } = location.state || {};
 
