@@ -23,7 +23,7 @@ const Chat = lazy(() => import ('../pages/user/Chat'))
 const ShowUpdates = lazy(() => import ('../pages/user/ShowUpdates'))
 const ShowAllDonations = lazy(() => import ('../pages/user/ShowAllDonations'))
 const Wallet = lazy(() => import ('../pages/user/Wallet'))
-
+const ErrorPage = lazy(() => import ('../pages/user/404'))
 
 const UserRoutes: React.FC = () => {
   return (
@@ -46,6 +46,7 @@ const UserRoutes: React.FC = () => {
             <Route path="/all-donations/:beneficiaryId" element={<ShowAllDonations/>}/>
             <Route path="/wallet" element={<Wallet/>}/>
           </Route>
+          <Route path="*" element={<ErrorPage/>}/>
             <Route path="/chat" element={<Chat/>}/>
             <Route path='/registration' element={<FundraisingRegister/>}/>
             <Route path='/media-uploader' element={<MediaUploader/>}/>
@@ -55,6 +56,7 @@ const UserRoutes: React.FC = () => {
           <Route element={<UserLogout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="*" element={<ErrorPage/>}/>
           </Route>
 
         </Routes>
