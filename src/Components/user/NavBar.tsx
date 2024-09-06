@@ -84,7 +84,7 @@ const NavBar : React.FC = () => {
                 <p className='ml-4 cursor-pointer' onClick={handleLogout}>Logout</p>
               </>
             ) : (
-              "Login"
+              <Link to="/login" className="text-white hover:text-blue-300">Login</Link>   
             )}
           </div>
         </div>
