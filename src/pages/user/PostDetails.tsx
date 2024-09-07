@@ -17,7 +17,7 @@ import PaymentModal from '@/Components/user/PaymentModal';
 import ShowDonations from '@/Components/user/ShowDonations';
 import { FaComments } from 'react-icons/fa';
 import PostUpdate from './PostUpdate';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { countDown } from '@/services/functions/Functions';
 import {
     FacebookShareButton,
@@ -52,9 +52,9 @@ const PostDetails: React.FC = () => {
     const image = postDetails?.profilePic ? postDetails.profilePic[0] : "";
     const fullUrl = `${url}?title=${encodeURIComponent(title)}&image=${encodeURIComponent(image)}`;
     console.log('llllllllllll',url);
-    
-    const location = useLocation();
-    const { id } = location.state || {};
+  
+    const { id } = useParams<{ id: string }>();
+
 
     useEffect(() => {
         const fetchPostDetails = async () => {

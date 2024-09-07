@@ -104,9 +104,7 @@ const Card: React.FC<CardProps> = ({ limit }) => {
     }
    
     const showPostDetails = (id: string) => {
-        navigate('/postdetails', {
-            state: {id: id}
-            })
+        navigate(`/postdetails/${id}`)
     }
 
     return (

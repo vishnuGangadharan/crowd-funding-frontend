@@ -13,7 +13,7 @@ const PostDetails = () => {
 
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-
+    
     useEffect(() => {
         const fetchPostDetails = async () => {
             try {

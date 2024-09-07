@@ -36,7 +36,7 @@ const UserRoutes: React.FC = () => {
           <Route element={<UserLayout />}>
             <Route path='/profile' element={<Profile/>}/>
             <Route path='/fundraising' element={<Fundraising/>}/>
-            <Route path="/postdetails" element={<PostDetails />} />
+            <Route path="/postdetails/:id" element={<PostDetails />} />
             <Route path='/all-posts' element={<AllPosts/>}/>
             <Route path='/share' element={<Shearing/>}/>
             <Route path='/dummy' element={<Dummy/>}/>
