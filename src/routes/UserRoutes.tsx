@@ -37,7 +37,6 @@ const UserRoutes: React.FC = () => {
           <Route element={<UserLayout />}>
             <Route path='/profile' element={<Profile/>}/>
             <Route path='/fundraising' element={<Fundraising/>}/>
-            <Route path='/beneficiary-otp' element={<OTPforFundRegister/>}/>
             <Route path="/postdetails" element={<PostDetails />} />
             <Route path='/all-posts' element={<AllPosts/>}/>
             <Route path='/share' element={<Shearing/>}/>
@@ -47,6 +46,7 @@ const UserRoutes: React.FC = () => {
             <Route path="/wallet" element={<Wallet/>}/>
           </Route>
           <Route path="*" element={<ErrorPage/>}/>
+            <Route path='/beneficiary-otp' element={<OTPforFundRegister/>}/>
             <Route path="/chat" element={<Chat/>}/>
             <Route path='/registration' element={<FundraisingRegister/>}/>
             <Route path='/media-uploader' element={<MediaUploader/>}/>

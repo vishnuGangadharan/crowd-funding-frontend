@@ -178,7 +178,7 @@ const Chat: React.FC = () => {
     if (senderId) {
       allUsers();
     }
-  }, [senderId]);
+  }, [senderId, message]);
 
   useEffect(() => {
     const fetchMessages = async () => {

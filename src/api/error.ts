@@ -25,6 +25,8 @@ const errorHandler = (error: Error | AxiosError) => {
                 }
              
             }else if(axiosError.response.status ===400){
+                console.log('errorResposncexxxxxx',errorResposnce);
+                
                 toast.error(errorResposnce.message)
                 
             }else if(axiosError.message){

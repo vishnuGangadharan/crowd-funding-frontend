@@ -69,6 +69,7 @@ export const beneficiaryVerification = async(data: beneficiary) => {
 export const beneficiaryOtpVerify = async(otp:number ,email:string)=>{
     try{
         const response = await Api.post(userRoutes.beneficiaryOtpVerification ,{otp,email})
+  
         return response
     }catch(error){
         const err:Error = error as Error;
@@ -80,6 +81,8 @@ export const beneficiaryOtpVerify = async(otp:number ,email:string)=>{
 export const fundraisingRegister = async(registerData:beneficiary )=>{
     try{
         const response = await Api.post(userRoutes.fundraisingRegister,registerData)
+        console.log("response",response.data);
+        
         return response
         
     }catch(error){
