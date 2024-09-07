@@ -11,7 +11,6 @@ const CampaignRequest: React.FC = () => {
   const [request, setRequest] = useState<beneficiary[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate()
   const handleApprove = async (postId: string, status: string) => {
@@ -31,12 +30,10 @@ const CampaignRequest: React.FC = () => {
   };
 
   const fetchRequest = async () => {
-    setLoading(true)
     try {
       const response = await getRequest(currentPage);
       setTotalPages(response.data.data.totalPages);
       setRequest(response.data.data.request);
-      setLoading(false)
     } catch (error) {
       console.error("Error fetching request:", error);
     }
