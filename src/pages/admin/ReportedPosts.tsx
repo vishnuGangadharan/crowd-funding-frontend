@@ -65,7 +65,9 @@ const ReportedPosts: React.FC = () => {
   return (
     <div className="p-4">
       {reports.length === 0 ? (
-        <p>No reports found.</p>
+       <p className="flex justify-center text-center font-semibold mt-10 text-2xl">
+       No report found
+     </p>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
           {reports.map((report) => (

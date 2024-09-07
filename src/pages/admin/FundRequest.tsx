@@ -57,6 +57,7 @@ const FundRequest: React.FC = () => {
 
   return (
     <div className="min-h-screen  bg-gray-100 p-4">
+      {fetchData && fetchData.length > 0 ?(
       <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         {fetchData.map((data, index) => (
           <div key={index} className="bg-white w-auto flex justify-center items-center shadow-lg rounded-xl overflow-hidden">
@@ -110,7 +111,13 @@ const FundRequest: React.FC = () => {
             </div>
           </div>
         ))}
+
+      
       </div>
+      ) : (<p className="flex justify-center text-center font-semibold mt-10 text-2xl">
+        No request found
+      </p>)}
+      {fetchData.length > 2 ? (
       <div className='flex justify-center items-center w-full mb-10 gap-6'>
         <button className='w-10 h-10 flex items-center justify-center rounded-full border p-2  hover:bg-blue-gray-300'
           onClick={handlePreviousPage}
@@ -125,6 +132,7 @@ const FundRequest: React.FC = () => {
         </button>
 
       </div>
+      ): ('')}
     </div>
   );
 };

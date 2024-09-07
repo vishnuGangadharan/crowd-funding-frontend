@@ -11,6 +11,7 @@ const CampaignRequest: React.FC = () => {
   const [request, setRequest] = useState<beneficiary[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate()
   const handleApprove = async (postId: string, status: string) => {
@@ -30,10 +31,12 @@ const CampaignRequest: React.FC = () => {
   };
 
   const fetchRequest = async () => {
+    setLoading(true)
     try {
       const response = await getRequest(currentPage);
       setTotalPages(response.data.data.totalPages);
       setRequest(response.data.data.request);
+      setLoading(false)
     } catch (error) {
       console.error("Error fetching request:", error);
     }
@@ -63,6 +66,7 @@ const CampaignRequest: React.FC = () => {
     <div className=" w-full ml-4 mr-5 mt-10">
       <h1 className="text-gray-800 text-2xl mb-6 font-semibold text-center">Campaign Request</h1>
       <div className="overflow-x-auto">
+      {request && request.length > 0 ? (
         <table className="min-w-full bg-white shadow-md rounded my-6">
           <thead>
             <tr className="bg-gray-800 text-white">
@@ -76,6 +80,7 @@ const CampaignRequest: React.FC = () => {
               <th className="w-1/12 py-3 px-4 uppercase font-semibold text-sm text-left">Status</th>
             </tr>
           </thead>
+            
           <tbody className="text-gray-700">
             {request?.map((req, index) => {
               const formattedDate = new Date(req.targetDate).toLocaleDateString('en-US', {
@@ -126,9 +131,14 @@ const CampaignRequest: React.FC = () => {
                 </tr>
               );
             })}
+
           </tbody>
         </table>
+          ): (<p className="flex justify-center text-center font-semibold mt-10 text-2xl">
+           No request found
+          </p>)}
       </div>
+      {request.length > 0 ? (
       <div className='flex justify-center items-center w-full mb-10 gap-6'>
                     <button className='w-10 h-10 flex items-center justify-center rounded-full border p-2  hover:bg-blue-gray-300'
                         onClick={handlePreviousPage}
@@ -142,7 +152,8 @@ const CampaignRequest: React.FC = () => {
                         <GrLinkNext />
                     </button>
 
-                </div>  
+          </div> 
+          ): ''} 
     </div>
   );
 };

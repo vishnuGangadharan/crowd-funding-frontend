@@ -31,22 +31,22 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         <Card className="flex flex-col justify-center items-center h-32 bg-white hover:bg-blue-100 transition duration-300 shadow-lg rounded-lg">
           <p className="font-semibold text-gray-700 text-lg">Current Campaigns</p>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{AllData?.totalPosts}</p>
+          <p className="text-3xl font-bold text-gray-900 mt-2">{AllData?.totalPosts ? AllData?.totalPosts :0}</p>
         </Card>
 
         <Card className="flex flex-col justify-center items-center h-32 bg-white hover:bg-blue-100 transition duration-300 shadow-lg rounded-lg">
           <p className="font-semibold text-gray-700 text-lg">Completed</p>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{AllData?.completedPosts}</p>
+          <p className="text-3xl font-bold text-gray-900 mt-2">{AllData?.completedPosts ? AllData?.completedPosts : 0}</p>
         </Card>
 
         <Card className="flex flex-col justify-center items-center h-32 bg-white hover:bg-blue-100 transition duration-300 shadow-lg rounded-lg">
           <p className="font-semibold text-gray-700 text-lg text-center">This Month Campaign Requests</p>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{AllData?.postsThisMonth}</p>
+          <p className="text-3xl font-bold text-gray-900 mt-2">{AllData?.postsThisMonth ? AllData?.postsThisMonth : 0}</p>
         </Card>
 
         <Card className="flex flex-col justify-center items-center h-32 bg-white hover:bg-blue-100 transition duration-300 shadow-lg rounded-lg">
           <p className="font-semibold text-gray-700 text-lg text-center">Company Profit</p>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{AllData?.totalProfit.totalProfit}</p>
+          <p className="text-3xl font-bold text-gray-900 mt-2">{AllData?.totalProfit.totalProfit ? AllData?.totalProfit.totalProfit : 0}</p>
         </Card>
       </div>
 
