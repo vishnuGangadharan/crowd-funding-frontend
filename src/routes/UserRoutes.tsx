@@ -4,7 +4,6 @@ import UserProtected from "../protectedRoutes/User"
 import UserLogout from "../protectedRoutes/UserLogout"
 import UserLayout from "@/layout/UserLayout"
 
-
 const Login = lazy(()=> import ("../pages/Login"))
 const Home = lazy(()=> import ("../pages/Home"))
 const Signup = lazy(()=> import ("../pages/SignUp"))

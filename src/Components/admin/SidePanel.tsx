@@ -10,6 +10,7 @@ const SidePanel = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [active, setActive] = useState<string>('');
+console.log('side panal render');
 
     const handleLogout = async () => {
         try {
