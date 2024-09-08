@@ -1,7 +1,7 @@
 import axios from "axios";
 import errorHandler from "../api/error";
 
-const BASE_URL = 'http://localhost:3008/api'
+const BASE_URL = import.meta.env.VITE_API
 // 'http://localhost:3008/api',   import.meta.env.VITE_API
 const Api = axios.create({
     baseURL: BASE_URL,
@@ -13,7 +13,7 @@ Api.interceptors.response.use(
     (error)=>{        
         if(error.response){
             console.log('axios response error message',error.response.data);
-
+            
             return errorHandler(error);
         }else{
             console.log('axios response error',error);
