@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { timeGet } from '@/services/functions/Functions';
-import { chatProps, lastSeenProps } from '@/services/interface/chat';
-import { lastSeenStatus } from '@/api/chat';
+import { chatProps } from '@/services/interface/chat';
 import { formatTimeInIST } from '@/services/functions/Functions';
 const ShowChats: React.FC<chatProps> = ({ conversations, recipientId, messages, currentUserId, onlineUsers , lastSeenUser}) => {
   const lastMessageRef = useRef<HTMLDivElement>(null);
