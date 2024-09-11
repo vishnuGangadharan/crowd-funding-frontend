@@ -1,32 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import { useLocation } from 'react-router-dom';
-import { allUsersChatted, getMessage, sendMessages } from '../../api/chat';
+import { allUsersChatted, getMessage, lastSeenStatus, sendMessages } from '../../api/chat';
 import Picker from 'emoji-picker-react';
 import { BsEmojiSmile } from "react-icons/bs";
 import { AudioRecorder } from 'react-audio-voice-recorder';
 import { TbBookUpload } from "react-icons/tb";
 import { MdDeleteForever } from "react-icons/md";
-import { timeGet } from '@/services/functions/Functions';
-
-
-const socket = io(import.meta.env.VITE_API_URL);
+import Conversations from './UserChat/Conversations';
+import ShowChats from './UserChat/ShowChats';
+import { Message , Conversation, onlineUser } from '@/services/interface/chat';
+import { lastSeenProps } from '@/services/interface/chat';
+const socket = io('http://localhost:3008');
 //'http://localhost:3008'  ,import.meta.env.VITE_API_URL
-interface Message {
-  senderId: string | null;
-  recipientId: string;
-  message?: string;
-  mediaUrl?: string;
-  messageType?: string;
-  createdAt?: Date | undefined
-}
 
-interface Conversation {
-  recipientId: string;
-  name: string;
-  _id: string;
-  profilePicture: string;
-}
 
 const Chat: React.FC = () => {
   const location = useLocation();
@@ -43,8 +30,10 @@ const Chat: React.FC = () => {
   const [unreadCounts, setUnreadCounts] = useState<{ [key: string]: number }>({});
   const [isTyping, setIsTyping] = useState(false);
   const [isRecipientTyping, setIsRecipientTyping] = useState(false);
-  let typingTimeout: NodeJS.Timeout | null = null;
+  const [onlineUsers, setOnlineUsers] = useState<onlineUser[]>([]);
+  const [lastSeenUser, setLastSeenUser] = useState<lastSeenProps[]>([]);
 
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -52,6 +41,54 @@ const Chat: React.FC = () => {
       lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+  
+  useEffect(() => {
+    if (socket == null || !currentUserId) return;
+  
+    socket.emit('addNewUser', currentUserId);
+      socket.on('getOnlineUsers', (res) => {
+      setOnlineUsers(res);
+    });
+  
+    return () => {
+      socket.off('getOnlineUsers');
+    };
+  }, [currentUserId, socket]);
+  
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      socket.emit('userLeftChat', currentUserId);
+    };
+  
+    window.addEventListener('beforeunload', handleBeforeUnload);
+  
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      let time = new Date()
+      socket.emit('userLeftChat', currentUserId,time);  // Handle navigation away from the chat
+      console.log('user out.....',currentUserId);
+      
+    };
+  }, [socket, currentUserId]);
+  
+
+  const fetchLastSeen = async () => {
+    const response = await lastSeenStatus();
+    setLastSeenUser(response.data);
+    console.log('response', response.data);
+  };
+
+  useEffect(() => {
+    fetchLastSeen();
+    socket.on('userLastSeen', ({userId, lastSeen}) => {
+      setLastSeenUser((prev) => 
+      prev.map((user) => 
+      user._id == userId ? {...user,lastSeen} : user
+    )
+      )
+    })
+  }, [currentUserId, recipientId]);
+
 
   useEffect(() => {
     if (senderId) setCurrentUserId(senderId);
@@ -61,24 +98,47 @@ const Chat: React.FC = () => {
   useEffect(() => {
     if (currentUserId && recipientId) {
       socket.emit('joinRoom', { userId: currentUserId, recipientId });
-
+  
       socket.on('receiveMessage', (newMessage: Message) => {
         console.log('Received message:', newMessage);
-        if
-
-          ((newMessage.senderId === currentUserId && newMessage.recipientId === recipientId) ||
+        if (
+          (newMessage.senderId === currentUserId && newMessage.recipientId === recipientId) ||
           (newMessage.senderId === recipientId && newMessage.recipientId === currentUserId)
         ) {
           setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
       });
-
+  
+      const handleBeforeUnload = () => {
+        socket.emit('leaveRoom', { userId: currentUserId, recipientId });
+      };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+  
       return () => {
         socket.emit('leaveRoom', { userId: currentUserId, recipientId });
         socket.off('receiveMessage');
+        window.removeEventListener('beforeunload', handleBeforeUnload);
       };
     }
   }, [currentUserId, recipientId]);
+  
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        socket.emit('leaveRoom', { userId: currentUserId, recipientId });
+      } else if (document.visibilityState === 'visible') {
+        socket.emit('joinRoom', { userId: currentUserId, recipientId });
+      }
+    };
+  
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+  
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [currentUserId, recipientId]);
+  
+
 
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,9 +165,9 @@ const Chat: React.FC = () => {
       setIsTyping(true);
     }
 
-    if (typingTimeout) clearTimeout(typingTimeout);
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
 
-    typingTimeout = setTimeout(() => {
+    typingTimeoutRef.current = setTimeout(() => {
       socket.emit('stopTyping', { senderId: currentUserId, recipientId });
       setIsTyping(false);
     }, 1000);
@@ -154,7 +214,7 @@ const Chat: React.FC = () => {
     if (file && filePreview) {
       formData.append('fileUrl', file);
       formData.append('fileType', file.type.split('/')[0]);
-      newMessage.messageType = file.type.split('/')[0]; // Extract file type (e.g., 'image', 'video', etc.)
+      newMessage.messageType = file.type.split('/')[0]; 
       newMessage.mediaUrl = filePreview;
     }
 
@@ -199,6 +259,7 @@ const Chat: React.FC = () => {
     setRecipientId(id);
     socket.emit('markMessagesAsRead', { recipientId: currentUserId, senderId: id });
     setMessages([]);
+    setMessage('')
   };
 
   const onEmojiClick = (emojiObject: any) => {
@@ -236,6 +297,8 @@ const Chat: React.FC = () => {
     reader.readAsDataURL(blob);
   };
 
+ 
+
 
   useEffect(() => {
 
@@ -255,98 +318,14 @@ const Chat: React.FC = () => {
 
   return (
     <div className="flex max-w-5xl mx-auto h-screen bg-gray-100">
-      {/* Left Sidebar */}
-      <div className="w-1/4 bg-white shadow-lg p-4 overflow-y-auto border-r">
-        <h2 className="text-lg  font-bold mb-4">Conversations</h2>
-        {Array.isArray(conversations) &&
-          conversations
-            .filter(conversation => conversation._id !== senderId) // Filter out the senderId user
-            .map((conversation) => (
-              <div
-                key={conversation._id}
-                className={`flex items-center p-3 mb-2 cursor-pointer rounded-lg ${recipientId === conversation._id
-                  ? 'bg-gray-500 text-white'
-                  : 'hover:bg-blue-100'
-                  }`}
-                onClick={() => handleUserClick(conversation._id)}
-              >
-                {/* Profile Picture */}
-                <img
-                  src={conversation.profilePicture}
-                  alt={conversation.name}
-                  className="w-10 h-10 rounded-full mr-3" // Circular shape and margin-right
-                />
-                <div className='flex flex-col'>
-                  <span>{conversation.name}</span>
-                  {isRecipientTyping && recipientId === conversation._id && (
-                    <div className=" text-green-500 italic">typing...</div>
-                  )}
 
-                </div>
-                {unreadCounts[conversation._id] > 0 && (
-                  <span className='ml-auto bg-red-500 text-white text-sm rounded-full px-2 py-1'>
-                    {unreadCounts[conversation._id]}
-                  </span>
-                )}
-
-              </div>
-            ))}
-      </div>
+      {/* left window */}
+      <Conversations conversations={conversations} onlineUsers={onlineUsers} handleUserClick={handleUserClick} senderId={senderId} recipientId={recipientId} isRecipientTyping={isRecipientTyping} unreadCounts={unreadCounts}  />
 
       {/* Chat Window */}
       <div className="flex-grow flex flex-col bg-gray-200">
-        <div className='w-full py-3 bg-white-smoke' >
-          {Array.isArray(conversations) && conversations.map((item) => (
-            <div>
-              {item._id == recipientId &&
-                <div className='flex text-center'>
-                  <img src={item.profilePicture} className='w-12 h-12 rounded-full ml-5' alt="" />
-                  <span className='ml-3 mt-3 font-semibold'> {item.name}</span>
 
-                </div>
-              }
-            </div>
-          ))}
-        </div>
-        <div className="flex-grow p-4 overflow-y-auto">
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              ref={index === messages.length - 1 ? lastMessageRef : null}
-              className={`mb-3 p-3 max-w-sm rounded-lg shadow-md relative ${msg.senderId === currentUserId
-                ? 'bg-blue-500 text-white self-end ml-[40%]'
-                : 'bg-white text-gray-800 self-start'
-                }`}
-              style={{
-                alignSelf: msg.senderId === currentUserId ? 'flex-end' : 'flex-start',
-              }}
-            >
-              {msg.message}
-              <span className='absolute right-2 bottom-2 text-xs text-gray-300'>{timeGet(msg.createdAt)}</span>
-              {/* Display file preview if a file is part of the message */}
-              {msg.mediaUrl && (
-                <div className="mt-2">
-                  {msg.messageType === 'image' ? (
-                    <img src={msg.mediaUrl} alt="Sent file" className="max-w-full max-h-40 rounded-lg" />
-                  ) : msg.messageType === 'video' ? (
-                    <video controls className="max-w-full max-h-40 rounded-lg">
-                      <source src={msg.mediaUrl} type="video/mp4" />
-                    </video>
-                  ) : msg.messageType === 'audio' ? (
-                    <audio controls className="w-full">
-                      <source src={msg.mediaUrl} type="audio/mpeg" />
-                    </audio>
-                  ) : (
-                    <a href={msg.mediaUrl} download className="text-blue-500">
-                      Download File
-                    </a>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-
-        </div>
+        <ShowChats conversations={conversations} recipientId={recipientId} messages={messages} currentUserId={currentUserId}  onlineUsers={onlineUsers} lastSeenUser={lastSeenUser}/>
 
         {/* File preview section */}
         {filePreview && file && (
@@ -370,7 +349,6 @@ const Chat: React.FC = () => {
             </div>
           </div>
         )}
-
         {/* Input Box */}
         <form
           onSubmit={(e) => {
@@ -391,7 +369,6 @@ const Chat: React.FC = () => {
               )}
             </div>
 
-            {/* Message input */}
             <input
               type="text"
               placeholder="Type a message"
@@ -406,7 +383,6 @@ const Chat: React.FC = () => {
               }}
             />
 
-            {/* File input */}
             <input
               type="file"
               onChange={handleFileChange}
@@ -417,7 +393,6 @@ const Chat: React.FC = () => {
               <TbBookUpload size={40} />
             </label>
 
-            {/* Send button */}
             <button
               type="submit"
               className="bg-blue-500 text-white p-2 rounded-full"

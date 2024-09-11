@@ -80,8 +80,6 @@ const PostDetails: React.FC = () => {
     const contributedAmount = Number(postDetails?.contributedAmount) || 0;
     const balance = amount - contributedAmount;
 
-
-
     const fundraiserId = postDetails?.fundraiser?._id;
 
     const handleChatClick = () => {

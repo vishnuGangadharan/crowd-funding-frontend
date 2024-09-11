@@ -54,3 +54,13 @@ export const timeGet = (createdAt: Date | undefined):string =>{
  });
  return time
 }
+
+
+export const formatTimeInIST = (time: string | Date): string => {
+  return new Date(time).toLocaleTimeString('en-IN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: 'Asia/Kolkata'
+  });
+};

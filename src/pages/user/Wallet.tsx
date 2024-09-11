@@ -33,7 +33,7 @@ const Wallet: React.FC = () => {
         <h1 className="text-3xl font-semibold text-gray-800">{wallet && wallet.userId ? wallet.userId.name : 'N/A'}'s Wallet</h1>
         <h2 className="text-xl font-medium text-green-600">Current Balance: ₹ {wallet ? wallet.balance : 'N/A'} </h2>
       </div>
-
+      {wallet && wallet.transactions.length > 0 ? (
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
           <thead>
@@ -59,7 +59,8 @@ const Wallet: React.FC = () => {
                 </td>
                 <td className="py-3 px-6">{transaction.amount}</td>
                 <td className="py-3 px-6 truncate-lines-3">
-                  {transaction.description} <br /> {transaction.beneficiary.name}
+                  {transaction.description
+                  } <br /> {transaction.beneficiary?.name}
                 </td>
               </tr>
             )) : (
@@ -68,21 +69,10 @@ const Wallet: React.FC = () => {
               </tr>
             )}
           </tbody>
-          {/* <tfoot>
-            <tr className="bg-gray-100">
-              <td colSpan={2} className="py-3 px-6 font-semibold text-right">Total Credited:</td>
-              <td className="py-3 px-6 font-semibold text-green-700">$</td>
-              <td className="py-3 px-6"></td>
-            </tr>
-            <tr className="bg-gray-100">
-              <td colSpan={2} className="py-3 px-6 font-semibold text-right">Total Debited:</td>
-              <td className="py-3 px-6 font-semibold text-red-700">$</td>
-              <td className="py-3 px-6"></td>
-            </tr>
-          </tfoot> */}
+          
         </table>
       </div>
-
+      ) : ('No transactions found')}
       <div className="mt-6 flex justify-end">
         <button
           onClick={() => navigate(-1)}

@@ -37,3 +37,14 @@ export const allUsersChatted = async(userID: string) => {
         errorHandler(err)
     }
 }
+
+
+export const lastSeenStatus = async() => {
+    try{
+        const response = await Api.get(chatRoutes.lastSeen)
+        return response.data
+    }catch(error){
+        const err: Error = error as Error
+        errorHandler(err)
+    }
+}

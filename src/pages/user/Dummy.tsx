@@ -1,140 +1,6 @@
+// chat origianl
 
 
-// import { editUserProfile, getUser } from '@/api/user';
-// import { userFormData } from '@/services/interface/user';
-// import React, { useEffect, useState } from 'react';
-// import { useSelector } from 'react-redux';
-// import { RootState } from '../../redux/store';
-
-// const Dummy: React.FC = () => {
-//   const [email, setEmail] = useState<string>('');
-//   const [phone, setPhone] = useState<string>('');
-//   const [name, setName] = useState<string>('');
-//   const [image, setImage] = useState<File | null>(null);
-//   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-//   const [userDetails, setUserDetails] = useState<userFormData | null>(null);
-
-//   const { userInfo } = useSelector((state: RootState) => state.auth);
-//   const userId = userInfo?._id;
-
-//   const fetchUser = async () => {
-//     try {
-//       const response = await getUser(userId);
-//       setUserDetails(response.data);
-//       setEmail(response.data.email);
-//       setPhone(response.data.phone);
-//       setName(response.data.name);
-//     } catch (error) {
-//       console.error('Error fetching user details:', error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchUser();
-//   }, []);
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-
-//     const validationErrors: { [key: string]: string } = {};
-//     if (!phone) validationErrors.phone = 'Phone is required';
-//     if (phone.length !== 10) validationErrors.phone = 'Phone must be 10 digits';
-//     if (!name) validationErrors.name = 'Name is required';
-//     if (!/^[a-zA-Z\s]+$/.test(name)) validationErrors.name = 'Name must contain only letters';
-//     if (!image && !userDetails?.profilePicture) validationErrors.image = 'Image is required';
-
-//     if (Object.keys(validationErrors).length > 0) {
-//       setErrors(validationErrors);
-//       return;
-//     }
-
-//     const formData = new FormData();
-//     formData.append('email', email);
-//     formData.append('phone', phone);
-//     formData.append('name', name);
-//     if (image) {
-//       formData.append('profilePicture', image);
-//     }
-
-//     try {
-//       const response = await editUserProfile(formData as any);
-//       if (response) {
-//         console.log('Profile updated successfully', response);
-//       } else {
-//         console.error('Failed to update profile');
-//       }
-//     } catch (error) {
-//       console.error('Error updating profile:', error);
-//     }
-//   };
-
-//   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const file = e.target.files ? e.target.files[0] : null;
-//     setImage(file);
-
-//   };
-
-//   return (
-//     <div className="mt-28 flex flex-col">
-//       <form onSubmit={handleSubmit}>
-//         <div>
-//           <input
-//             value={email}
-//             onChange={(e) => setEmail(e.target.value)}
-//             type="email"
-//             readOnly
-//             placeholder="Email"
-//           />
-//           {errors.email && <p className="text-red-500">{errors.email}</p>}
-//         </div>
-//         <div>
-//           <input
-//             value={phone}
-//             onChange={(e) => setPhone(e.target.value)}
-//             id="phone"
-//             type="text"
-//             placeholder="Phone"
-//           />
-//           {errors.phone && <p className="text-red-500">{errors.phone}</p>}
-//         </div>
-//         <div>
-//           <input
-//             value={name}
-//             onChange={(e) => setName(e.target.value)}
-//             id="name"
-//             type="text"
-//             placeholder="Name"
-//           />
-//           {errors.name && <p className="text-red-500">{errors.name}</p>}
-//         </div>
-//         <div>
-//           <input type="file" onChange={handleFileChange} />
-//           {errors.image && <p className="text-red-500">{errors.image}</p>}
-//           <div className="flex flex-wrap mt-2">
-//             {image || userDetails?.profilePicture ? (
-//               <img
-//                 src={image ? URL.createObjectURL(image) : userDetails?.profilePicture}
-//                 alt="Profile Preview"
-//                 className="w-20 h-20 object-cover mr-2"
-//               />
-//             ) : null}
-//           </div>
-//         </div>
-//         <button className="px-4 py-2 bg-green-500 text-white rounded-md" type="submit">
-//           Submit
-//         </button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default Dummy;
-
-
-
-
-
-//original dont make changes
 import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import { useLocation } from 'react-router-dom';
@@ -144,16 +10,18 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { AudioRecorder } from 'react-audio-voice-recorder';
 import { TbBookUpload } from "react-icons/tb";
 import { MdDeleteForever } from "react-icons/md";
+import { timeGet } from '@/services/functions/Functions';
 
 
-const socket = io('http://localhost:3008');
-
+const socket = io(import.meta.env.VITE_API_URL);
+//'http://localhost:3008'  ,import.meta.env.VITE_API_URL
 interface Message {
   senderId: string | null;
   recipientId: string;
   message?: string;
-  mediaUrl?: string;  // Optional field for file URL or base64 data
-  messageType?: string; // Optional field for file type
+  mediaUrl?: string;
+  messageType?: string;
+  createdAt?: Date | undefined
 }
 
 interface Conversation {
@@ -165,20 +33,20 @@ interface Conversation {
 
 const Chat: React.FC = () => {
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const { senderId, receiverId } = location.state || {};
 
-  const senderId = searchParams.get('senderId');
-  const receiverId = searchParams.get('receiverId');
   const [currentUserId, setCurrentUserId] = useState('');
   const [recipientId, setRecipientId] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [file, setFile] = useState<File | null>(null); // State to handle file upload
-  const [filePreview, setFilePreview] = useState<string | null>(null); // State to handle file preview
+  const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
   const [showPicker, setShowPicker] = useState(false);
   const [unreadCounts, setUnreadCounts] = useState<{ [key: string]: number }>({});
-
+  const [isTyping, setIsTyping] = useState(false);
+  const [isRecipientTyping, setIsRecipientTyping] = useState(false);
+  let typingTimeout: NodeJS.Timeout | null = null;
 
   const lastMessageRef = useRef<HTMLDivElement>(null)
 
@@ -188,7 +56,7 @@ const Chat: React.FC = () => {
     }
   }, [messages]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (senderId) setCurrentUserId(senderId);
     if (receiverId) setRecipientId(receiverId);
   }, [senderId, receiverId]);
@@ -198,11 +66,13 @@ const Chat: React.FC = () => {
       socket.emit('joinRoom', { userId: currentUserId, recipientId });
 
       socket.on('receiveMessage', (newMessage: Message) => {
+        console.log('Received message:', newMessage);
         if
-        ((newMessage.senderId === currentUserId && newMessage.recipientId === recipientId)||
+
+          ((newMessage.senderId === currentUserId && newMessage.recipientId === recipientId) ||
           (newMessage.senderId === recipientId && newMessage.recipientId === currentUserId)
-        ){
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        ) {
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
       });
 
@@ -229,6 +99,46 @@ const Chat: React.FC = () => {
     }
   };
 
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessage(e.target.value);
+
+    if (!isTyping) {
+      socket.emit('typing', { senderId: currentUserId, recipientId });
+      setIsTyping(true);
+    }
+
+    if (typingTimeout) clearTimeout(typingTimeout);
+
+    typingTimeout = setTimeout(() => {
+      socket.emit('stopTyping', { senderId: currentUserId, recipientId });
+      setIsTyping(false);
+    }, 1000);
+  };
+
+
+  useEffect(() => {
+    socket.on('typing', ({ senderId }) => {
+      if (senderId === recipientId) {
+
+        setIsRecipientTyping(true);
+      }
+    });
+
+    socket.on('stopTyping', ({ senderId }) => {
+      if (senderId === recipientId) {
+
+        setIsRecipientTyping(false);
+      }
+    });
+
+    return () => {
+      socket.off('typing');
+      socket.off('stopTyping');
+    };
+  }, [recipientId]);
+
+
   const sendMessage = async () => {
     if (message.trim() === '' && !file) return;
 
@@ -236,6 +146,7 @@ const Chat: React.FC = () => {
       senderId: currentUserId,
       recipientId: recipientId,
       message: message,
+      createdAt: new Date()
     };
 
     const formData = new FormData();
@@ -250,12 +161,12 @@ const Chat: React.FC = () => {
       newMessage.mediaUrl = filePreview;
     }
 
-    // Emit the message and file to the server
+
     socket.emit('sendMessage', newMessage);
-    await sendMessages(formData); // Send the FormData to the backend
+    await sendMessages(formData);
     setMessage('');
-    setFile(null); // Clear the selected file after sending
-    setFilePreview(null); // Clear the file preview after sending
+    setFile(null);
+    setFilePreview(null);
   };
 
   useEffect(() => {
@@ -270,15 +181,13 @@ const Chat: React.FC = () => {
     if (senderId) {
       allUsers();
     }
-  }, [senderId]);
+  }, [senderId, message]);
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         const response = await getMessage(currentUserId, recipientId);
         setMessages(response.data);
-        console.log('Messages:', response.data);
-
       } catch (error) {
         console.error(error);
       }
@@ -316,8 +225,10 @@ const Chat: React.FC = () => {
       const newMessage: Message = {
         senderId: currentUserId,
         recipientId: recipientId,
+        // message: 'Audio message',
         mediaUrl: base64Audio,
         messageType: 'audio',
+        createdAt: new Date()
       };
 
       socket.emit('sendMessage', newMessage);
@@ -330,7 +241,10 @@ const Chat: React.FC = () => {
 
 
   useEffect(() => {
+
     socket.on('updateUnreadCount', ({ senderId, unreadCount }) => {
+      console.log('Received updateUnreadCount:', senderId, unreadCount);
+
       setUnreadCounts(prevCounts => ({
         ...prevCounts,
         [senderId]: unreadCount,
@@ -346,7 +260,7 @@ const Chat: React.FC = () => {
     <div className="flex max-w-5xl mx-auto h-screen bg-gray-100">
       {/* Left Sidebar */}
       <div className="w-1/4 bg-white shadow-lg p-4 overflow-y-auto border-r">
-        <h2 className="text-lg font-bold mb-4">Conversations</h2>
+        <h2 className="text-lg  font-bold mb-4">Conversations</h2>
         {Array.isArray(conversations) &&
           conversations
             .filter(conversation => conversation._id !== senderId) // Filter out the senderId user
@@ -354,7 +268,7 @@ const Chat: React.FC = () => {
               <div
                 key={conversation._id}
                 className={`flex items-center p-3 mb-2 cursor-pointer rounded-lg ${recipientId === conversation._id
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-gray-500 text-white'
                   : 'hover:bg-blue-100'
                   }`}
                 onClick={() => handleUserClick(conversation._id)}
@@ -365,25 +279,44 @@ const Chat: React.FC = () => {
                   alt={conversation.name}
                   className="w-10 h-10 rounded-full mr-3" // Circular shape and margin-right
                 />
-                {/* User Name */}
-                <span>{conversation.name}</span>
+                <div className='flex flex-col'>
+                  <span>{conversation.name}</span>
+                  {isRecipientTyping && recipientId === conversation._id && (
+                    <div className=" text-green-500 italic">typing...</div>
+                  )}
+
+                </div>
                 {unreadCounts[conversation._id] > 0 && (
                   <span className='ml-auto bg-red-500 text-white text-sm rounded-full px-2 py-1'>
                     {unreadCounts[conversation._id]}
                   </span>
                 )}
+
               </div>
             ))}
       </div>
 
       {/* Chat Window */}
       <div className="flex-grow flex flex-col bg-gray-200">
+        <div className='w-full py-3 bg-white-smoke' >
+          {Array.isArray(conversations) && conversations.map((item) => (
+            <div>
+              {item._id == recipientId &&
+                <div className='flex text-center'>
+                  <img src={item.profilePicture} className='w-12 h-12 rounded-full ml-5' alt="" />
+                  <span className='ml-3 mt-3 font-semibold'> {item.name}</span>
+
+                </div>
+              }
+            </div>
+          ))}
+        </div>
         <div className="flex-grow p-4 overflow-y-auto">
           {messages.map((msg, index) => (
             <div
               key={index}
-              ref={index === messages.length - 1 ? lastMessageRef : null} 
-              className={`mb-3 p-3 max-w-sm rounded-lg shadow-md ${msg.senderId === currentUserId
+              ref={index === messages.length - 1 ? lastMessageRef : null}
+              className={`mb-3 p-3 max-w-sm rounded-lg shadow-md relative ${msg.senderId === currentUserId
                 ? 'bg-blue-500 text-white self-end ml-[40%]'
                 : 'bg-white text-gray-800 self-start'
                 }`}
@@ -392,6 +325,7 @@ const Chat: React.FC = () => {
               }}
             >
               {msg.message}
+              <span className='absolute right-2 bottom-2 text-xs text-gray-300'>{timeGet(msg.createdAt)}</span>
               {/* Display file preview if a file is part of the message */}
               {msg.mediaUrl && (
                 <div className="mt-2">
@@ -414,10 +348,11 @@ const Chat: React.FC = () => {
               )}
             </div>
           ))}
+
         </div>
 
         {/* File preview section */}
-        {filePreview && file &&(
+        {filePreview && file && (
           <div className="relative p-4">
             <div className="bg-gray-300 p-4 rounded-lg flex relative">
               <div className="relative">
@@ -430,9 +365,9 @@ const Chat: React.FC = () => {
                 ) : (
                   ''
                 )}
-                {file && 
-                
-                <div className="absolute top-0 right-0 text-red-500 text-xl"><MdDeleteForever onClick={()=> setFile(null)}/></div>
+                {file &&
+
+                  <div className="absolute top-0 right-0 text-red-500 text-xl"><MdDeleteForever onClick={() => setFile(null)} /></div>
                 }
               </div>
             </div>
@@ -465,7 +400,13 @@ const Chat: React.FC = () => {
               placeholder="Type a message"
               className="flex-grow bg-white p-2 rounded-full mx-2 border border-gray-300 focus:outline-none focus:border-blue-500"
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  sendMessage();
+                }
+              }}
             />
 
             {/* File input */}
@@ -508,75 +449,83 @@ const Chat: React.FC = () => {
 
 export default Chat;
 
-//chat current full dont make changes
+
+
+//end hereeeee
+
+
+//socket.io
 
 
 
-//original backend
 
-// const io = new SocketIOServer(httpServer, {
-//   cors: {
-//     origin: ['https://crowd-funding-hope-springs.vercel.app', 'http://localhost:3000'],
-//     methods: ['GET', 'POST'],
-//     credentials: true,
-//   },
-// });
+const io = new SocketIOServer(httpServer, {
+  cors: {
+    origin: ['https://crowd-funding-hope-springs.vercel.app', 'http://localhost:3000'],
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
 
 
-// io.on('connection', (socket) => {
-//   console.log('A user connected:', socket.id);
+io.on('connection', (socket) => {
+  console.log('A user connected:', socket.id);
 
-//   socket.on('joinRoom', ({ userId, recipientId }) => {
-//     const room = [userId, recipientId].sort().join('-');
-//     socket.join(room);
-//     console.log(`User ${userId} joined room: ${room}`);
-//   });
+  socket.on('joinRoom', ({ userId, recipientId }) => {
+    const room = [userId, recipientId].sort().join('-');
+    socket.join(room);
+    console.log(`User ${userId} joined room: ${room}`);
+  });
 
-//   socket.on('typing', ({ senderId, recipientId }) => {
+  socket.on('typing', ({ senderId, recipientId }) => {
     
-//     const room = [senderId, recipientId].sort().join('-');
-//     socket.to(room).emit('typing', { senderId });
-//   });
+    const room = [senderId, recipientId].sort().join('-');
+    socket.to(room).emit('typing', { senderId });
+  });
   
-//   socket.on('stopTyping', ({ senderId, recipientId }) => {
+  socket.on('stopTyping', ({ senderId, recipientId }) => {
     
-//     const room = [senderId, recipientId].sort().join('-');
-//     socket.to(room).emit('stopTyping', { senderId });
-//   });
+    const room = [senderId, recipientId].sort().join('-');
+    socket.to(room).emit('stopTyping', { senderId });
+  });
   
 
-//   socket.on('sendMessage', async (message) => {
-//     const { senderId, recipientId, message: text } = message;
+  socket.on('sendMessage', async (message) => {
+    const { senderId, recipientId, message: text } = message;
 
-//     const room = [senderId, recipientId].sort().join('-');
+    const room = [senderId, recipientId].sort().join('-');
 
-//     try {
-//       io.to(room).emit('receiveMessage', message);
-//       const unreadCount = await messageModel.countDocuments({ recipientId, senderId, read: false });
-//       io.to(room).emit('updateUnreadCount', { senderId, unreadCount: unreadCount+1 })
-//     } catch (error) {
-//       console.error('Error sending message:', error);
-//     }
-//   });
-
-//   socket.on('markMessagesAsRead', async ({ recipientId, senderId }) => {
-//     try {
-//       console.log('Received markMessagesAsRead event with recipientId:', recipientId);
+    try {
       
-//       await messageModel.updateMany(
-//         { recipientId, senderId, read: false },
-//         { $set: { read: true } }
-//       );
+      io.to(room).emit('receiveMessage', message);
+      console.log('Received message:', message);
+     
+      const unreadCount = await messageModel.countDocuments({ recipientId, senderId, read: false });
+      io.to(room).emit('updateUnreadCount', { senderId, unreadCount: unreadCount+1 })
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  });
 
-//       const room = [senderId, recipientId].sort().join('-');
-//       io.to(room).emit('updateUnreadCount', { senderId, unreadCount: 0 });
-//     } catch (error) {
-//       console.error('Error marking messages as read:', error);
-//     }
-//   });
+  socket.on('markMessagesAsRead', async ({ recipientId, senderId }) => {
+    try {
+      console.log('Received markMessagesAsRead event with recipientId:', recipientId);
+      
+      await messageModel.updateMany(
+        { recipientId, senderId, read: false },
+        { $set: { read: true } }
+      );
+      
+      const room = [senderId, recipientId].sort().join('-');
+      io.to(room).emit('updateUnreadCount', { senderId, unreadCount: 0 });
+    } catch (error) {
+      console.error('Error marking messages as read:', error);
+    }
+  });
 
-//   socket.on('disconnect', () => {
-//     console.log('User disconnected:', socket.id);
-//   });
-// });
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
 
+//end here
