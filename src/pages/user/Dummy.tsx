@@ -459,73 +459,73 @@ export default Chat;
 
 
 
-const io = new SocketIOServer(httpServer, {
-  cors: {
-    origin: ['https://crowd-funding-hope-springs.vercel.app', 'http://localhost:3000'],
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
-});
+// const io = new SocketIOServer(httpServer, {
+//   cors: {
+//     origin: ['https://crowd-funding-hope-springs.vercel.app', 'http://localhost:3000'],
+//     methods: ['GET', 'POST'],
+//     credentials: true,
+//   },
+// });
 
 
-io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
+// io.on('connection', (socket) => {
+//   console.log('A user connected:', socket.id);
 
-  socket.on('joinRoom', ({ userId, recipientId }) => {
-    const room = [userId, recipientId].sort().join('-');
-    socket.join(room);
-    console.log(`User ${userId} joined room: ${room}`);
-  });
+//   socket.on('joinRoom', ({ userId, recipientId }) => {
+//     const room = [userId, recipientId].sort().join('-');
+//     socket.join(room);
+//     console.log(`User ${userId} joined room: ${room}`);
+//   });
 
-  socket.on('typing', ({ senderId, recipientId }) => {
+//   socket.on('typing', ({ senderId, recipientId }) => {
     
-    const room = [senderId, recipientId].sort().join('-');
-    socket.to(room).emit('typing', { senderId });
-  });
+//     const room = [senderId, recipientId].sort().join('-');
+//     socket.to(room).emit('typing', { senderId });
+//   });
   
-  socket.on('stopTyping', ({ senderId, recipientId }) => {
+//   socket.on('stopTyping', ({ senderId, recipientId }) => {
     
-    const room = [senderId, recipientId].sort().join('-');
-    socket.to(room).emit('stopTyping', { senderId });
-  });
+//     const room = [senderId, recipientId].sort().join('-');
+//     socket.to(room).emit('stopTyping', { senderId });
+//   });
   
 
-  socket.on('sendMessage', async (message) => {
-    const { senderId, recipientId, message: text } = message;
+//   socket.on('sendMessage', async (message) => {
+//     const { senderId, recipientId, message: text } = message;
 
-    const room = [senderId, recipientId].sort().join('-');
+//     const room = [senderId, recipientId].sort().join('-');
 
-    try {
+//     try {
       
-      io.to(room).emit('receiveMessage', message);
-      console.log('Received message:', message);
+//       io.to(room).emit('receiveMessage', message);
+//       console.log('Received message:', message);
      
-      const unreadCount = await messageModel.countDocuments({ recipientId, senderId, read: false });
-      io.to(room).emit('updateUnreadCount', { senderId, unreadCount: unreadCount+1 })
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
-  });
+//       const unreadCount = await messageModel.countDocuments({ recipientId, senderId, read: false });
+//       io.to(room).emit('updateUnreadCount', { senderId, unreadCount: unreadCount+1 })
+//     } catch (error) {
+//       console.error('Error sending message:', error);
+//     }
+//   });
 
-  socket.on('markMessagesAsRead', async ({ recipientId, senderId }) => {
-    try {
-      console.log('Received markMessagesAsRead event with recipientId:', recipientId);
+//   socket.on('markMessagesAsRead', async ({ recipientId, senderId }) => {
+//     try {
+//       console.log('Received markMessagesAsRead event with recipientId:', recipientId);
       
-      await messageModel.updateMany(
-        { recipientId, senderId, read: false },
-        { $set: { read: true } }
-      );
+//       await messageModel.updateMany(
+//         { recipientId, senderId, read: false },
+//         { $set: { read: true } }
+//       );
       
-      const room = [senderId, recipientId].sort().join('-');
-      io.to(room).emit('updateUnreadCount', { senderId, unreadCount: 0 });
-    } catch (error) {
-      console.error('Error marking messages as read:', error);
-    }
-  });
+//       const room = [senderId, recipientId].sort().join('-');
+//       io.to(room).emit('updateUnreadCount', { senderId, unreadCount: 0 });
+//     } catch (error) {
+//       console.error('Error marking messages as read:', error);
+//     }
+//   });
 
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
-  });
-});
+//   socket.on('disconnect', () => {
+//     console.log('User disconnected:', socket.id);
+//   });
+// });
 
 //end here
