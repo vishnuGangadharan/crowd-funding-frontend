@@ -11,7 +11,7 @@ import Conversations from './UserChat/Conversations';
 import ShowChats from './UserChat/ShowChats';
 import { Message , Conversation, onlineUser } from '@/services/interface/chat';
 import { lastSeenProps } from '@/services/interface/chat';
-const socket = io(import.meta.env.VITE_API_URL);
+const socket = io('http://localhost:3008/api');
 //'http://localhost:3008'  ,import.meta.env.VITE_API_URL
 
 
