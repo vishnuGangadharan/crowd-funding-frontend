@@ -32,7 +32,7 @@ export interface PostReport {
     __v: number;
     blocked: boolean;
     userId:userFormData
-  
+    image?: string;
   
 }
 

@@ -10,6 +10,7 @@ export interface userFormData {
     profilePicture?: any;
     newPassword?: string | undefined;
     phone?:string;
+    image?: string;
   }
 
 

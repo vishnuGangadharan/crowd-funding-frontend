@@ -316,6 +316,16 @@ const Chat: React.FC = () => {
     };
   }, []);
 
+
+    if (unreadCounts[recipientId]) {
+      setUnreadCounts((prevUnreadCounts) => ({
+        ...prevUnreadCounts,
+        [recipientId]: 0,
+      }));
+    }
+ 
+  
+
   return (
     <div className="flex max-w-5xl mx-auto h-screen bg-gray-100">
 

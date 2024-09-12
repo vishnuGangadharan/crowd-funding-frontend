@@ -81,7 +81,7 @@ const ReportedPosts: React.FC = () => {
                     <p className="mb-2"><strong>Reported count:</strong> {report.count ?? "N/A"}</p>
                     <p className="mb-2"><strong>Blocked By:</strong> {report.userId?.name || "N/A"}</p>
                     <p className="mb-2"><strong>Beneficiary Name :</strong> {report.postId?.name || "N/A"}</p>
-                    <p className="mb-2"><strong>Blocked Date :</strong> {report.createdAt ? formatDate(new Date(report.createdAt)) : "N/A"}</p>
+                    <p className="mb-2"><strong>Reported Date :</strong> {report.createdAt ? formatDate(new Date(report.createdAt)) : "N/A"}</p>
                   </div>
                   <div className="flex flex-col space-y-2 mt-4 md:mt-0 md:ml-4">
                     <Button color="primary" variant="light" onClick={() => report.postId && handleView(report.postId._id)}>
@@ -93,6 +93,9 @@ const ReportedPosts: React.FC = () => {
                       message='Confirm to block this post and refund the money to the dynameter wallet'
                       onConfirm={() => report.postId && report.postId._id && blockPosts(report.postId._id)}
                     />
+                    {report.image ? (<div>
+                      <img src={report.image} alt="" className='w-24 h-24 object-cover rounded-md' />
+                    </div>):('')}
                   </div>
                 </div>
                 <Divider />

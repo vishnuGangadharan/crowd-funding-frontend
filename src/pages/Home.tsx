@@ -5,6 +5,7 @@ import Accordion from '../Components/user/Accordions';
 import Footer from '../Components/user/Footer';
 
 const Home = () => {
+
   return (
     <div className='' style={{ background: '#FFF6E9' }}>
       <NavBar />

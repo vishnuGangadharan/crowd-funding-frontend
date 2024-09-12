@@ -6,7 +6,11 @@ import {  ConversationsProps } from '@/services/interface/chat';
 const Conversations: React.FC<ConversationsProps> = ({conversations,handleUserClick, senderId,recipientId, isRecipientTyping ,unreadCounts, onlineUsers }) => {
   
 
- 
+ console.log('...............',unreadCounts);
+ console.log('wwwwwwwwww',recipientId);
+//  if (unreadCounts[recipientId]) {
+//   unreadCounts[recipientId] = 0;
+// }
 
   return (
     <div className="w-1/4 bg-white shadow-lg p-4 overflow-y-auto border-r">
