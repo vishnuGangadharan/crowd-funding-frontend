@@ -49,7 +49,7 @@ const PostDetails: React.FC = () => {
     // Share
     const url = window.location.href;
     const title = postDetails?.heading as string;
-    const image = postDetails?.profilePic ? postDetails.profilePic[0] : "";
+    // const image = postDetails?.profilePic ? postDetails.profilePic[0] : "";
     const fullUrl = `${url}`;
     console.log('llllllllllll',url);
   
