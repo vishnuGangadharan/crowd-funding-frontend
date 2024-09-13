@@ -50,7 +50,7 @@ const PostDetails: React.FC = () => {
     const url = window.location.href;
     const title = postDetails?.heading as string;
     const image = postDetails?.profilePic ? postDetails.profilePic[0] : "";
-    const fullUrl = `${url}?title=${encodeURIComponent(title)}&image=${encodeURIComponent(image)}`;
+    const fullUrl = `${url}`;
     console.log('llllllllllll',url);
   
     const { id } = useParams<{ id: string }>();
@@ -176,7 +176,7 @@ const PostDetails: React.FC = () => {
 
 
                         </div>
-                        {postDetails && postDetails.isApproved !== 'pending' && postDetails?.fundRequestConfirmed || postDetails?.targetDateFinished ? (
+                        {postDetails && postDetails.isApproved !== 'pending' && postDetails?.fundRequestConfirmed || !postDetails?.targetDateFinished ? (
 
                             <div className='mt-5 gap-5'>
                                 <FacebookShareButton url={fullUrl} title={title}>
