@@ -37,7 +37,11 @@ const Users: React.FC = () => {
 
 
       if (response) {
-        fetchUsersDetails();
+       setUsers((prev) => 
+      prev.map((user) => 
+      user._id == id ? { ...user, isBlocked : !isBlocked} : user
+      )
+      )
       }
     } catch (error) {
       console.log("error", error);
@@ -139,4 +143,6 @@ const Users: React.FC = () => {
 }
 
 export default Users;
+
+
 

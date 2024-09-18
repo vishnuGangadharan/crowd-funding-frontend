@@ -8,6 +8,7 @@ import UpdatePassword from '../Components/user/UpdatePassword';
 import { userFormData } from '@/services/interface/user';
 import { editUserProfile, getUser } from '@/api/user';
 import {toast}  from 'react-toastify'
+import { set } from 'lodash';
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
@@ -69,16 +70,17 @@ const Profile: React.FC = () => {
       const response = await editUserProfile(formData as any);
       if (response) {
         console.log('Profile updated successfully', response);
-        // Optionally update the local state with the new data
+       
         setUserDetails({
           ...userDetails,
           email,
           phone,
           name,
-          profilePicture: profilePicPreview || ''
+          profilePicture: profilePicPreview || '' 
         });
         setIsEditing(false);
         toast.success('Profile updated successfully');
+        setErrors({'':''});
       } else {
         console.error('Failed to update profile');
       }

@@ -19,7 +19,6 @@ const PostComments: React.FC<commentProps> = ({ postId, userId }) => {
 
     const fetchComments = async () => {
         try {
-
             const response = await geComments(postId as string)
             setShowComment(response.data)
 
@@ -32,7 +31,7 @@ const PostComments: React.FC<commentProps> = ({ postId, userId }) => {
     useEffect(() => {
         fetchComments()
 
-    }, [])
+    }, [postId])
 
 
 
@@ -44,8 +43,9 @@ const PostComments: React.FC<commentProps> = ({ postId, userId }) => {
             }
             const response = await postComment(comment, postId as string, userId as string);
             console.log("Comment posted successfully", response);
+            setShowComment((prev: commentProps[]) => [response.data , ...prev])
             setComment("");
-            fetchComments();
+           
         } catch (error) {
             console.log("Error posting comment:", error);
         }

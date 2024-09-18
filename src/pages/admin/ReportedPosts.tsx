@@ -88,7 +88,8 @@ const ReportedPosts: React.FC = () => {
                       View Post Details
                     </Button>
                     <ConfirmationModal
-                      buttonText='Confirm Blocking'
+                     buttonText={report.postId?.blocked ? 'Blocked' : 'Confirm Blocking'}    
+                      // buttonText='Confirm Blocking'
                       title='Confirm Blocking'
                       message='Confirm to block this post and refund the money to the dynameter wallet'
                       onConfirm={() => report.postId && report.postId._id && blockPosts(report.postId._id)}

@@ -51,7 +51,7 @@ const PostDetails: React.FC = () => {
     const title = postDetails?.heading as string;
     // const image = postDetails?.profilePic ? postDetails.profilePic[0] : "";
     const fullUrl = `${url}`;
-    console.log('llllllllllll',url);
+   
   
     const { id } = useParams<{ id: string }>();
 

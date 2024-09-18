@@ -25,7 +25,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
   return (
     <>
-      <Buttons color="danger" variant="light" onClick={() => setOpenModal(true)}>
+      <Buttons className={`${buttonText === 'Blocked' ? 'bg-gray-400 text-gray-700 cursor-not-allowed' : 'bg-red-500 text-white hover:bg-red-700'} `}
+      color="danger" variant="light" 
+      onClick={() => {
+        if (buttonText !== 'Blocked') {
+          setOpenModal(true);
+        }
+      }}
+      >
         {buttonText}
       </Buttons>
       <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
