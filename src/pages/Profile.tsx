@@ -8,7 +8,6 @@ import UpdatePassword from '../Components/user/UpdatePassword';
 import { userFormData } from '@/services/interface/user';
 import { editUserProfile, getUser } from '@/api/user';
 import {toast}  from 'react-toastify'
-import { set } from 'lodash';
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
