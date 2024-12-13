@@ -3,6 +3,7 @@ import HeroSection from '../Components/user/HeroSection';
 import Card from '../Components/user/Cards';
 import Accordion from '../Components/user/Accordions';
 import Footer from '../Components/user/Footer';
+// import FlippingCard from '@/Components/user/FlipCards';
 
 const Home = () => {
 
@@ -30,6 +31,7 @@ const Home = () => {
         <h1 className="text-3xl font-bold mb-8">Questions We Get</h1>
         <div className="w-full sm:w-5/6 md:w-3/4 lg:w-2/3 xl:w-1/2">
           <Accordion />
+         {/* < FlippingCard/> */}
         </div>
       </div>
       <div className='mt-4'>
