@@ -2,7 +2,7 @@ import thought from '../../../public/User/thought.avif';
 import t2 from '../../../public/User/t2.avif';
 import t3 from '../../../public/User/t3.avif';
 
-import React, { useState } from 'react';
+import  { useState } from 'react';
 
 const FlippingCard = () => {
   const [isFlipped, setIsFlipped] = useState<number | null>(null);
